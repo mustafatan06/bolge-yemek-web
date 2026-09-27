@@ -42,6 +42,7 @@
         .secenek-grup label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
         .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 11px; font-weight: 600; color: #1e293b; }
         .checkbox-grid label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        .form-input { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; margin-bottom: 10px; }
 
         /* YEŞİL BAŞARI TİK ANİMASYONU */
         #basariAnimasyonModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; }
@@ -108,7 +109,6 @@
                 <input type="text" id="modalSiparisNotu" placeholder="Örn: Bol soslu olsun." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px;">
             </div>
 
-            <!-- AYRI BAĞIMSIZ KAPIYA BIRAK SEÇENEĞİ -->
             <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:12px;">
                 <label style="display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#0f172a; cursor:pointer; margin:0;">
                     <input type="checkbox" id="kapıyaBirakChk" style="width:15px; height:15px; accent-color:#f97316;"> 
@@ -116,8 +116,33 @@
                 </label>
             </div>
 
-            <button type="button" onclick="sepeteUrunEkleOnayla()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">Sepete Ekle</button>
+            <button type="button" onclick="sepeteUrunEkleOnayla(event)" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">Sepete Ekle</button>
             <button type="button" onclick="document.getElementById('urunDetayModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
+        </div>
+    </div>
+
+    <!-- DÂHİLİ GİRİŞ / KAYIT MODALI (Üye Olmadan Sepete Ekletmeyen Şık Tasarım) -->
+    <div id="dahiliGirisModal" class="modal">
+        <div class="modal-content">
+            <div style="text-align:center; margin-bottom:15px;">
+                <div style="width:50px; height:50px; background:rgba(249,115,22,0.1); color:#f97316; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 auto 8px auto;"><i class="fa-solid fa-user-lock"></i></div>
+                <h3 style="font-size:16px; font-weight:900; color:#0f172a;">Giriş Yapılması Gerekiyor</h3>
+                <p style="font-size:11px; color:#64748b;">Sipariş verebilmek için bilgilerinizi bir kez girmeniz yeterlidir.</p>
+            </div>
+            
+            <div class="secenek-grup">
+                <label>Ad Soyad *</label>
+                <input type="text" id="girisAd" class="form-input" placeholder="Adınız Soyadınız">
+                <label>Telefon Numarası *</label>
+                <input type="tel" id="girisTel" class="form-input" placeholder="05XXXXXXXXX">
+                <label>E-posta Adresi *</label>
+                <input type="email" id="girisMail" class="form-input" placeholder="ornek@mail.com">
+                <label>Teslimat Adresi *</label>
+                <textarea id="girisAdres" class="form-input" rows="2" placeholder="Mahalle, sokak, bina no, daire..."></textarea>
+            </div>
+
+            <button type="button" onclick="dahiliGirisKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">Bilgilerimi Kaydet ve Devam Et</button>
+            <button type="button" onclick="document.getElementById('dahiliGirisModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
         </div>
     </div>
 
@@ -240,13 +265,38 @@
         function sepeteUrunEkleOnayla(event) {
             if(event) event.preventDefault();
             
+            // KULLANICI GİRİŞ YAPMIŞ MI KONTROL ET (YAPMDIYSA DÂHİLİ MODAL AÇ)
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             if(!musteriAdi) {
-                alert("Sipariş verebilmek için lütfen ana sayfadan giriş yapın / kaydolun!");
-                window.location.href = 'index.html';
+                document.getElementById('urunDetayModal').style.display = 'none';
+                document.getElementById('dahiliGirisModal').style.display = 'flex';
                 return;
             }
 
+            islemeDevamEtSepeteEkle();
+        }
+
+        function dahiliGirisKaydet() {
+            const ad = document.getElementById('girisAd').value.trim();
+            const tel = document.getElementById('girisTel').value.trim();
+            const mail = document.getElementById('girisMail').value.trim();
+            const adres = document.getElementById('girisAdres').value.trim();
+
+            if(!ad || !tel || !mail || !adres) {
+                alert("Lütfen tüm alanları doldurun.");
+                return;
+            }
+
+            localStorage.setItem('aktifMusteriAdi', ad);
+            localStorage.setItem('aktifMusteriTel', tel);
+            localStorage.setItem('aktifMusteriMail', mail);
+            localStorage.setItem('aktifMusteriAdres', adres);
+
+            document.getElementById('dahiliGirisModal').style.display = 'none';
+            islemeDevamEtSepeteEkle();
+        }
+
+        function islemiDevamEtSepeteEkle() {
             const adet = parseInt(document.getElementById('modalUrunAdet').value);
             const secilenMalzemeler = Array.from(document.querySelectorAll('.malzeme-chk:checked')).map(el => el.value);
             const notu = document.getElementById('modalSiparisNotu').value;

@@ -30,16 +30,24 @@
         .menu-info p { font-size: 11px; color: #64748b; margin-bottom: 4px; }
         .menu-info span { font-size: 12px; font-weight: 800; color: #f97316; }
 
+        /* SABİT ALT SEPET */
         .sabit-sepet { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); }
         .sabit-sepet-info { font-size: 12px; font-weight: 700; }
         .sabit-sepet-btn { background: #f97316; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; }
 
+        /* MODALLAR */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; border: 1px solid #e2e8f0; }
-        .secenek-grup { margin-bottom: 12px; }
-        .secenek-grup label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 5px; }
+        .secenek-grup { margin-bottom: 14px; }
+        .secenek-grup label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 6px; }
         .checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 11px; font-weight: 600; color: #1e293b; }
         .checkbox-grid label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+        /* YEŞİL BAŞARI TİK ANİMASYONU */
+        #basariAnimasyonModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 30000; justify-content: center; align-items: center; }
+        .success-card { background: #fff; padding: 30px; border-radius: 20px; text-align: center; max-width: 320px; width: 100%; animation: popIn 0.3s ease-out; }
+        .success-tick { width: 70px; height: 70px; background: #10b981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 15px auto; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -55,11 +63,10 @@
                 <div><h1 id="restAdi">Yükleniyor...</h1><p id="restKategoriTel">Yükleniyor...</p></div>
             </div>
         </div>
-        <div class="menu-grid" id="isletmeUrunleri">
-            <div style="font-size:12px; color:#64748b;">Menü yükleniyor...</div>
-        </div>
+        <div class="menu-grid" id="isletmeUrunleri"></div>
     </div>
 
+    <!-- SABİT ALT SEPET -->
     <div class="sabit-sepet" id="sabitSepetBar" style="display:none;">
         <div class="sabit-sepet-info">
             <i class="fa-solid fa-basket-shopping" style="color:#f97316;"></i> <span id="sepetAdetYazi">0 Ürün</span> | <span id="sepetTutarYazi" style="color:#f97316; font-size:14px;">0 ₺</span>
@@ -67,6 +74,7 @@
         <button class="sabit-sepet-btn" onclick="sepetiOnaylaModalAc()">Sepeti Onayla & Sipariş Ver</button>
     </div>
 
+    <!-- ÜRÜN DETAY MODALI -->
     <div id="urunDetayModal" class="modal">
         <div class="modal-content">
             <h3 id="modalUrunAdi" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:5px;">Ürün Adı</h3>
@@ -82,7 +90,7 @@
             </div>
 
             <div class="secenek-grup">
-                <label>İçine Eklenmesini İstedikleriniz</label>
+                <label>İçine Eklenmesini İstedikleriniz (Malzemeler)</label>
                 <div class="checkbox-grid">
                     <label><input type="checkbox" class="malzeme-chk" value="Mısır" checked> Mısır</label>
                     <label><input type="checkbox" class="malzeme-chk" value="Nane" checked> Nane</label>
@@ -96,24 +104,24 @@
             </div>
 
             <div class="secenek-grup">
-                <label>Pişirme / Servis Tercihi</label>
-                <select id="modalServisTercihi" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px; font-weight:600;">
-                    <option value="Normal / Acılı">Acılı</option>
-                    <option value="Acısız">Acısız</option>
-                    <option value="Kapıya Bırak (Temassız)">Kapıya Bırak (Zile Basma)</option>
-                </select>
-            </div>
-
-            <div class="secenek-grup">
                 <label>Sipariş Notu (Opsiyonel)</label>
                 <input type="text" id="modalSiparisNotu" placeholder="Örn: Bol soslu olsun." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px;">
             </div>
 
-            <button type="button" onclick="sepeteUrunEkleOnayla()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:8px;">Sepete Ekle</button>
+            <!-- AYRI BAĞIMSIZ KAPINOYA BIRAK SEÇENEĞİ -->
+            <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:12px;">
+                <label style="display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#0f172a; cursor:pointer; margin:0;">
+                    <input type="checkbox" id="kapıyaBirakChk" style="width:15px; height:15px; accent-color:#f97316;"> 
+                    <span>Kapıya Bırak (Temassız Teslimat / Zile Basma)</span>
+                </label>
+            </div>
+
+            <button type="button" onclick="sepeteUrunEkleOnayla()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">Sepete Ekle</button>
             <button type="button" onclick="document.getElementById('urunDetayModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
         </div>
     </div>
 
+    <!-- SEPET ONAY MODALI -->
     <div id="sepetOnayModal" class="modal">
         <div class="modal-content">
             <h3 style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:10px;">Sepetim ve Sipariş Onayı</h3>
@@ -136,6 +144,15 @@
         </div>
     </div>
 
+    <!-- YEŞİL TİK BAŞARI ANİMASYON EKRANI -->
+    <div id="basariAnimasyonModal">
+        <div class="success-card">
+            <div class="success-tick"><i class="fa-solid fa-check"></i></div>
+            <h3 style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:5px;">Siparişiniz Alındı!</h3>
+            <p style="font-size:11px; color:#64748b;">Canlı sipariş takip ekranına yönlendiriliyorsunuz...</p>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
@@ -151,55 +168,40 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const isletmeId = urlParams.get('id');
+        const isletmeId = new URLSearchParams(window.location.search).get('id');
         let aktifSecilenUrun = null;
-        let sepet = [];
-
-        try {
-            sepet = JSON.parse(localStorage.getItem('aktif_sepet_' + isletmeId)) || [];
-        } catch(e) {
-            sepet = [];
-        }
-
+        let sepet = JSON.parse(localStorage.getItem('aktif_sepet_' + isletmeId)) || [];
         let indirimOrani = 0;
+        window.menuUrunleriVeritabani = {};
 
-        if(!isletmeId) {
-            alert("İşletme ID bulunamadı!");
-            window.location.href = 'index.html';
-        } else {
-            // İşletme bilgilerini çek
+        if(isletmeId) {
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
                 const r = snapshot.val();
                 if(r) {
-                    document.getElementById('restAdi').innerText = r.ad || 'İşletme';
-                    document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + (r.telefon || '-');
+                    document.getElementById('restAdi').innerText = r.ad;
+                    document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
                 }
-            }).catch(err => {
-                console.error(err);
             });
 
-            // Menü ürünlerini çek
             db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
                 const container = document.getElementById('isletmeUrunleri'); 
                 container.innerHTML = '';
                 const data = snapshot.val(); 
-                
                 if(!data) { 
-                    container.innerHTML = '<div style="font-size:12px; color:#64748b; text-align:center; padding:20px;">Bu işletmede henüz aktif ürün bulunmuyor.</div>'; 
+                    container.innerHTML = '<div style="font-size:11px; color:#64748b;">Bu işletmede henüz ürün bulunmuyor.</div>'; 
                     return; 
                 }
-
+                
+                window.menuUrunleriVeritabani = data;
                 let html = '';
+                
                 Object.keys(data).forEach(k => {
                     const u = data[k];
-                    // Güvenli stringify ile tıklama hatası önlendi
-                    const urunJson = JSON.stringify(u).replace(/"/g, '&quot;');
                     html += `
-                        <div class="menu-item-card" onclick="urunSecVeModalAc('${k}')">
+                        <div class="menu-item-card" onclick="urunTiklandi('${k}')">
                             <div class="menu-item-left">
-                                <img src="${u.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${u.ad}">
+                                <img src="${u.gorsel}">
                                 <div class="menu-info">
                                     <h4>${u.ad}</h4>
                                     <p>${u.aciklama || ''}</p>
@@ -211,25 +213,21 @@
                     `;
                 });
                 container.innerHTML = html;
-            }).catch(err => {
-                document.getElementById('isletmeUrunleri').innerHTML = '<div style="font-size:12px; color:#ef4444; text-align:center; padding:20px;">Menü yüklenirken hata oluştu.</div>';
             });
         }
 
         sabitSepetiGuncelle();
 
-        // Ürünü global hafızadan güvenle çekip modalı açan fonksiyon
-        function urunSecVeModalAc(k) {
-            db.ref('restaurant_products/' + isletmeId + '/' + k).once('value').then(snapshot => {
-                const urun = snapshot.val();
-                if(!urun) return;
-                aktifSecilenUrun = urun;
-                document.getElementById('modalUrunAdi').innerText = urun.ad;
-                document.getElementById('modalUrunFiyat').innerText = urun.fiyat + ' ₺';
-                document.getElementById('modalUrunAdet').value = 1;
-                document.getElementById('modalSiparisNotu').value = '';
-                document.getElementById('urunDetayModal').style.display = 'flex';
-            });
+        function urunTiklandi(key) {
+            const urun = window.menuUrunleriVeritabani[key];
+            if(!urun) return;
+            aktifSecilenUrun = urun;
+            document.getElementById('modalUrunAdi').innerText = urun.ad;
+            document.getElementById('modalUrunFiyat').innerText = urun.fiyat + ' ₺';
+            document.getElementById('modalUrunAdet').value = 1;
+            document.getElementById('modalSiparisNotu').value = '';
+            document.getElementById('kapıyaBirakChk').checked = false;
+            document.getElementById('urunDetayModal').style.display = 'flex';
         }
 
         function adetDegis(m) {
@@ -249,22 +247,21 @@
 
             const adet = parseInt(document.getElementById('modalUrunAdet').value);
             const secilenMalzemeler = Array.from(document.querySelectorAll('.malzeme-chk:checked')).map(el => el.value);
-            const servis = document.getElementById('modalServisTercihi').value;
             const notu = document.getElementById('modalSiparisNotu').value;
+            const kapıyaBirak = document.getElementById('kapıyaBirakChk').checked ? "Kapıya Bırak (Temassız)" : "Normal Teslimat";
 
             sepet.push({
                 ad: aktifSecilenUrun.ad,
                 fiyat: parseFloat(aktifSecilenUrun.fiyat),
                 adet: adet,
                 malzemeler: secilenMalzemeler.join(', '),
-                servis: servis,
+                teslimatSekli: kapıyaBirak,
                 not: notu
             });
 
             localStorage.setItem('aktif_sepet_' + isletmeId, JSON.stringify(sepet));
             sabitSepetiGuncelle();
             document.getElementById('urunDetayModal').style.display = 'none';
-            alert("Ürün sepete eklendi!");
         }
 
         function sabitSepetiGuncelle() {
@@ -284,15 +281,15 @@
         }
 
         function sepetiOnaylaModalAc() {
+            document.getElementById('sepetOnayModal').style.display = 'flex';
             const container = document.getElementById('sepetUrunleriListesi');
             container.innerHTML = '';
             let toplam = 0;
             sepet.forEach((s) => {
                 toplam += (s.fiyat * s.adet);
-                container.innerHTML += `<div><b>${s.adet}x ${s.ad}</b> - ${s.fiyat * s.adet} ₺<br><small>Malzemeler: ${s.malzemeler || '-'} | ${s.servis}</small></div><hr style="margin:4px 0; border:0; border-top:1px solid #eee;">`;
+                container.innerHTML += `<div><b>${s.adet}x ${s.ad}</b> - ${s.fiyat * s.adet} ₺<br><small>Malzemeler: ${s.malzemeler || '-'} | ${s.teslimatSekli}</small></div><hr style="margin:4px 0; border:0; border-top:1px solid #eee;">`;
             });
             document.getElementById('sepetModalToplam').innerText = (toplam - (toplam * indirimOrani)) + ' ₺';
-            document.getElementById('sepetOnayModal').style.display = 'flex';
         }
 
         function kuponUygula() {
@@ -316,7 +313,7 @@
             let ozetUrunler = [];
             sepet.forEach(s => {
                 toplamTutar += (s.fiyat * s.adet);
-                ozetUrunler.push(`${s.adet}x ${s.ad} (${s.malzemeler})`);
+                ozetUrunler.push(`${s.adet}x ${s.ad} (${s.malzemeler} - ${s.teslimatSekli})`);
             });
             toplamTutar = toplamTutar - (toplamTutar * indirimOrani);
 
@@ -329,9 +326,12 @@
                 durum: 'Hazırlanıyor',
                 tarih: new Date().toLocaleTimeString('tr-TR')
             }).then(() => {
-                alert("Siparişiniz başarıyla alındı!");
+                document.getElementById('sepetOnayModal').style.display = 'none';
+                document.getElementById('basariAnimasyonModal').style.display = 'flex';
                 localStorage.removeItem('aktif_sepet_' + isletmeId);
-                window.location.href = `siparis-takip.html?id=${isletmeId}&sId=${siparisId}`;
+                setTimeout(() => {
+                    window.location.href = `siparis-takip.html?id=${isletmeId}&sId=${siparisId}`;
+                }, 2000);
             });
         }
     </script>

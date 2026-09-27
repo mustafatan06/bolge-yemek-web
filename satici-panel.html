@@ -28,9 +28,12 @@
         td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; background: #eee; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
         .success-btn { background: #10b981; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; color: white; font-size: 14px; font-weight: 700; }
     </style>
 </head>
 <body>
+
+    <div id="loadingOverlay" class="loading-overlay">İşleniyor, lütfen bekleyin...</div>
 
     <div class="container">
         <div class="header-bar">
@@ -38,7 +41,7 @@
             <button class="logout-btn" onclick="localStorage.clear(); window.location.href='satici-giris.html';">Çıkış</button>
         </div>
 
-        <!-- İŞLETME BİLGİLERİ VE LOGO DÜZENLEME ALANI -->
+        <!-- İŞLETME BİLGİLERİ VE LOGO GÜNCELLEME -->
         <div class="card">
             <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> İşletme Bilgileri & Logo Güncelle</h3>
             <div class="form-grid">
@@ -97,7 +100,6 @@
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
 
-        // İşletme mevcut bilgilerini çek
         db.ref('active_restaurants/' + saticiKey).once('value').then(snapshot => {
             const r = snapshot.val();
             if(r) {
@@ -107,7 +109,32 @@
             }
         });
 
-        // İŞLETME BİLGİLERİ VE LOGO GÜNCELLEME
+        // GÖRSELİ KÜÇÜLTME VE OPTİMİZE ETME (Çökme ve Donma Önleyici)
+        function dosyaB64Cevir(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const maxDim = 500; // Maksimum 500px boyutlandırarak hafıza sorununu önler
+                    if (width > height) {
+                        if (width > maxDim) { height *= maxDim / width; width = maxDim; }
+                    } else {
+                        if (height > maxDim) { width *= maxDim / height; height = maxDim; }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/jpeg', 0.7));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         function bilgileriGuncelle() {
             const yeniAd = document.getElementById('dukkanAdi').value.trim();
             const yeniTel = document.getElementById('dukkanTel').value.trim();
@@ -117,22 +144,30 @@
             const guncellemeVerisi = { ad: yeniAd, telefon: yeniTel };
             if(yeniSifre) guncellemeVerisi.sifre = yeniSifre;
 
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
             if(logoInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.readAsDataURL(logoInput.files[0]);
-                reader.onload = function(e) {
-                    guncellemeVerisi.gorsel = e.target.result;
+                dosyaB64Cevir(logoInput.files[0], function(base64Logo) {
+                    guncellemeVerisi.gorsel = base64Logo;
                     db.ref('active_restaurants/' + saticiKey).update(guncellemeVerisi).then(() => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
                         alert("İşletme bilgileri ve logo güncellendi!");
                         localStorage.setItem('aktifSaticiAdi', yeniAd);
                         location.reload();
+                    }).catch(err => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        alert("Hata: " + err.message);
                     });
-                };
+                });
             } else {
                 db.ref('active_restaurants/' + saticiKey).update(guncellemeVerisi).then(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
                     alert("İşletme bilgileri güncellendi!");
                     localStorage.setItem('aktifSaticiAdi', yeniAd);
                     location.reload();
+                }).catch(err => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert("Hata: " + err.message);
                 });
             }
         }
@@ -181,14 +216,21 @@
             if(!ad || !fiyat) { alert("Ürün adı ve fiyatı zorunludur."); return; }
             if(fileInput.files.length === 0) { alert("Lütfen ürün görseli seçin."); return; }
 
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = function (e) {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+
+            dosyaB64Cevir(fileInput.files[0], function(base64Gorsel) {
                 const uId = 'urun_' + Date.now();
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, ad, fiyat, aciklama: aciklama || '', gorsel: e.target.result, isletmeAdi: saticiAdi
-                }).then(() => { alert("Onaya gönderildi!"); location.reload(); });
-            };
+                    id: uId, ad: ad, fiyat: fiyat, aciklama: aciklama || '', gorsel: base64Gorsel, isletmeAdi: saticiAdi
+                }).then(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert("Ürününüz başarıyla yönetici onayına gönderildi!");
+                    location.reload();
+                }).catch(err => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert("Hata: " + err.message);
+                });
+            });
         }
 
         db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {

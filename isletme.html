@@ -121,7 +121,7 @@
         </div>
     </div>
 
-    <!-- DÂHİLİ GİRİŞ / KAYIT MODALI (Üye Olmadan Sepete Ekletmeyen Şık Tasarım) -->
+    <!-- DÂHİLİ GİRİŞ / KAYIT MODALI -->
     <div id="dahiliGirisModal" class="modal">
         <div class="modal-content">
             <div style="text-align:center; margin-bottom:15px;">
@@ -265,7 +265,6 @@
         function sepeteUrunEkleOnayla(event) {
             if(event) event.preventDefault();
             
-            // KULLANICI GİRİŞ YAPMIŞ MI KONTROL ET (YAPMDIYSA DÂHİLİ MODAL AÇ)
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             if(!musteriAdi) {
                 document.getElementById('urunDetayModal').style.display = 'none';
@@ -314,6 +313,11 @@
             localStorage.setItem('aktif_sepet_' + isletmeId, JSON.stringify(sepet));
             sabitSepetiGuncelle();
             document.getElementById('urunDetayModal').style.display = 'none';
+        }
+
+        // Fonksiyon isim uyumsuzluğu düzeltildi (islemiDevamEtSepeteEkle -> islemeDevamEtSepeteEkle eşlendi)
+        function islemeDevamEtSepeteEkle() {
+            islemiDevamEtSepeteEkle();
         }
 
         function sabitSepetiGuncelle() {

@@ -3,45 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satıcı Girişi</title>
+    <title>Satıcı Girişi | Bölge Yemek</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background: #f8fafc; color: #1e293b; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
-        .login-card { background: #ffffff; padding: 25px; border-radius: 14px; width: 100%; max-width: 360px; border: 1px solid #e2e8f0; text-align: center; }
+        .login-card { background: #ffffff; padding: 25px; border-radius: 14px; width: 100%; max-width: 360px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; display: block; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         .form-group { margin-bottom: 12px; text-align: left; }
         .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 3px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; }
+        .form-group input { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
+        .form-group input:focus { border-color: #f97316; }
         .btn-primary { background: #f97316; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: 800; font-size: 13px; cursor: pointer; }
-        .back-link { display: block; margin-top: 12px; font-size: 11px; color: #64748b; text-decoration: none; }
+        .btn-primary:hover { background: #ea580c; }
+        .back-link { display: block; margin-top: 12px; font-size: 11px; color: #64748b; text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 15px;">Satıcı Paneli Girişi</h3>
-        <div class="form-group"><label>İşletme Adı *</label><input type="text" id="girisIsletme" placeholder="İşletme Adı"></div>
-        <div class="form-group"><label>Şifreniz *</label><input type="password" id="girisSifre" placeholder="Şifreniz"></div>
+        <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 15px; color: #0f172a;">Satıcı Paneli Girişi</h3>
+        
+        <div class="form-group"><label>İşletme Adınız *</label><input type="text" id="girisIsletme" placeholder="Örn: Pan Çiğ Köfte"></div>
+        <div class="form-group"><label>Şifreniz *</label><input type="password" id="girisSifre" placeholder="Satıcı Şifreniz"></div>
+        
         <button type="button" class="btn-primary" onclick="saticiGirisYap()">Giriş Yap</button>
-        <a href="index.html" class="back-link">Ana Sayfaya Dön</a>
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
+          authDomain: "eretankartal.firebaseapp.com",
+          databaseURL: "https://eretankartal-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "eretankartal",
+          storageBucket: "eretankartal.firebasestorage.app",
+          messagingSenderId: "775846519838",
+          appId: "1:775846519838:web:75b1d7dfb4ef942a3f7a0f"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
+
         function saticiGirisYap() {
-            const ad = document.getElementById('girisIsletme').value.trim();
-            const sifre = document.getElementById('girisSifre').value.trim();
-            if(!ad || !sifre) return alert("Alanları doldurun.");
+            const girilenIsletme = document.getElementById('girisIsletme').value.trim();
+            const girilenSifre = document.getElementById('girisSifre').value.trim();
+
+            if(!girilenIsletme || !girilenSifre) {
+                alert("Lütfen işletme adını ve şifrenizi yazın.");
+                return;
+            }
+
             db.ref('active_restaurants').once('value').then(snapshot => {
-                const data = snapshot.val(); if(!data) return alert("Kayıtlı işletme yok.");
-                let found = null;
-                Object.keys(data).forEach(k => { if(data[k].ad.toLowerCase() === ad.toLowerCase() && data[k].sifre === sifre) found = k; });
-                if(found) { localStorage.setItem('aktifSaticiKey', found); localStorage.setItem('aktifSaticiAdi', data[found].ad); window.location.href = 'satici-panel.html'; }
-                else alert("Hatalı bilgi!");
+                const data = snapshot.val();
+                if(!data) {
+                    alert("Sistemde kayıtlı aktif işletme bulunamadı.");
+                    return;
+                }
+
+                let bulunanKey = null;
+                let bulunanAd = null;
+
+                Object.keys(data).forEach(key => {
+                    const restoran = data[key];
+                    // Büyük/küçük harf duyarlılığını ortadan kaldırarak kontrol ediyoruz
+                    if(restoran.ad && restoran.ad.trim().toLowerCase() === girilenIsletme.toLowerCase() && restoran.sifre === girilenSifre) {
+                        bulunanKey = key;
+                        bulunanAd = restoran.ad;
+                    }
+                });
+
+                if(bulunanKey) {
+                    localStorage.setItem('aktifSaticiKey', bulunanKey);
+                    localStorage.setItem('aktifSaticiAdi', bulunanAd);
+                    window.location.href = 'satici-panel.html';
+                } else {
+                    alert("Hatalı işletme adı veya şifre! Lütfen bilgilerinizi kontrol edin.");
+                }
+            }).catch(error => {
+                alert("Bağlantı hatası oluştu: " + error.message);
             });
         }
     </script>

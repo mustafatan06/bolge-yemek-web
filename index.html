@@ -182,7 +182,6 @@
             document.getElementById('adim2').style.display = 'none';
         }
 
-        // Sıkı E-posta ve Telefon Doğrulama Kontrolü
         function kodGonderAdimi() {
             const ad = document.getElementById('mAd').value.trim();
             const mail = document.getElementById('mMail').value.trim();
@@ -192,19 +191,11 @@
 
             if(!ad || !mail || !tel || !adres) { alert("Lütfen tüm zorunlu alanları doldurun."); return; }
             
-            // E-posta geçerlilik kontrolü (@ ve . içermeli)
             const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if(!mailRegex.test(mail)) {
-                alert("Lütfen geçerli bir e-posta adresi girin (Örn: ad soyad@mail.com).");
-                return;
-            }
+            if(!mailRegex.test(mail)) { alert("Lütfen geçerli bir e-posta adresi girin."); return; }
 
-            // Telefon kontrolü (05 ile başlamalı ve 11 hane olmalı)
             const telRegex = /^05\d{9}$/;
-            if(!telRegex.test(tel)) {
-                alert("Lütfen geçerli bir telefon numarası girin (05 ile başlamalı ve 11 haneli olmalıdır, örn: 05554443322).");
-                return;
-            }
+            if(!telRegex.test(tel)) { alert("Lütfen 05 ile başlayan 11 haneli geçerli bir telefon numarası girin."); return; }
 
             if(!robot) { alert("Lütfen 'Ben robot değilim' doğrulamasını işaretleyin."); return; }
 
@@ -225,14 +216,9 @@
 
         function kodDogrulaVeKaydet() {
             const girilen = document.getElementById('girilenKod').value.trim();
-            if(girilen !== uretilenKod) {
-                alert("Hatalı onay kodu! Lütfen tekrar deneyin.");
-                return;
-            }
+            if(girilen !== uretilenKod) { alert("Hatalı onay kodu!"); return; }
 
             const musteriId = 'musteri_' + Date.now();
-            
-            // Firebase veritabanına müşteriyi kalıcı olarak kaydet
             db.ref('registered_customers/' + musteriId).set(geciciMusteriVerisi).then(() => {
                 localStorage.setItem('musteriId', musteriId);
                 localStorage.setItem('musteriAd', geciciMusteriVerisi.ad);
@@ -240,7 +226,7 @@
                 localStorage.setItem('musteriTel', geciciMusteriVerisi.tel);
                 localStorage.setItem('musteriAdres', geciciMusteriVerisi.adres);
 
-                alert("Doğrulama başarılı! Hesabınız oluşturuldu ve sisteme kaydedildi.");
+                alert("Doğrulama başarılı! Hesabınız oluşturuldu.");
                 window.location.reload();
             });
         }
@@ -252,7 +238,7 @@
                 let toplamAdet = 0; let toplamTutar = 0;
                 sepet.urunler.forEach(u => { toplamAdet += u.adet; toplamTutar += (u.fiyat * u.adet); });
                 document.getElementById('cartCount').innerText = toplamAdet + ' Ürün (' + sepet.restoranAdi + ')';
-                document.getElementById('cartTotal').innerText = toplamTutar.toFixed(2) + ' ₺';
+                document.getElementById('cartTotal').innerText = (sepet.indirimliTutar !== undefined ? sepet.indirimliTutar : toplamTutar).toFixed(2) + ' ₺';
                 cartBar.style.display = 'flex';
             } else {
                 cartBar.style.display = 'none';
@@ -263,16 +249,55 @@
             const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
             if(!sepet || sepet.urunler.length === 0) { alert("Sepetiniz boş."); return; }
 
-            let mesaj = "--- SEPETİNİZ (" + sepet.restoranAdi + ") ---\n\n";
-            let toplam = 0;
-            sepet.urunler.forEach(u => {
-                let t = u.fiyat * u.adet; toplam += t;
-                mesaj += `${u.ad} x ${u.adet} = ${t.toFixed(2)} ₺\n`;
-            });
-            mesaj += `\nToplam Tutar: ${toplam.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\nSiparişi onaylıyor musunuz?`;
+            let araToplam = 0;
+            sepet.urunler.forEach(u => { araToplam += (u.fiyat * u.adet); });
+            let finalTutar = sepet.indirimliTutar !== undefined ? sepet.indirimliTutar : araToplam;
 
-            if(confirm(mesaj)) {
-                alert("Siparişiniz başarıyla alındı!");
+            let mesajHTML = `--- SEPETİNİZ (${sepet.restoranAdi}) ---\n\n`;
+            sepet.urunler.forEach(u => {
+                mesajHTML += `${u.ad} x ${u.adet} = ${(u.fiyat * u.adet).toFixed(2)} ₺\n`;
+            });
+            mesajHTML += `\nAra Toplam: ${araToplam.toFixed(2)} ₺`;
+            if(sepet.uygulananKupon) {
+                mesajHTML += `\nUygulanan Kupon (${sepet.uygulananKupon}): İndirim Uygulandı!`;
+            }
+            mesajHTML += `\nÖdenecek Tutar: ${finalTutar.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\n`;
+            mesajHTML += `Kupon kodunuz varsa aşağıya yazın, yoksa boş bırakıp onaylayın:`;
+
+            let girilenKupon = prompt(mesajHTML);
+
+            if (girilenKupon !== null) {
+                if (girilenKupon.trim() !== "") {
+                    // Firebase'den kuponu kontrol et
+                    db.ref('coupons/' + girilenKupon.trim().toUpperCase()).once('value').then(snapshot => {
+                        const kuponData = snapshot.val();
+                        if(kuponData) {
+                            let indirimStr = kuponData.indirim;
+                            let indirimliFiyat = araToplam;
+
+                            if(indirimStr.includes('%')) {
+                                let yuzde = parseFloat(indirimStr.replace('%', ''));
+                                indirimliFiyat = araToplam - (araToplam * (yuzde / 100));
+                            } else {
+                                let miktar = parseFloat(indirimStr);
+                                indirimliFiyat = Math.max(0, araToplam - miktar);
+                            }
+
+                            sepet.indirimliTutar = indirimliFiyat;
+                            sepet.uygulananKupon = kuponData.kod;
+                            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
+                            sepetiGuncelleUI();
+                            alert("Kupon başarıyla uygulandı! Yeni Tutar: " + indirimliFiyat.toFixed(2) + " ₺");
+                            sepetiAc(); // Sepeti tekrar açıp onay iste
+                        } else {
+                            alert("Geçersiz kupon kodu!");
+                            sepetiAc();
+                        }
+                    });
+                    return;
+                }
+
+                alert("Siparişiniz başarıyla alındı! Restoran hazırlamaya başladı.");
                 localStorage.removeItem('aktifSepet');
                 sepetiGuncelleUI();
             }

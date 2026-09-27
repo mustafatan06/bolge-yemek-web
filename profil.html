@@ -18,7 +18,13 @@
         .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 13px; }
         .info-row span:first-child { color: #64748b; font-weight: 600; }
         .info-row span:last-child { color: #0f172a; font-weight: 700; }
+        
+        .btn-primary { background: #f97316; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; margin-right: 8px; margin-top: 15px; }
         .btn-danger { background: #ef4444; color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; margin-top: 15px; }
+        
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 4px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: #0f172a; font-size: 12px; outline: none; }
     </style>
 </head>
 <body>
@@ -29,13 +35,28 @@
     </header>
 
     <div class="container">
-        <div class="profile-card">
+        <!-- Bilgileri Görüntüleme Alanı -->
+        <div class="profile-card" id="viewSection">
             <h3><i class="fa-solid fa-user-circle" style="color:#f97316;"></i> Müşteri Hesap Bilgileriniz</h3>
             <div class="info-row"><span>Ad Soyad:</span> <span id="pAd">-</span></div>
             <div class="info-row"><span>E-posta:</span> <span id="pMail">-</span></div>
             <div class="info-row"><span>Telefon:</span> <span id="pTel">-</span></div>
             <div class="info-row"><span>Kayıtlı Adres:</span> <span id="pAdres">-</span></div>
-            <button class="btn-danger" onclick="hesaptanCik()"><i class="fa-solid fa-right-from-bracket"></i> Hesaptan Çıkış Yap</button>
+            
+            <button class="btn-primary" onclick="duzenleModunuAc()"><i class="fa-solid fa-pen-to-square"></i> Bilgilerimi Düzenle</button>
+            <button class="btn-danger" onclick="hesaptanCik()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button>
+        </div>
+
+        <!-- Bilgileri Düzenleme Formu (Gizli) -->
+        <div class="profile-card" id="editSection" style="display:none;">
+            <h3><i class="fa-solid fa-user-pen" style="color:#f97316;"></i> Bilgileri Güncelle</h3>
+            <div class="form-group"><label>Ad Soyad</label><input type="text" id="editAd"></div>
+            <div class="form-group"><label>E-posta</label><input type="email" id="editMail"></div>
+            <div class="form-group"><label>Telefon (05XXXXXXXXX)</label><input type="tel" id="editTel" maxlength="11"></div>
+            <div class="form-group"><label>Teslimat Adresi</label><textarea id="editAdres" rows="2"></textarea></div>
+            
+            <button class="btn-primary" onclick="bilgileriKaydet()">Değişiklikleri Kaydet</button>
+            <button class="btn-danger" style="background:#64748b;" onclick="duzenleModunuKapat()">İptal</button>
         </div>
 
         <div class="profile-card">
@@ -46,7 +67,21 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
+          authDomain: "eretankartal.firebaseapp.com",
+          databaseURL: "https://eretankartal-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "eretankartal",
+          storageBucket: "eretankartal.firebasestorage.app",
+          messagingSenderId: "775846519838",
+          appId: "1:775846519838:web:75b1d7dfb4ef942a3f7a0f"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const db = firebase.database();
+
         window.addEventListener('DOMContentLoaded', () => {
             const ad = localStorage.getItem('musteriAd');
             if(!ad) {
@@ -61,8 +96,59 @@
             document.getElementById('pAdres').innerText = localStorage.getItem('musteriAdres');
         });
 
+        function duzenleModunuAc() {
+            document.getElementById('editAd').value = localStorage.getItem('musteriAd') || '';
+            document.getElementById('editMail').value = localStorage.getItem('musteriMail') || '';
+            document.getElementById('editTel').value = localStorage.getItem('musteriTel') || '';
+            document.getElementById('editAdres').value = localStorage.getItem('musteriAdres') || '';
+
+            document.getElementById('viewSection').style.display = 'none';
+            document.getElementById('editSection').style.display = 'block';
+        }
+
+        function duzenleModunuKapat() {
+            document.getElementById('editSection').style.display = 'none';
+            document.getElementById('viewSection').style.display = 'block';
+        }
+
+        function bilgileriKaydet() {
+            const yeniAd = document.getElementById('editAd').value.trim();
+            const yeniMail = document.getElementById('editMail').value.trim();
+            const yeniTel = document.getElementById('editTel').value.trim();
+            const yeniAdres = document.getElementById('editAdres').value.trim();
+
+            if(!yeniAd || !yeniMail || !yeniTel || !yeniAdres) {
+                alert("Lütfen hiçbir alanı boş bırakmayın.");
+                return;
+            }
+
+            const musteriId = localStorage.getItem('musteriId');
+            
+            // Eğer Firebase ID kayıtlıysa veritabanında da güncelle
+            const updateObj = { ad: yeniAd, mail: yeniMail, tel: yeniTel, adres: yeniAdres };
+
+            if(musteriId) {
+                db.ref('registered_customers/' + musteriId).update(updateObj).then(() => {
+                    kaydiTamamla(updateObj);
+                });
+            } else {
+                kaydiTamamla(updateObj);
+            }
+        }
+
+        function kaydiTamamla(obj) {
+            localStorage.setItem('musteriAd', obj.ad);
+            localStorage.setItem('musteriMail', obj.mail);
+            localStorage.setItem('musteriTel', obj.tel);
+            localStorage.setItem('musteriAdres', obj.adres);
+
+            alert("Bilgileriniz başarıyla güncellendi!");
+            window.location.reload();
+        }
+
         function hesaptanCik() {
-            if(confirm("Hesabınızdan çıkış yapmak istediğinize emin misiniz?")) {
+            if(confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                localStorage.removeItem('musteriId');
                 localStorage.removeItem('musteriAd');
                 localStorage.removeItem('musteriMail');
                 localStorage.removeItem('musteriTel');

@@ -8,12 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; padding-top: env(safe-area-inset-top); }
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(12px, env(safe-area-inset-top)); }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        .rest-header { background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 25px; display: flex; gap: 20px; align-items: center; }
+        .rest-header { background: #fff; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .rest-left { display: flex; gap: 20px; align-items: center; }
         .rest-header img { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; background: #f1f5f9; }
         .rest-header h1 { font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
         .rest-header p { font-size: 12px; color: #64748b; }
@@ -21,18 +22,18 @@
         .section-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-left: 4px solid #f97316; padding-left: 8px; }
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
-        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .menu-card-top { display: flex; }
-        .menu-item-card img { width: 100px; height: 100px; object-fit: cover; background: #f1f5f9; }
-        .menu-info { padding: 12px; display: flex; flex-direction: column; justify-content: center; flex: 1; }
-        .menu-info h4 { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-        .menu-info p { font-size: 11px; color: #64748b; margin-bottom: 6px; }
-        .menu-info span { font-size: 13px; font-weight: 800; color: #f97316; }
-        .add-cart-btn { background: #f97316; color: white; border: none; padding: 8px; width: 100%; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; }
-        .add-cart-btn:hover { background: #ea580c; }
+        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; justify-content: space-between; align-items: center; padding: 10px; }
+        .menu-item-left { display: flex; gap: 10px; align-items: center; }
+        .menu-item-card img { width: 75px; height: 75px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
+        .menu-info h4 { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
+        .menu-info p { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+        .menu-info span { font-size: 12px; font-weight: 800; color: #f97316; }
+        
+        .siparis-btn { background: #10b981; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .siparis-btn:hover { background: #059669; }
 
-        .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); display: none; }
-        .floating-cart button { background: #f97316; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .puan-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 25px; text-align: center; }
+        .puan-box select { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -44,10 +45,15 @@
 
     <div class="container">
         <div class="rest-header">
-            <img id="restLogo" src="https://i.imgur.com/7y4aCVb.jpg" alt="">
-            <div>
-                <h1 id="restAdi">Yükleniyor...</h1>
-                <p id="restKategoriTel">Yükleniyor...</p>
+            <div class="rest-left">
+                <img id="restLogo" src="https://i.imgur.com/7y4aCVb.jpg" alt="">
+                <div>
+                    <h1 id="restAdi">Yükleniyor...</h1>
+                    <p id="restKategoriTel">Yükleniyor...</p>
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-size: 16px; font-weight: 900; color: #f59e0b;" id="restPuanYazi"><i class="fa-solid fa-star"></i> Yeni İşletme</span>
             </div>
         </div>
 
@@ -55,13 +61,19 @@
         <div class="menu-grid" id="isletmeUrunleri">
             <div style="color: #64748b; font-size: 13px;">Menü yükleniyor...</div>
         </div>
-    </div>
 
-    <div id="floatingCart" class="floating-cart">
-        <div>
-            <strong id="cartCount">0 Ürün</strong> | <span id="cartTotal">0.00 ₺</span>
+        <!-- PUANLAMA ALANI (SADECE SİPARİŞ VERENLER YAZABİLİR) -->
+        <div class="puan-box" id="puanlamaAlani" style="display:none;">
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 8px; color: #0f172a;">Bu İşletmeyi Puanla (Sipariş Onaylandı)</h4>
+            <select id="puanSecim">
+                <option value="5">⭐⭐⭐⭐⭐ (5 - Mükemmel)</option>
+                <option value="4">⭐⭐⭐⭐ (4 - İyi)</option>
+                <option value="3">⭐⭐⭐ (3 - Orta)</option>
+                <option value="2">⭐⭐ (2 - Zayıf)</option>
+                <option value="1">⭐ (1 - Çok Kötü)</option>
+            </select>
+            <button class="btn-primary" onclick="puanVer()" style="background:#f97316; color:white; border:none; padding:8px 16px; border-radius:6px; font-weight:700; cursor:pointer;">Puanı Gönder</button>
         </div>
-        <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -81,31 +93,32 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const isletmeId = urlParams.get('id');
-        let aktifRestoranAdi = "";
 
         if(isletmeId) {
+            // İşletme Bilgileri
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
                 const r = snapshot.val();
                 if(r) {
-                    aktifRestoranAdi = r.ad;
                     document.getElementById('restAdi').innerText = r.ad;
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzetler') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
+                    if(r.puan) document.getElementById('restPuanYazi').innerHTML = `<i class="fa-solid fa-star"></i> ${r.puan}`;
                 }
             });
 
-            db.ref('restaurant_products/' + isletmeId).on('value', (snapshot) => {
+            // Menü Ürünleri (Hızlı yükleme için once)
+            db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
                 const container = document.getElementById('isletmeUrunleri');
                 container.innerHTML = '';
                 const data = snapshot.val();
-                if(!data) { container.innerHTML = '<div style="color:#64748b; font-size:13px;">Bu işletmenin henüz menü ürünü bulunmuyor.</div>'; return; }
+                if(!data) { container.innerHTML = '<div style="color:#64748b; font-size:13px;">Bu işletmenin menü ürünü yok.</div>'; return; }
                 
                 let html = '';
                 Object.keys(data).forEach(key => {
                     const u = data[key];
                     html += `
                         <div class="menu-item-card">
-                            <div class="menu-card-top">
+                            <div class="menu-item-left">
                                 <img src="${u.gorsel}" alt="${u.ad}">
                                 <div class="menu-info">
                                     <h4>${u.ad}</h4>
@@ -113,120 +126,49 @@
                                     <span>${u.fiyat} ₺</span>
                                 </div>
                             </div>
-                            <button class="add-cart-btn" onclick="sepeteUrunEkle('${isletmeId}', '${aktifRestoranAdi}', '${u.ad}', '${u.fiyat}', '${u.gorsel}')"><i class="fa-solid fa-cart-plus"></i> Sepete Ekle</button>
+                            <button class="siparis-btn" onclick="siparisVer('${u.ad}', '${u.fiyat}')">Sipariş Ver</button>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             });
+
+            // Kullanıcı bu işletmeden sipariş vermiş mi kontrol et
+            const siparisKey = 'siparis_verildi_' + isletmeId;
+            if(localStorage.getItem(siparisKey) === 'true') {
+                document.getElementById('puanlamaAlani').style.display = 'block';
+            }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            sepetiGuncelleUI();
-        });
+        function siparisVer(urunAdi, fiyat) {
+            alert("'" + urunAdi + "' (" + fiyat + " ₺) siparişiniz alındı! Artık bu işletmeye puan verebilirsiniz.");
+            localStorage.setItem('siparis_verildi_' + isletmeId, 'true');
+            document.getElementById('puanlamaAlani').style.display = 'block';
+        }
 
-        function sepeteUrunEkle(restoranId, restoranAdi, urunAdi, fiyat, gorsel) {
-            let aktifMusteri = localStorage.getItem('musteriTel');
-            if(!aktifMusteri) {
-                alert("Sipariş verebilmek için lütfen ana sayfadan müşteri girişi yapın!");
-                window.location.href = 'index.html';
-                return;
-            }
-
-            let sepet = JSON.parse(localStorage.getItem('aktifSepet')) || { restoranId: '', restoranAdi: '', urunler: [] };
-
-            if(sepet.restoranId && sepet.restoranId !== restoranId) {
-                if(confirm("Sepetinizde başka bir restorana ait ürünler var. Yeni restorandan ürün eklemek için eski sepetiniz temizlenecek. Onaylıyor musunuz?")) {
-                    sepet = { restoranId: restoranId, restoranAdi: restoranAdi, urunler: [] };
-                } else {
-                    return;
-                }
-            }
-
-            sepet.restoranId = restoranId;
-            sepet.restoranAdi = restoranAdi;
+        function puanVer() {
+            const secilenPuan = parseFloat(document.getElementById('puanSecim').value);
             
-            let mevcutUrun = sepet.urunler.find(u => u.ad === urunAdi);
-            if(mevcutUrun) {
-                mevcutUrun.adet += 1;
-            } else {
-                sepet.urunler.push({ ad: urunAdi, fiyat: parseFloat(fiyat), adet: 1, gorsel: gorsel });
-            }
+            db.ref('restaurant_ratings/' + isletmeId).once('value').then(snapshot => {
+                let toplamPuan = secilenPuan;
+                let oySayisi = 1;
 
-            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
-            sepetiGuncelleUI();
-            alert(urunAdi + " sepete eklendi!");
-        }
-
-        function sepetiGuncelleUI() {
-            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
-            const cartBar = document.getElementById('floatingCart');
-            if(sepet && sepet.urunler && sepet.urunler.length > 0) {
-                let toplamAdet = 0; let toplamTutar = 0;
-                sepet.urunler.forEach(u => { toplamAdet += u.adet; toplamTutar += (u.fiyat * u.adet); });
-                document.getElementById('cartCount').innerText = toplamAdet + ' Ürün (' + sepet.restoranAdi + ')';
-                document.getElementById('cartTotal').innerText = (sepet.indirimliTutar !== undefined ? sepet.indirimliTutar : toplamTutar).toFixed(2) + ' ₺';
-                cartBar.style.display = 'flex';
-            } else {
-                cartBar.style.display = 'none';
-            }
-        }
-
-        function sepetiAc() {
-            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
-            if(!sepet || sepet.urunler.length === 0) { alert("Sepetiniz boş."); return; }
-
-            let araToplam = 0;
-            sepet.urunler.forEach(u => { araToplam += (u.fiyat * u.adet); });
-            let finalTutar = sepet.indirimliTutar !== undefined ? sepet.indirimliTutar : araToplam;
-
-            let mesajHTML = `--- SEPETİNİZ (${sepet.restoranAdi}) ---\n\n`;
-            sepet.urunler.forEach(u => {
-                mesajHTML += `${u.ad} x ${u.adet} = ${(u.fiyat * u.adet).toFixed(2)} ₺\n`;
-            });
-            mesajHTML += `\nAra Toplam: ${araToplam.toFixed(2)} ₺`;
-            if(sepet.uygulananKupon) {
-                mesajHTML += `\nUygulanan Kupon (${sepet.uygulananKupon}): İndirim Uygulandı!`;
-            }
-            mesajHTML += `\nÖdenecek Tutar: ${finalTutar.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\n`;
-            mesajHTML += `Kupon kodunuz varsa aşağıya yazın, yoksa boş bırakıp onaylayın:`;
-
-            let girilenKupon = prompt(mesajHTML);
-
-            if (girilenKupon !== null) {
-                if (girilenKupon.trim() !== "") {
-                    db.ref('coupons/' + girilenKupon.trim().toUpperCase()).once('value').then(snapshot => {
-                        const kuponData = snapshot.val();
-                        if(kuponData) {
-                            let indirimStr = kuponData.indirim;
-                            let indirimliFiyat = araToplam;
-
-                            if(indirimStr.includes('%')) {
-                                let yuzde = parseFloat(indirimStr.replace('%', ''));
-                                indirimliFiyat = araToplam - (araToplam * (yuzde / 100));
-                            } else {
-                                let miktar = parseFloat(indirimStr);
-                                indirimliFiyat = Math.max(0, araToplam - miktar);
-                            }
-
-                            sepet.indirimliTutar = indirimliFiyat;
-                            sepet.uygulananKupon = kuponData.kod;
-                            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
-                            sepetiGuncelleUI();
-                            alert("Kupon başarıyla uygulandı! Yeni Tutar: " + indirimliFiyat.toFixed(2) + " ₺");
-                            sepetiAc();
-                        } else {
-                            alert("Geçersiz kupon kodu!");
-                            sepetiAc();
-                        }
-                    });
-                    return;
+                if(snapshot.exists()) {
+                    const eskiVeri = snapshot.val();
+                    toplamPuan = (eskiVeri.toplam || 5.0) + secilenPuan;
+                    oySayisi = (eskiVeri.adet || 1) + 1;
                 }
 
-                alert("Siparişiniz başarıyla alındı!");
-                localStorage.removeItem('aktifSepet');
-                sepetiGuncelleUI();
-            }
+                const yeniOrtalama = (toplamPuan / oySayisi).toFixed(1);
+
+                db.ref('restaurant_ratings/' + isletmeId).set({ toplam: toplamPuan, adet: oySayisi, ortalama: yeniOrtalama }).then(() => {
+                    return db.ref('active_restaurants/' + isletmeId).update({ puan: yeniOrtalama });
+                }).then(() => {
+                    alert("Puanınız başarıyla kaydedildi! Teşekkür ederiz.");
+                    document.getElementById('restPuanYazi').innerHTML = `<i class="fa-solid fa-star"></i> ${yeniOrtalama}`;
+                    document.getElementById('puanlamaAlani').style.display = 'none';
+                });
+            });
         }
     </script>
 </body>

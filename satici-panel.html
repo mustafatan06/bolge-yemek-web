@@ -22,14 +22,13 @@
         .form-group input, .form-group textarea { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
         .form-group input:focus, .form-group textarea:focus { border-color: #f97316; }
 
-        .btn-primary { background: #f97316; color: white; border: none; padding: 11px 20px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(249,115,22,0.2); }
-        .btn-primary:hover { background: #ea580c; }
-
+        .btn-primary { background: #f97316; color: white; border: none; padding: 11px 20px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
         td img { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; background: #f1f5f9; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 11px; }
+        .badge-bekliyor { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -41,20 +40,47 @@
         </div>
 
         <div class="card">
-            <h3><i class="fa-solid fa-burger" style="color:#f97316;"></i> Yeni Ürün & Menü Ekle</h3>
+            <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> İşletme Bilgileri & Logo</h3>
             <div class="form-grid">
-                <div class="form-group"><label>Ürün / Menü Adı *</label><input type="text" id="urunAdi" placeholder="Örn: Zurna Dürüm Menü"></div>
-                <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Ürün Açıklaması / Detaylar *</label><textarea id="urunAciklama" rows="2" placeholder="İçindekiler, soslar vb..."></textarea></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Ürün Görseli Seç (Dosya) *</label><input type="file" id="urunDosya" accept="image/*"></div>
+                <div class="form-group"><label>İşletme Adı</label><input type="text" id="dukkanAdi"></div>
+                <div class="form-group"><label>Telefon</label><input type="text" id="dukkanTel"></div>
+                <div class="form-group"><label>Yeni Şifre</label><input type="password" id="dukkanSifre" placeholder="Boş bırakırsanız değişmez"></div>
+                <div class="form-group"><label>Logo Seç</label><input type="file" id="dukkanLogo" accept="image/*"></div>
             </div>
-            <button type="button" class="btn-primary" onclick="urunEkle()"><i class="fa-solid fa-upload"></i> Ürünü Menüye Ekle</button>
+            <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
 
         <div class="card">
-            <h3><i class="fa-solid fa-list" style="color:#f97316;"></i> Menüdeki Ürünleriniz</h3>
+            <h3><i class="fa-solid fa-burger" style="color:#f97316;"></i> Yeni Ürün Ekle (Onaya Gider)</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Örn: Zurna Dürüm"></div>
+                <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2" placeholder="İçindekiler..."></textarea></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Görsel Seç *</label><input type="file" id="urunDosya" accept="image/*"></div>
+            </div>
+            <button type="button" class="btn-primary" onclick="urunEkle()">Onaya Gönder</button>
+        </div>
+
+        <div class="card" id="reddedilenlerCard" style="display:none; border: 1px solid #fecaca; background: #fff5f5;">
+            <h3 style="color: #dc2626;"><i class="fa-solid fa-triangle-exclamation"></i> Reddedilen Ürünler</h3>
             <table>
-                <thead><tr><th>Görsel</th><th>Ürün Adı</th><th>Fiyat</th><th>Açıklama</th><th>İşlem</th></tr></thead>
+                <thead><tr><th>Ürün</th><th>Fiyat</th><th>Red Sebebi</th><th>İşlem</th></tr></thead>
+                <tbody id="redListesi"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3><i class="fa-solid fa-clock" style="color:#f97316;"></i> Onay Bekleyen Ürünler</h3>
+            <table>
+                <thead><tr><th>Görsel</th><th>Ürün Adı</th><th>Fiyat</th><th>Durum</th></tr></thead>
+                <tbody id="bekleyenListesi"></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h3><i class="fa-solid fa-check-circle" style="color:#10b981;"></i> Yayındaki Ürünler</h3>
+            <table>
+                <thead><tr><th>Görsel</th><th>Ürün Adı</th><th>Fiyat</th><th>İşlem</th></tr></thead>
                 <tbody id="menuListesi"></tbody>
             </table>
         </div>
@@ -78,18 +104,37 @@
         const saticiKey = localStorage.getItem('aktifSaticiKey');
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
 
-        if(!saticiKey) {
-            alert("Lütfen önce satıcı girişi yapın!");
-            window.location.href = 'satici-giris.html';
-        } else {
-            document.getElementById('isletmeAdiBaslik').innerText = saticiAdi;
-            menuUrunleriniListele();
-        }
+        if(!saticiKey) { alert("Giriş yapmalısınız!"); window.location.href = 'satici-giris.html'; }
 
-        function cikisYap() {
-            localStorage.removeItem('aktifSaticiKey');
-            localStorage.removeItem('aktifSaticiAdi');
-            window.location.href = 'satici-giris.html';
+        db.ref('active_restaurants/' + saticiKey).once('value').then(snapshot => {
+            const r = snapshot.val();
+            if(r) {
+                document.getElementById('isletmeAdiBaslik').innerText = r.ad;
+                document.getElementById('dukkanAdi').value = r.ad;
+                document.getElementById('dukkanTel').value = r.telefon;
+            }
+        });
+
+        function cikisYap() { localStorage.clear(); window.location.href = 'satici-giris.html'; }
+
+        function bilgileriGuncelle() {
+            const yeniAd = document.getElementById('dukkanAdi').value.trim();
+            const yeniTel = document.getElementById('dukkanTel').value.trim();
+            const yeniSifre = document.getElementById('dukkanSifre').value.trim();
+            const logoInput = document.getElementById('dukkanLogo');
+            const data = { ad: yeniAd, telefon: yeniTel };
+            if(yeniSifre) data.sifre = yeniSifre;
+
+            if(logoInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.readAsDataURL(logoInput.files[0]);
+                reader.onload = function() {
+                    data.gorsel = reader.result;
+                    db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
+                };
+            } else {
+                db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
+            }
         }
 
         function urunEkle() {
@@ -97,51 +142,52 @@
             const fiyat = document.getElementById('urunFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
             const fileInput = document.getElementById('urunDosya');
-
-            if(!ad || !fiyat || fileInput.files.length === 0) { alert("Lütfen ürün adını, fiyatını ve görselini seçin."); return; }
+            if(!ad || !fiyat || fileInput.files.length === 0) { alert("Alanları doldurun."); return; }
 
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
             reader.onload = function () {
                 const urunId = 'urun_' + Date.now();
-                db.ref('restaurant_products/' + saticiKey + '/' + urunId).set({
-                    id: urunId, ad: ad, fiyat: fiyat, aciklama: aciklama, gorsel: reader.result
-                }).then(() => {
-                    alert("Ürün menüye eklendi!");
-                    document.getElementById('urunAdi').value = '';
-                    document.getElementById('urunFiyat').value = '';
-                    document.getElementById('urunAciklama').value = '';
-                    document.getElementById('urunDosya').value = '';
-                });
+                db.ref('pending_products/' + saticiKey + '/' + urunId).set({
+                    id: urunId, ad, fiyat, aciklama, gorsel: reader.result, isletmeAdi: saticiAdi
+                }).then(() => { alert("Onaya gönderildi!"); location.reload(); });
             };
         }
 
-        function menuUrunleriniListele() {
-            db.ref('restaurant_products/' + saticiKey).on('value', (snapshot) => {
-                const tbody = document.getElementById('menuListesi');
-                tbody.innerHTML = '';
-                const data = snapshot.val();
-                if(!data) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">Henüz ürün eklenmemiş.</td></tr>'; return; }
-                Object.keys(data).forEach(key => {
-                    const u = data[key];
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><img src="${u.gorsel}" alt=""></td>
-                            <td><strong>${u.ad}</strong></td>
-                            <td style="color:#f97316; font-weight:800;">${u.fiyat} ₺</td>
-                            <td>${u.aciklama || '-'}</td>
-                            <td><button class="action-btn" onclick="urunSil('${key}')">Sil</button></td>
-                        </tr>
-                    `;
-                });
+        db.ref('pending_products/' + saticiKey).once('value').then(snapshot => {
+            const tbody = document.getElementById('bekleyenListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Onay bekleyen yok.</td></tr>'; return; }
+            Object.keys(data).forEach(key => {
+                const u = data[key];
+                tbody.innerHTML += `<tr><td><img src="${u.gorsel}"></td><td><strong>${u.ad}</strong></td><td>${u.fiyat} ₺</td><td><span class="badge-bekliyor">Bekliyor</span></td></tr>`;
             });
-        }
+        });
 
-        function urunSil(urunKey) {
-            if(confirm("Bu ürünü menüden silmek istiyor musunuz?")) {
-                db.ref('restaurant_products/' + saticiKey + '/' + urunKey).remove();
-            }
-        }
+        db.ref('rejected_products/' + saticiKey).once('value').then(snapshot => {
+            const card = document.getElementById('reddedilenlerCard');
+            const tbody = document.getElementById('redListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { card.style.display = 'none'; return; }
+            card.style.display = 'block';
+            Object.keys(data).forEach(key => {
+                const u = data[key];
+                tbody.innerHTML += `<tr><td><strong>${u.ad}</strong></td><td>${u.fiyat} ₺</td><td style="color:#dc2626;">${u.redSebebi}</td><td><button class="action-btn" onclick="db.ref('rejected_products/${saticiKey}/${key}').remove(); location.reload();">Kaldır</button></td></tr>`;
+            });
+        });
+
+        db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {
+            const tbody = document.getElementById('menuListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Ürün yok.</td></tr>'; return; }
+            Object.keys(data).forEach(key => {
+                const u = data[key];
+                tbody.innerHTML += `<tr><td><img src="${u.gorsel}"></td><td><strong>${u.ad}</strong></td><td style="color:#f97316; font-weight:800;">${u.fiyat} ₺</td><td><button class="action-btn" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td></tr>`;
+            });
+        });
     </script>
 </body>
 </html>

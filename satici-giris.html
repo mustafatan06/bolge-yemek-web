@@ -27,14 +27,8 @@
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
         <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 20px;">İşletme / Satıcı Paneli Girişi</h3>
         
-        <div class="form-group">
-            <label>İşletme Adınız *</label>
-            <input type="text" id="girisIsletme" placeholder="Örn: Pan Çiğ Köfte">
-        </div>
-        <div class="form-group">
-            <label>Şifreniz *</label>
-            <input type="password" id="girisSifre" placeholder="Satıcı Şifreniz">
-        </div>
+        <div class="form-group"><label>İşletme Adınız *</label><input type="text" id="girisIsletme" placeholder="Örn: Pan Çiğ Köfte"></div>
+        <div class="form-group"><label>Şifreniz *</label><input type="password" id="girisSifre" placeholder="Satıcı Şifreniz"></div>
         
         <button type="button" class="btn-primary" onclick="saticiGirisYap()">Panele Giriş Yap</button>
         <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
@@ -58,27 +52,20 @@
         function saticiGirisYap() {
             const isletmeAd = document.getElementById('girisIsletme').value.trim();
             const sifre = document.getElementById('girisSifre').value.trim();
-
             if(!isletmeAd || !sifre) { alert("Lütfen tüm alanları doldurun."); return; }
 
             db.ref('active_restaurants').once('value').then(snapshot => {
                 const data = snapshot.val();
-                if(!data) { alert("Sistemde kayıtlı işletme bulunamadı."); return; }
-
+                if(!data) { alert("Sistemde kayıtlı işletme yok."); return; }
                 let bulunanKey = null;
                 Object.keys(data).forEach(key => {
-                    if(data[key].ad.toLowerCase() === isletmeAd.toLowerCase() && data[key].sifre === sifre) {
-                        bulunanKey = key;
-                    }
+                    if(data[key].ad.toLowerCase() === isletmeAd.toLowerCase() && data[key].sifre === sifre) { bulunanKey = key; }
                 });
-
                 if(bulunanKey) {
                     localStorage.setItem('aktifSaticiKey', bulunanKey);
                     localStorage.setItem('aktifSaticiAdi', data[bulunanKey].ad);
                     window.location.href = 'satici-panel.html';
-                } else {
-                    alert("İşletme adı veya şifre hatalı!");
-                }
+                } else { alert("İşletme adı veya şifre hatalı!"); }
             });
         }
     </script>

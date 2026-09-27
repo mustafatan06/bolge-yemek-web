@@ -16,7 +16,7 @@
         .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
         .login-box button { width: 100%; background: #f97316; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
 
-        sidebar { width: 270px; background: #0f172a; color: #fff; display: flex; flex-direction: column; padding: 20px; }
+        sidebar { width: 260px; background: #0f172a; color: #fff; display: flex; flex-direction: column; padding: 20px; }
         .sidebar-brand { font-size: 18px; font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
         .sidebar-brand span { color: #f97316; }
         .menu-item { padding: 11px 14px; color: #94a3b8; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; transition: 0.3s; }
@@ -35,17 +35,13 @@
         .form-group label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 4px; }
         .form-group input { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
 
-        .btn-primary { background: #f97316; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(249,115,22,0.2); }
-        .btn-primary:hover { background: #ea580c; }
-
+        .btn-primary { background: #f97316; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
         td img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; background: #f1f5f9; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; }
         .success-btn { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; margin-right: 4px; }
-        .edit-btn { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; margin-right: 4px; }
-        
         .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; color: white; font-size: 16px; font-weight: 700; }
     </style>
 </head>
@@ -54,8 +50,8 @@
     <div id="loginOverlay">
         <div class="login-box">
             <h2>Süper Admin Girişi</h2>
-            <input type="password" id="adminSifreInput" placeholder="Yönetici Şifrenizi Girin">
-            <button onclick="adminGirisYap()">Sisteme Giriş Yap</button>
+            <input type="password" id="adminSifreInput" placeholder="Yönetici Şifreniz">
+            <button onclick="adminGirisYap()">Giriş Yap</button>
         </div>
     </div>
 
@@ -63,12 +59,11 @@
 
     <sidebar>
         <div class="sidebar-brand">Bölge <span>Süper Admin</span></div>
-        <button class="menu-item active" onclick="tabDegistir('kategorilerTab', this)"><i class="fa-solid fa-utensils"></i> Kategoriler & Görseller</button>
-        <button class="menu-item" onclick="tabDegistir('musterilerTab', this)"><i class="fa-solid fa-users"></i> Kayıtlı Müşteriler</button>
-        <button class="menu-item" onclick="tabDegistir('kuponlarTab', this)"><i class="fa-solid fa-ticket"></i> Kupon & İndirim Yönetimi</button>
-        <button class="menu-item" onclick="tabDegistir('basvurularTab', this)"><i class="fa-solid fa-store"></i> Satıcı Başvuruları</button>
-        <button class="menu-item" onclick="tabDegistir('saticilarTab', this)"><i class="fa-solid fa-shop"></i> Tüm Aktif İşletmeler</button>
-        <button class="menu-item" onclick="tabDegistir('ayarlarTab', this)"><i class="fa-solid fa-gear"></i> Genel Site Ayarları</button>
+        <button class="menu-item active" onclick="tabDegistir('kategorilerTab', this)"><i class="fa-solid fa-utensils"></i> Kategoriler</button>
+        <button class="menu-item" onclick="tabDegistir('basvurularTab', this)"><i class="fa-solid fa-store"></i> Başvurular</button>
+        <button class="menu-item" onclick="tabDegistir('moderasyonTab', this)"><i class="fa-solid fa-clipboard-check"></i> Ürün Onayları</button>
+        <button class="menu-item" onclick="tabDegistir('saticilarTab', this)"><i class="fa-solid fa-shop"></i> Aktif İşletmeler</button>
+        <button class="menu-item" onclick="tabDegistir('ayarlarTab', this)"><i class="fa-solid fa-gear"></i> Ayarlar</button>
     </sidebar>
 
     <div class="main-content" id="mainPanelContent">
@@ -77,91 +72,54 @@
             <a href="index.html" class="back-site-btn" target="_blank"><i class="fa-solid fa-globe"></i> Siteye Git</a>
         </div>
 
-        <!-- 1. KATEGORİLER -->
         <div id="kategorilerTab" class="card active-tab">
-            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Kategori Ekle</h3>
+            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Kategori Ekle</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Kategori Adı *</label><input type="text" id="katAdi" placeholder="Örn: Pizza"></div>
                 <div class="form-group"><label>URL Slug *</label><input type="text" id="katSlug" placeholder="Örn: pizza"></div>
-                <div class="form-group"><label>Sıralama Önceliği</label><input type="number" id="katSira" value="1"></div>
-                <div class="form-group"><label>Durum / Etiket</label><input type="text" id="katDurum" value="Aktif"></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Görsel Seç (Dosya) *</label><input type="file" id="katDosya" accept="image/*"></div>
+                <div class="form-group"><label>Sıralama</label><input type="number" id="katSira" value="1"></div>
+                <div class="form-group"><label>Durum</label><input type="text" id="katDurum" value="Aktif"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Görsel Dosyası *</label><input type="file" id="katDosya" accept="image/*"></div>
             </div>
             <button type="button" class="btn-primary" onclick="kategoriEkle()">Kategoriyi Ekle</button>
-
-            <h3 style="margin-top: 25px;"><i class="fa-solid fa-list" style="color:#f97316;"></i> Mevcut Kategoriler</h3>
+            <h3 style="margin-top: 25px;"><i class="fa-solid fa-list" style="color:#f97316;"></i> Kategoriler</h3>
             <table>
-                <thead><tr><th>Görsel</th><th>Sıra</th><th>Ad</th><th>Slug</th><th>Durum</th><th>İşlemler</th></tr></thead>
+                <thead><tr><th>Görsel</th><th>Sıra</th><th>Ad</th><th>Slug</th><th>Durum</th><th>İşlem</th></tr></thead>
                 <tbody id="kategoriListesi"></tbody>
             </table>
         </div>
 
-        <!-- 2. KAYITLI MÜŞTERİLER -->
-        <div id="musterilerTab" class="card">
-            <h3><i class="fa-solid fa-users" style="color:#f97316;"></i> Sistemdeki Kayıtlı Müşteri Veritabanı</h3>
-            <table>
-                <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th><th>Adres</th><th>Kayıt Tarihi</th><th>İşlem</th></tr></thead>
-                <tbody id="musteriListesi"></tbody>
-            </table>
-        </div>
-
-        <!-- 3. KUPON YÖNETİMİ -->
-        <div id="kuponlarTab" class="card">
-            <h3><i class="fa-solid fa-ticket" style="color:#f97316;"></i> Müşteriler İçin Özel İndirim Kuponu Oluştur</h3>
-            <div class="form-grid">
-                <div class="form-group"><label>Kupon Kodu *</label><input type="text" id="kuponKodu" placeholder="Örn: ANKARA50"></div>
-                <div class="form-group"><label>İndirim Miktarı (TL veya %) *</label><input type="text" id="kuponIndirim" placeholder="Örn: 50 TL veya %20"></div>
-            </div>
-            <button type="button" class="btn-primary" onclick="kuponOlustur()">Kuponu Aktif Et</button>
-
-            <h3 style="margin-top: 25px;"><i class="fa-solid fa-list-check" style="color:#f97316;"></i> Aktif Kuponlar</h3>
-            <table>
-                <thead><tr><th>Kupon Kodu</th><th>İndirim</th><th>İşlem</th></tr></thead>
-                <tbody id="kuponListesi"></tbody>
-            </table>
-        </div>
-
-        <!-- 4. SATICI BAŞVURULARI -->
         <div id="basvurularTab" class="card">
-            <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> Bekleyen Satıcı Başvuruları</h3>
+            <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvuruları</h3>
             <table>
-                <thead><tr><th>İşletme</th><th>Yetkili</th><th>Tel</th><th>Kategori</th><th>Tarih</th><th>İşlem</th></tr></thead>
+                <thead><tr><th>İşletme</th><th>Yetkili</th><th>Tel</th><th>Şifre</th><th>Tarih</th><th>İşlem</th></tr></thead>
                 <tbody id="basvuruListesi"></tbody>
             </table>
         </div>
 
-        <!-- 5. TÜM AKTİF İŞLETMELER -->
-        <div id="saticilarTab" class="card">
-            <h3><i class="fa-solid fa-shop" style="color:#f97316;"></i> Tüm Aktif İşletmeler</h3>
+        <div id="moderasyonTab" class="card">
+            <h3><i class="fa-solid fa-clipboard-check" style="color:#f97316;"></i> Onay Bekleyen Ürünler</h3>
             <table>
-                <thead><tr><th>Logo</th><th>İşletme Adı</th><th>Kategori</th><th>Tel</th><th>Puan</th><th>İşlem</th></tr></thead>
+                <thead><tr><th>Görsel</th><th>İşletme</th><th>Ürün</th><th>Fiyat</th><th>Açıklama</th><th>İşlem</th></tr></thead>
+                <tbody id="moderasyonListesi"></tbody>
+            </table>
+        </div>
+
+        <div id="saticilarTab" class="card">
+            <h3><i class="fa-solid fa-shop" style="color:#f97316;"></i> Aktif İşletmeler</h3>
+            <table>
+                <thead><tr><th>Logo</th><th>Adı</th><th>Kategori</th><th>Tel</th><th>Şifre</th><th>İşlem</th></tr></thead>
                 <tbody id="aktifIsletmelerListesi"></tbody>
             </table>
         </div>
 
-        <!-- 6. GENEL AYARLAR -->
         <div id="ayarlarTab" class="card">
-            <h3><i class="fa-solid fa-gear" style="color:#f97316;"></i> Ana Sayfa Slogan ve Başlık</h3>
+            <h3><i class="fa-solid fa-gear" style="color:#f97316;"></i> Site Ayarları</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Ana Başlık</label><input type="text" id="siteBaslik"></div>
                 <div class="form-group"><label>Alt Açıklama</label><input type="text" id="siteSlogan"></div>
             </div>
-            <button type="button" class="btn-primary" onclick="ayarlariKaydet()">Ayarları Güncelle</button>
-        </div>
-    </div>
-
-    <!-- DÜZENLEME MODALI -->
-    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:#fff; padding:20px; border-radius:14px; width:100%; max-width:380px;">
-            <h3 style="margin-bottom:12px; font-size:15px; font-weight:800;">Kategoriyi Düzenle</h3>
-            <input type="hidden" id="editKey">
-            <div class="form-group"><label>Kategori Adı</label><input type="text" id="editAd"></div>
-            <div class="form-group"><label>Slug</label><input type="text" id="editSlug"></div>
-            <div class="form-group"><label>Sıra</label><input type="number" id="editSira"></div>
-            <div class="form-group"><label>Durum</label><input type="text" id="editDurum"></div>
-            <div class="form-group"><label>Yeni Görsel (İsteğe Bağlı)</label><input type="file" id="editDosya" accept="image/*"></div>
-            <button type="button" class="btn-primary" onclick="kategoriGuncelleKaydet()" style="margin-top:10px; width:100%;">Kaydet</button>
-            <button type="button" onclick="document.getElementById('editModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:8px; cursor:pointer; font-size:12px;">İptal</button>
+            <button type="button" class="btn-primary" onclick="ayarlariKaydet()">Kaydet</button>
         </div>
     </div>
 
@@ -181,15 +139,10 @@
         const db = firebase.database();
 
         function adminGirisYap() {
-            const sifre = document.getElementById('adminSifreInput').value.trim();
-            if(sifre === "123456") {
+            if(document.getElementById('adminSifreInput').value.trim() === "123456") {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('mainPanelContent').style.display = 'block';
-                musterileriListele();
-                kuponlariListele();
-            } else {
-                alert("Hatalı Süper Admin Şifresi!");
-            }
+            } else { alert("Hatalı Şifre!"); }
         }
 
         function tabDegistir(tabId, btnElement) {
@@ -199,89 +152,14 @@
             btnElement.classList.add('active');
         }
 
-        // Kayıtlı Müşterileri Listele
-        function musterileriListele() {
-            db.ref('registered_customers').on('value', (snapshot) => {
-                const tbody = document.getElementById('musteriListesi');
-                tbody.innerHTML = '';
-                const data = snapshot.val();
-                if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Henüz kayıtlı müşteri yok.</td></tr>'; return; }
-                Object.keys(data).forEach(key => {
-                    const m = data[key];
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${m.ad}</strong></td>
-                            <td>${m.mail}</td>
-                            <td>${m.tel}</td>
-                            <td>${m.adres}</td>
-                            <td>${m.tarih || 'Bilinmiyor'}</td>
-                            <td><button class="action-btn" onclick="musteriSil('${key}')">Sil</button></td>
-                        </tr>
-                    `;
-                });
-            });
-        }
-
-        function musteriSil(key) {
-            if(confirm("Bu müşteriyi silmek istediğinize emin misiniz?")) {
-                db.ref('registered_customers/' + key).remove();
-            }
-        }
-
-        // Kupon Yönetimi
-        function kuponOlustur() {
-            const kod = document.getElementById('kuponKodu').value.trim().toUpperCase();
-            const indirim = document.getElementById('kuponIndirim').value.trim();
-            if(!kod || !indirim) { alert("Lütfen kupon kodu ve indirim miktarını yazın."); return; }
-
-            db.ref('coupons/' + kod).set({ kod, indirim }).then(() => {
-                alert("Kupon başarıyla oluşturuldu!");
-                document.getElementById('kuponKodu').value = '';
-                document.getElementById('kuponIndirim').value = '';
-            });
-        }
-
-        function kuponlariListele() {
-            db.ref('coupons').on('value', (snapshot) => {
-                const tbody = document.getElementById('kuponListesi');
-                tbody.innerHTML = '';
-                const data = snapshot.val();
-                if(!data) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b;">Aktif kupon yok.</td></tr>'; return; }
-                Object.keys(data).forEach(key => {
-                    const k = data[key];
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${k.kod}</strong></td>
-                            <td style="color:#f97316; font-weight:800;">${k.indirim}</td>
-                            <td><button class="action-btn" onclick="db.ref('coupons/${key}').remove()">Kaldır</button></td>
-                        </tr>
-                    `;
-                });
-            });
-        }
-
-        // Kategoriler
-        db.ref('categories').on('value', (snapshot) => {
+        db.ref('categories').once('value').then((snapshot) => {
             const tbody = document.getElementById('kategoriListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Kategori yok.</td></tr>'; return; }
-            const sortedKeys = Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99));
-            sortedKeys.forEach(key => {
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6">Kategori yok.</td></tr>'; return; }
+            Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99)).forEach(key => {
                 const kat = data[key];
-                tbody.innerHTML += `
-                    <tr>
-                        <td><img src="${kat.gorsel}" alt=""></td>
-                        <td><strong>#${kat.sira || 1}</strong></td>
-                        <td><strong>${kat.ad}</strong></td>
-                        <td><code>${kat.slug}</code></td>
-                        <td>${kat.durum}</td>
-                        <td>
-                            <button class="edit-btn" onclick="kategoriDuzenleAc('${key}', '${kat.ad}', '${kat.slug}', '${kat.sira || 1}', '${kat.durum}')">Düzenle</button>
-                            <button class="action-btn" onclick="kategoriSil('${key}')">Sil</button>
-                        </td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td><img src="${kat.gorsel}"></td><td>#${kat.sira || 1}</td><td><strong>${kat.ad}</strong></td><td><code>${kat.slug}</code></td><td>${kat.durum}</td><td><button class="action-btn" onclick="db.ref('categories/${key}').remove(); location.reload();">Sil</button></td></tr>`;
             });
         });
 
@@ -291,70 +169,22 @@
             const sira = parseInt(document.getElementById('katSira').value) || 1;
             const durum = document.getElementById('katDurum').value.trim();
             const fileInput = document.getElementById('katDosya');
-
-            if(!ad || !slug || fileInput.files.length === 0) { alert("Lütfen tüm alanları doldurun ve görsel seçin."); return; }
-
+            if(!ad || !slug || fileInput.files.length === 0) { alert("Alanları doldurun."); return; }
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
             document.getElementById('loadingOverlay').style.display = 'flex';
             reader.onload = function () {
-                const catId = 'cat_' + Date.now();
-                db.ref('categories/' + catId).set({
-                    id: catId, ad: ad, slug: slug, sira: sira, durum: durum || 'Aktif', gorsel: reader.result
-                }).then(() => {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Kategori eklendi!");
-                    document.getElementById('katAdi').value = ''; document.getElementById('katSlug').value = ''; document.getElementById('katDosya').value = '';
+                db.ref('categories/cat_' + Date.now()).set({ ad, slug, sira, durum: durum || 'Aktif', gorsel: reader.result }).then(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none'; alert("Eklendi!"); location.reload();
                 });
             };
         }
 
-        function kategoriDuzenleAc(key, ad, slug, sira, durum) {
-            document.getElementById('editKey').value = key;
-            document.getElementById('editAd').value = ad;
-            document.getElementById('editSlug').value = slug;
-            document.getElementById('editSira').value = sira;
-            document.getElementById('editDurum').value = durum;
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        function kategoriGuncelleKaydet() {
-            const key = document.getElementById('editKey').value;
-            const ad = document.getElementById('editAd').value.trim();
-            const slug = document.getElementById('editSlug').value.trim();
-            const sira = parseInt(document.getElementById('editSira').value) || 1;
-            const durum = document.getElementById('editDurum').value.trim();
-            const fileInput = document.getElementById('editDosya');
-
-            document.getElementById('loadingOverlay').style.display = 'flex';
-            document.getElementById('editModal').style.display = 'none';
-
-            if(fileInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.readAsDataURL(fileInput.files[0]);
-                reader.onload = function () {
-                    db.ref('categories/' + key).update({ ad, slug, sira, durum, gorsel: reader.result }).then(() => {
-                        document.getElementById('loadingOverlay').style.display = 'none';
-                        alert("Güncellendi!");
-                    });
-                };
-            } else {
-                db.ref('categories/' + key).update({ ad, slug, sira, durum }).then(() => {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Güncellendi!");
-                });
-            }
-        }
-
-        function kategoriSil(key) {
-            if(confirm("Silmek istediğinize emin misiniz?")) { db.ref('categories/' + key).remove(); }
-        }
-
-        db.ref('seller_applications').on('value', (snapshot) => {
+        db.ref('seller_applications').once('value').then((snapshot) => {
             const tbody = document.getElementById('basvuruListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Başvuru yok.</td></tr>'; return; }
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6">Başvuru yok.</td></tr>'; return; }
             Object.keys(data).forEach(key => {
                 const b = data[key];
                 tbody.innerHTML += `
@@ -362,11 +192,11 @@
                         <td><strong>${b.isletmeAdi}</strong></td>
                         <td>${b.yetkiliAdi}</td>
                         <td>${b.telefon}</td>
-                        <td>${b.kategori || 'Genel'}</td>
+                        <td><code>${b.otomatikSifre}</code></td>
                         <td>${b.tarih}</td>
                         <td>
                             <button class="success-btn" onclick="saticiOnayla('${key}')">Onayla</button>
-                            <button class="action-btn" onclick="db.ref('seller_applications/${key}').remove()">Red</button>
+                            <button class="action-btn" onclick="db.ref('seller_applications/${key}').remove(); location.reload();">Red</button>
                         </td>
                     </tr>
                 `;
@@ -379,44 +209,79 @@
                 if(!b) return;
                 const dukkanKey = 'dukkan_' + Date.now();
                 db.ref('active_restaurants/' + dukkanKey).set({
-                    id: dukkanKey, ad: b.isletmeAdi, kategori: b.kategori, telefon: b.telefon, sifre: b.sifre, puan: "5.0", onayTarihi: new Date().toLocaleDateString('tr-TR')
-                }).then(() => db.ref('seller_applications/' + key).remove()).then(() => alert(b.isletmeAdi + " onaylandı!"));
+                    id: dukkanKey, ad: b.isletmeAdi, kategori: b.kategori, telefon: b.telefon, sifre: b.otomatikSifre, puan: "", onayTarihi: new Date().toLocaleDateString('tr-TR')
+                }).then(() => db.ref('seller_applications/' + key).remove()).then(() => { alert("Onaylandı!"); location.reload(); });
             });
         }
 
-        db.ref('active_restaurants').on('value', (snapshot) => {
-            const tbody = document.getElementById('aktifIsletmelerListesi');
+        db.ref('pending_products').once('value').then((snapshot) => {
+            const tbody = document.getElementById('moderasyonListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">İşletme yok.</td></tr>'; return; }
-            Object.keys(data).forEach(key => {
-                const r = data[key];
-                tbody.innerHTML += `
-                    <tr>
-                        <td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt=""></td>
-                        <td><strong>${r.ad}</strong></td>
-                        <td>${r.kategori || 'Genel'}</td>
-                        <td>${r.telefon}</td>
-                        <td style="color:#f59e0b; font-weight:700;">${r.puan || '5.0'}</td>
-                        <td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove()">Kaldır</button></td>
-                    </tr>
-                `;
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="color:#64748b;">Onay bekleyen ürün yok.</td></tr>'; return; }
+            Object.keys(data).forEach(saticiKey => {
+                const urunler = data[saticiKey];
+                Object.keys(urunler).forEach(urunKey => {
+                    const u = urunler[urunKey];
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><img src="${u.gorsel}"></td>
+                            <td><strong>${u.isletmeAdi || 'İşletme'}</strong></td>
+                            <td>${u.ad}</td>
+                            <td style="color:#f97316; font-weight:800;">${u.fiyat} ₺</td>
+                            <td>${u.aciklama || '-'}</td>
+                            <td>
+                                <button class="success-btn" onclick="urunOnayla('${saticiKey}', '${urunKey}')">Onayla</button>
+                                <button class="action-btn" onclick="urunReddet('${saticiKey}', '${urunKey}')">Red</button>
+                            </td>
+                        </tr>
+                    `;
+                });
             });
         });
 
-        db.ref('site_settings').on('value', (snapshot) => {
-            const settings = snapshot.val();
-            if(settings) {
-                if(settings.heroBaslik) document.getElementById('siteBaslik').value = settings.heroBaslik;
-                if(settings.heroSlogan) document.getElementById('siteSlogan').value = settings.heroSlogan;
+        function urunOnayla(saticiKey, urunKey) {
+            db.ref('pending_products/' + saticiKey + '/' + urunKey).once('value').then(snapshot => {
+                const u = snapshot.val();
+                if(!u) return;
+                db.ref('restaurant_products/' + saticiKey + '/' + urunKey).set(u).then(() => {
+                    return db.ref('pending_products/' + saticiKey + '/' + urunKey).remove();
+                }).then(() => { alert("Onaylandı!"); location.reload(); });
+            });
+        }
+
+        function urunReddet(saticiKey, urunKey) {
+            const sebep = prompt("Red sebebi:");
+            if(sebep === null) return;
+            db.ref('pending_products/' + saticiKey + '/' + urunKey).once('value').then(snapshot => {
+                const u = snapshot.val();
+                if(!u) return;
+                db.ref('rejected_products/' + saticiKey + '/' + urunKey).set({ ...u, redSebebi: sebep || "Uygun görülmedi." }).then(() => {
+                    return db.ref('pending_products/' + saticiKey + '/' + urunKey).remove();
+                }).then(() => { alert("Reddedildi."); location.reload(); });
+            });
+        }
+
+        db.ref('active_restaurants').once('value').then((snapshot) => {
+            const tbody = document.getElementById('aktifIsletmelerListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6">İşletme yok.</td></tr>'; return; }
+            Object.keys(data).forEach(key => {
+                const r = data[key];
+                tbody.innerHTML += `<tr><td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}"></td><td><strong>${r.ad}</strong></td><td>${r.kategori || 'Genel'}</td><td>${r.telefon}</td><td><code>${r.sifre}</code></td><td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove(); location.reload();">Kaldır</button></td></tr>`;
+            });
+        });
+
+        db.ref('site_settings').once('value').then((snapshot) => {
+            if(snapshot.val()) {
+                document.getElementById('siteBaslik').value = snapshot.val().heroBaslik || '';
+                document.getElementById('siteSlogan').value = snapshot.val().heroSlogan || '';
             }
         });
 
         function ayarlariKaydet() {
-            db.ref('site_settings').set({
-                heroBaslik: document.getElementById('siteBaslik').value,
-                heroSlogan: document.getElementById('siteSlogan').value
-            }).then(() => alert("Ayarlar güncellendi!"));
+            db.ref('site_settings').set({ heroBaslik: document.getElementById('siteBaslik').value, heroSlogan: document.getElementById('siteSlogan').value }).then(() => alert("Güncellendi!"));
         }
     </script>
 </body>

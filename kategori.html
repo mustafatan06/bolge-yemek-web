@@ -33,7 +33,7 @@
     <div class="container">
         <h3 class="section-title" id="kategoriBaslik">Kategori İşletmeleri</h3>
         <div class="restaurants-grid" id="kategoriIsletmeler">
-            <div style="color: #64748b; font-size: 13px;">İşletmeler yükleniyor...</div>
+            <div style="color: #64748b; font-size: 13px;">Yükleniyor...</div>
         </div>
     </div>
 
@@ -56,22 +56,23 @@
         const katSlug = urlParams.get('kat');
         document.getElementById('kategoriBaslik').innerText = katSlug ? (katSlug.toUpperCase() + ' KATEGORİSİ') : 'Kategori';
 
-        db.ref('active_restaurants').on('value', (snapshot) => {
+        db.ref('active_restaurants').once('value').then((snapshot) => {
             const container = document.getElementById('kategoriIsletmeler');
             container.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="color:#64748b; font-size:13px;">Bu kategoride henüz işletme yok.</div>'; return; }
+            if(!data) { container.innerHTML = '<div style="color:#64748b; font-size:13px;">Bu kategoride işletme yok.</div>'; return; }
             
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
+                const puanGosterim = r.puan ? r.puan : 'Yeni İşletme';
                 html += `
                     <a href="isletme.html?id=${key}" class="restaurant-card">
                         <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}" class="rest-logo">
                         <div class="rest-info">
                             <h4>${r.ad}</h4>
                             <p>${r.kategori || 'Lezzetler'}</p>
-                            <span style="color:#f59e0b; font-weight:800; font-size:11px;"><i class="fa-solid fa-star"></i> ${r.puan || '5.0'} Puan</span>
+                            <span style="color:#f59e0b; font-weight:800; font-size:11px;"><i class="fa-solid fa-star"></i> ${puanGosterim}</span>
                         </div>
                     </a>
                 `;

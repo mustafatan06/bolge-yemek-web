@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; }
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; padding-top: env(safe-area-inset-top); }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(12px, env(safe-area-inset-top)); }
         .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -57,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Sabit Sepet Çubuğu -->
     <div id="floatingCart" class="floating-cart">
         <div>
             <strong id="cartCount">0 Ürün</strong> | <span id="cartTotal">0.00 ₺</span>

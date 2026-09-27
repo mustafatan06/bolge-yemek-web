@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; padding-top: env(safe-area-inset-top); }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(12px, env(safe-area-inset-top)); }
         .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         .container { max-width: 800px; margin: 0 auto; padding: 25px 15px; }
@@ -35,7 +35,6 @@
     </header>
 
     <div class="container">
-        <!-- Bilgileri Görüntüleme Alanı -->
         <div class="profile-card" id="viewSection">
             <h3><i class="fa-solid fa-user-circle" style="color:#f97316;"></i> Müşteri Hesap Bilgileriniz</h3>
             <div class="info-row"><span>Ad Soyad:</span> <span id="pAd">-</span></div>
@@ -47,7 +46,6 @@
             <button class="btn-danger" onclick="hesaptanCik()"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button>
         </div>
 
-        <!-- Bilgileri Düzenleme Formu (Gizli) -->
         <div class="profile-card" id="editSection" style="display:none;">
             <h3><i class="fa-solid fa-user-pen" style="color:#f97316;"></i> Bilgileri Güncelle</h3>
             <div class="form-group"><label>Ad Soyad</label><input type="text" id="editAd"></div>
@@ -123,8 +121,6 @@
             }
 
             const musteriId = localStorage.getItem('musteriId');
-            
-            // Eğer Firebase ID kayıtlıysa veritabanında da güncelle
             const updateObj = { ad: yeniAd, mail: yeniMail, tel: yeniTel, adres: yeniAdres };
 
             if(musteriId) {

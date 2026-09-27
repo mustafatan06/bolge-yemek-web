@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; overflow-x: hidden; padding-top: env(safe-area-inset-top); }
 
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(12px, env(safe-area-inset-top)); }
         .logo { font-size: 20px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         
@@ -96,7 +96,6 @@
         </div>
     </div>
 
-    <!-- Sabit Sepet Çubuğu -->
     <div id="floatingCart" class="floating-cart">
         <div>
             <strong id="cartCount">0 Ürün</strong> | <span id="cartTotal">0.00 ₺</span>
@@ -104,7 +103,6 @@
         <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
     </div>
 
-    <!-- MÜŞTERİ KAYIT / DOĞRULAMA MODALI -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
             <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-shield-halved" style="color:#f97316;"></i> Güvenli Müşteri Üyeliği</h3>
@@ -134,7 +132,6 @@
         </div>
     </div>
 
-    <!-- SATICI OL MODALI -->
     <div id="saticiModal" class="modal">
         <div class="modal-content">
             <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
@@ -268,7 +265,6 @@
 
             if (girilenKupon !== null) {
                 if (girilenKupon.trim() !== "") {
-                    // Firebase'den kuponu kontrol et
                     db.ref('coupons/' + girilenKupon.trim().toUpperCase()).once('value').then(snapshot => {
                         const kuponData = snapshot.val();
                         if(kuponData) {
@@ -288,7 +284,7 @@
                             localStorage.setItem('aktifSepet', JSON.stringify(sepet));
                             sepetiGuncelleUI();
                             alert("Kupon başarıyla uygulandı! Yeni Tutar: " + indirimliFiyat.toFixed(2) + " ₺");
-                            sepetiAc(); // Sepeti tekrar açıp onay iste
+                            sepetiAc();
                         } else {
                             alert("Geçersiz kupon kodu!");
                             sepetiAc();
@@ -297,7 +293,7 @@
                     return;
                 }
 
-                alert("Siparişiniz başarıyla alındı! Restoran hazırlamaya başladı.");
+                alert("Siparişiniz başarıyla alındı!");
                 localStorage.removeItem('aktifSepet');
                 sepetiGuncelleUI();
             }

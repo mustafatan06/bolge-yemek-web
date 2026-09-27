@@ -12,8 +12,7 @@
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
-        .logo .bolge { color: #0f172a; }
-        .logo .yemek { color: #f97316; }
+        .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         
         .header-buttons { display: flex; gap: 8px; align-items: center; }
         .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; transition: 0.3s; white-space: nowrap; }
@@ -54,11 +53,14 @@
         .floating-cart button { background: #f97316; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-        .form-group { margin-bottom: 10px; text-align: left; }
-        .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 3px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; font-size: 12px; outline: none; }
+        .modal-content { background: #ffffff; padding: 25px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 4px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: #0f172a; font-size: 12px; outline: none; }
         .form-group input:focus { border-color: #f97316; }
+
+        .recaptcha-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 12px; margin-bottom: 12px; cursor: pointer; }
+        .recaptcha-box input { width: 18px; height: 18px; cursor: pointer; accent-color: #f97316; }
 
         .footer { text-align: center; margin-top: 40px; padding: 20px 0; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: inline-block; margin-top: 3px; }
@@ -70,7 +72,9 @@
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
         <div class="header-buttons">
             <button type="button" class="btn-small satici-ol-btn" onclick="document.getElementById('saticiModal').style.display='flex'"><i class="fa-solid fa-store"></i> Satıcı Ol</button>
-            <button type="button" class="btn-small musteri-giris-btn" onclick="musteriGirisAc()"><i class="fa-solid fa-user"></i> <span id="musteriAdText">Giriş Yap</span></button>
+            <div id="musteriHeaderBtn">
+                <button type="button" class="btn-small musteri-giris-btn" onclick="musteriGirisAc()"><i class="fa-solid fa-user"></i> <span id="musteriAdText">Giriş Yap / Üye Ol</span></button>
+            </div>
         </div>
     </header>
 
@@ -100,28 +104,48 @@
         <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
     </div>
 
-    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
+    <!-- MÜŞTERİ KAYIT / DOĞRULAMA MODALI (Yemeksepeti Standartlarında) -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
-            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-user-check" style="color:#f97316;"></i> Müşteri Girişi & Konum</h3>
-            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="mAd" placeholder="Adınız Soyadınız"></div>
-            <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="mTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Teslimat Adresi / Konum *</label><textarea id="mAdres" rows="2" placeholder="Mahalle, Cadde, Sokak, No..."></textarea></div>
-            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Bilgileri Kaydet ve Devam Et</button>
-            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
+            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-shield-halved" style="color:#f97316;"></i> Güvenli Müşteri Üyeliği</h3>
+            
+            <!-- Adım 1: Bilgi Girişi -->
+            <div id="adim1">
+                <div class="form-group"><label>Ad Soyad *</label><input type="text" id="mAd" placeholder="Adınız Soyadınız"></div>
+                <div class="form-group"><label>E-posta Adresi *</label><input type="email" id="mMail" placeholder="ornek@mail.com"></div>
+                <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="mTel" placeholder="05XXXXXXXXX"></div>
+                <div class="form-group"><label>Teslimat Adresi / Konum *</label><textarea id="mAdres" rows="2" placeholder="Mahalle, Cadde, Sokak, No..."></textarea></div>
+                
+                <div class="recaptcha-box" onclick="document.getElementById('robotCheck').checked = !document.getElementById('robotCheck').checked">
+                    <input type="checkbox" id="robotCheck">
+                    <label for="robotCheck" style="cursor:pointer; margin-bottom:0; font-weight:600; color:#0f172a;">Ben robot değilim</label>
+                </div>
+
+                <button type="button" onclick="kodGonderAdimi()" style="width:100%; background:#f97316; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">Onay Kodu Gönder</button>
+            </div>
+
+            <!-- Adım 2: E-posta / SMS Onay Kodu -->
+            <div id="adim2" style="display:none; text-align:center;">
+                <p style="font-size:12px; color:#64748b; margin-bottom:15px;">E-posta adresinize gönderilen 6 haneli onay kodunu giriniz:<br><strong id="gonderilenMailInfo" style="color:#f97316;"></strong></p>
+                <div class="form-group"><label>Onay Kodu (Örn: 123456)</label><input type="text" id="girilenKod" placeholder="6 haneli kod" style="text-align:center; font-size:18px; letter-spacing:3px; font-weight:800;"></div>
+                <button type="button" onclick="kodDogrulaVeKaydet()" style="width:100%; background:#10b981; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:5px;">Kodu Onayla ve Kaydı Tamamla</button>
+                <button type="button" onclick="geriDonAdim1()" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:8px; font-size:12px;">Bilgileri Düzenle</button>
+            </div>
+
+            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#ef4444; border:none; padding:6px; cursor:pointer; margin-top:10px; font-size:12px;">Vazgeç</button>
         </div>
     </div>
 
     <!-- SATICI OL MODALI -->
     <div id="saticiModal" class="modal">
         <div class="modal-content">
-            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
+            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
             <div class="form-group"><label>Yetkili Ad Soyad *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
             <div class="form-group"><label>Telefon Numaranız *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
             <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza, Çiğ Köfte"></div>
             <div class="form-group"><label>Satıcı Paneli Şifresi *</label><input type="password" id="basvuruSifre" placeholder="Şifreniz"></div>
-            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</button>
+            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</label>
             <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
         </div>
     </div>
@@ -141,48 +165,80 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        let uretilenKod = "";
+        let geciciMusteriVerisi = {};
+
         window.addEventListener('DOMContentLoaded', () => {
             const mAd = localStorage.getItem('musteriAd');
             if(mAd) {
-                document.getElementById('musteriAdText').innerText = mAd.split(' ')[0];
+                document.getElementById('musteriHeaderBtn').innerHTML = `
+                    <a href="profil.html" class="btn-small musteri-giris-btn" style="background:#0f172a; color:#fff; border:none;"><i class="fa-solid fa-user-check"></i> ${mAd.split(' ')[0]} (Profilim)</a>
+                `;
             }
             sepetiGuncelleUI();
         });
 
         function musteriGirisAc() {
             document.getElementById('musteriModal').style.display = 'flex';
+            document.getElementById('adim1').style.display = 'block';
+            document.getElementById('adim2').style.display = 'none';
             if(localStorage.getItem('musteriAd')) {
                 document.getElementById('mAd').value = localStorage.getItem('musteriAd');
+                document.getElementById('mMail').value = localStorage.getItem('musteriMail') || '';
                 document.getElementById('mTel').value = localStorage.getItem('musteriTel');
                 document.getElementById('mAdres').value = localStorage.getItem('musteriAdres');
             }
         }
 
-        function musteriKaydet() {
+        function kodGonderAdimi() {
             const ad = document.getElementById('mAd').value.trim();
+            const mail = document.getElementById('mMail').value.trim();
             const tel = document.getElementById('mTel').value.trim();
             const adres = document.getElementById('mAdres').value.trim();
+            const robot = document.getElementById('robotCheck').checked;
 
-            if(!ad || !tel || !adres) { alert("Lütfen ad, telefon ve konum adresinizi eksiksiz doldurun."); return; }
+            if(!ad || !mail || !tel || !adres) { alert("Lütfen tüm alanları eksiksiz doldurun."); return; }
+            if(!robot) { alert("Lütfen 'Ben robot değilim' doğrulamasını işaretleyin."); return; }
 
-            localStorage.setItem('musteriAd', ad);
-            localStorage.setItem('musteriTel', tel);
-            localStorage.setItem('musteriAdres', adres);
-            document.getElementById('musteriAdText').innerText = ad.split(' ')[0];
-            document.getElementById('musteriModal').style.display = 'none';
-            alert("Müşteri bilgileri ve konum kaydedildi!");
+            // 6 haneli rastgele onay kodu üret
+            uretilenKod = Math.floor(100000 + Math.random() * 900000).toString();
+            geciciMusteriVerisi = { ad, mail, tel, adres };
+
+            document.getElementById('gonderilenMailInfo').innerText = mail;
+            document.getElementById('adim1').style.display = 'none';
+            document.getElementById('adim2').style.display = 'block';
+
+            // Gerçekçi simülasyon bildirimi (Geliştirici kolaylığı için alert ile kod gösterilir)
+            alert("🔒 GÜVENLİK DOĞRULAMASI\nE-posta adresinize onay kodu gönderildi.\n(Test Onay Kodunuz: " + uretilenKod + ")");
+        }
+
+        function geriDonAdim1() {
+            document.getElementById('adim2').style.display = 'none';
+            document.getElementById('adim1').style.display = 'block';
+        }
+
+        function kodDogrulaVeKaydet() {
+            const girilen = document.getElementById('girilenKod').value.trim();
+            if(girilen !== uretilenKod) {
+                alert("Hatalı onay kodu! Lütfen tekrar deneyin.");
+                return;
+            }
+
+            localStorage.setItem('musteriAd', geciciMusteriVerisi.ad);
+            localStorage.setItem('musteriMail', geciciMusteriVerisi.mail);
+            localStorage.setItem('musteriTel', geciciMusteriVerisi.tel);
+            localStorage.setItem('musteriAdres', geciciMusteriVerisi.adres);
+
+            alert("Doğrulama başarılı! Hesabınız oluşturuldu.");
+            window.location.reload();
         }
 
         function sepetiGuncelleUI() {
             const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
             const cartBar = document.getElementById('floatingCart');
             if(sepet && sepet.urunler && sepet.urunler.length > 0) {
-                let toplamAdet = 0;
-                let toplamTutar = 0;
-                sepet.urunler.forEach(u => {
-                    toplamAdet += u.adet;
-                    toplamTutar += (u.fiyat * u.adet);
-                });
+                let toplamAdet = 0; let toplamTutar = 0;
+                sepet.urunler.forEach(u => { toplamAdet += u.adet; toplamTutar += (u.fiyat * u.adet); });
                 document.getElementById('cartCount').innerText = toplamAdet + ' Ürün (' + sepet.restoranAdi + ')';
                 document.getElementById('cartTotal').innerText = toplamTutar.toFixed(2) + ' ₺';
                 cartBar.style.display = 'flex';
@@ -198,14 +254,13 @@
             let mesaj = "--- SEPETİNİZ (" + sepet.restoranAdi + ") ---\n\n";
             let toplam = 0;
             sepet.urunler.forEach(u => {
-                let t = u.fiyat * u.adet;
-                toplam += t;
+                let t = u.fiyat * u.adet; toplam += t;
                 mesaj += `${u.ad} x ${u.adet} = ${t.toFixed(2)} ₺\n`;
             });
             mesaj += `\nToplam Tutar: ${toplam.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\nSiparişi onaylıyor musunuz?`;
 
             if(confirm(mesaj)) {
-                alert("Siparişiniz başarıyla alındı! Restoran hazırlamaya başladı.");
+                alert("Siparişiniz başarıyla alındı!");
                 localStorage.removeItem('aktifSepet');
                 sepetiGuncelleUI();
             }

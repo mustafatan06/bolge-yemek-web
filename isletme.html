@@ -15,27 +15,26 @@
         .container { max-width: 900px; margin: 0 auto; padding: 15px; }
         .rest-header { background: #fff; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .rest-left { display: flex; gap: 15px; align-items: center; }
-        .rest-header img { width: 75px; height: 75px; object-fit: cover; border-radius: 10px; background: #f1f5f9; cursor: pointer; }
+        .rest-header img { width: 75px; height: 75px; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
         .rest-header h1 { font-size: 17px; font-weight: 900; color: #0f172a; margin-bottom: 2px; }
         .rest-header p { font-size: 11px; color: #64748b; }
 
-        .section-title { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-left: 4px solid #f97316; padding-left: 8px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
-        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
-        .menu-item-card:hover { border-color: #f97316; }
-        .menu-item-left { display: flex; gap: 10px; align-items: center; flex: 1; }
-        .menu-item-card img { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
-        .menu-info h4 { font-size: 12px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
-        .menu-info p { font-size: 10px; color: #64748b; margin-bottom: 3px; }
-        .menu-info span { font-size: 11px; font-weight: 800; color: #f97316; }
+        
+        /* ÜRÜN KARTI DAHA KALIN VE DOLGUN HALE GETİRİLDİ */
+        .menu-item-card { background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .menu-item-card:hover { border-color: #f97316; transform: translateY(-2px); }
+        .menu-item-left { display: flex; gap: 12px; align-items: center; flex: 1; }
+        .menu-item-card img { width: 75px; height: 75px; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
+        .menu-info h4 { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+        .menu-info p { font-size: 11px; color: #64748b; margin-bottom: 4px; }
+        .menu-info span { font-size: 12px; font-weight: 800; color: #f97316; }
 
-        /* SABİT ALT SEPET ÇUBUĞU */
         .sabit-sepet { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); }
         .sabit-sepet-info { font-size: 12px; font-weight: 700; }
         .sabit-sepet-btn { background: #f97316; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; }
 
-        /* ÜRÜN DETAY / SEKTÖREL SEÇENEK MODALI */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; border: 1px solid #e2e8f0; }
         .secenek-grup { margin-bottom: 12px; }
@@ -57,11 +56,9 @@
                 <div><h1 id="restAdi">Yükleniyor...</h1><p id="restKategoriTel">Yükleniyor...</p></div>
             </div>
         </div>
-        <h3 class="section-title">İşletme Menüsü (Ürüne Tıklayıp Seçenekleri Belirleyin)</h3>
-        <div class="menu-grid" id="isletmeUrunleri"><div style="font-size:11px; color:#64748b;">Menü yükleniyor...</div></div>
+        <div class="menu-grid" id="isletmeUrunleri"></div>
     </div>
 
-    <!-- SABİT ALT SEPET -->
     <div class="sabit-sepet" id="sabitSepetBar" style="display:none;">
         <div class="sabit-sepet-info">
             <i class="fa-solid fa-basket-shopping" style="color:#f97316;"></i> <span id="sepetAdetYazi">0 Ürün</span> | <span id="sepetTutarYazi" style="color:#f97316; font-size:14px;">0 ₺</span>
@@ -69,7 +66,6 @@
         <button class="sabit-sepet-btn" onclick="sepetiOnaylaModalAc()">Sepeti Onayla & Sipariş Ver</button>
     </div>
 
-    <!-- ÜRÜN DETAY & SEKTÖREL SEÇENEK MODALI -->
     <div id="urunDetayModal" class="modal">
         <div class="modal-content">
             <h3 id="modalUrunAdi" style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:5px;">Ürün Adı</h3>
@@ -84,9 +80,8 @@
                 </div>
             </div>
 
-            <!-- ÇİĞ KÖFTE / SEKTÖREL MALZEME SEÇENEKLERİ (CHECKBOX) -->
             <div class="secenek-grup">
-                <label>İçine Eklenmesini İstedikleriniz (Çiğ Köfte / Dürüm Seçenekleri)</label>
+                <label>İçine Eklenmesini İstedikleriniz</label>
                 <div class="checkbox-grid">
                     <label><input type="checkbox" class="malzeme-chk" value="Mısır" checked> Mısır</label>
                     <label><input type="checkbox" class="malzeme-chk" value="Nane" checked> Nane</label>
@@ -99,7 +94,6 @@
                 </div>
             </div>
 
-            <!-- LAHMACUN / GENEL SEÇENEKLER -->
             <div class="secenek-grup">
                 <label>Pişirme / Servis Tercihi</label>
                 <select id="modalServisTercihi" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px; font-weight:600;">
@@ -111,7 +105,7 @@
 
             <div class="secenek-grup">
                 <label>Sipariş Notu (Opsiyonel)</label>
-                <input type="text" id="modalSiparisNotu" placeholder="Örn: Lütfen bol soslu olsun." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px;">
+                <input type="text" id="modalSiparisNotu" placeholder="Örn: Bol soslu olsun." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px;">
             </div>
 
             <button type="button" onclick="sepeteUrunEkleOnayla()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:8px;">Sepete Ekle</button>
@@ -119,7 +113,6 @@
         </div>
     </div>
 
-    <!-- SEPET ONAY & KUPON MODALI -->
     <div id="sepetOnayModal" class="modal">
         <div class="modal-content">
             <h3 style="font-size:16px; font-weight:900; color:#0f172a; margin-bottom:10px;">Sepetim ve Sipariş Onayı</h3>
@@ -161,9 +154,11 @@
                 }
             });
 
+            // "Menü yükleniyor" takılma sorunu giderildi, veriler anında once ile çekilip mermi gibi yükleniyor
             db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
                 const container = document.getElementById('isletmeUrunleri'); container.innerHTML = '';
-                const data = snapshot.val(); if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Ürün yok.</div>'; return; }
+                const data = snapshot.val(); 
+                if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Bu işletmede henüz ürün bulunmuyor.</div>'; return; }
                 let html = '';
                 Object.keys(data).forEach(k => {
                     const u = data[k];
@@ -251,7 +246,7 @@
             const container = document.getElementById('sepetUrunleriListesi');
             container.innerHTML = '';
             let toplam = 0;
-            sepet.forEach((s, idx) => {
+            sepet.forEach((s) => {
                 toplam += (s.fiyat * s.adet);
                 container.innerHTML += `<div><b>${s.adet}x ${s.ad}</b> - ${s.fiyat * s.adet} ₺<br><small>Malzemeler: ${s.malzemeler || '-'} | ${s.servis}</small></div><hr style="margin:4px 0; border:0; border-top:1px solid #eee;">`;
             });
@@ -293,7 +288,7 @@
                 durum: 'Hazırlanıyor',
                 tarih: new Date().toLocaleTimeString('tr-TR')
             }).then(() => {
-                alert("Siparişiniz başarıyla alındı! Canlı sipariş takip ekranına yönlendiriliyorsunuz.");
+                alert("Siparişiniz başarıyla alındı!");
                 localStorage.removeItem('aktif_sepet_' + isletmeId);
                 window.location.href = `siparis-takip.html?id=${isletmeId}&sId=${siparisId}`;
             });

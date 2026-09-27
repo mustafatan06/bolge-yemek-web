@@ -14,7 +14,7 @@
         sidebar { width: 260px; background: #0f172a; color: #fff; display: flex; flex-direction: column; padding: 20px; }
         .sidebar-brand { font-size: 20px; font-weight: 900; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 0.5px; }
         .sidebar-brand span { color: #f97316; }
-        .menu-item { padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; transition: 0.3s; cursor: pointer; }
+        .menu-item { padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; transition: 0.3s; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
         .menu-item:hover, .menu-item.active { background: #f97316; color: #fff; }
 
         /* Main Content */
@@ -23,7 +23,8 @@
         .top-bar h2 { font-size: 20px; font-weight: 800; color: #0f172a; }
         .back-site-btn { background: rgba(249,115,22,0.1); color: #f97316; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; }
 
-        .card { background: #fff; border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .card { background: #fff; border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; display: none; }
+        .card.active-tab { display: block; }
         .card h3 { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
         
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
@@ -40,6 +41,7 @@
         th { font-weight: 700; color: #475569; background: #f8fafc; }
         td img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; }
+        .success-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
         
         .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; color: white; font-size: 18px; font-weight: 700; }
     </style>
@@ -50,9 +52,9 @@
 
     <sidebar>
         <div class="sidebar-brand">Bölge <span>Yönetim</span></div>
-        <a class="menu-item active"><i class="fa-solid fa-utensils"></i> Kategorileri Yönet</a>
-        <a class="menu-item"><i class="fa-solid fa-store"></i> Satıcı Başvuruları</a>
-        <a class="menu-item"><i class="fa-solid fa-chart-line"></i> Genel Ayarlar</a>
+        <button class="menu-item active" onclick="tabDegistir('kategorilerTab', this)"><i class="fa-solid fa-utensils"></i> Kategorileri Yönet</button>
+        <button class="menu-item" onclick="tabDegistir('basvurularTab', this)"><i class="fa-solid fa-store"></i> Satıcı Başvuruları</button>
+        <button class="menu-item" onclick="tabDegistir('ayarlarTab', this)"><i class="fa-solid fa-gear"></i> Genel Ayarlar</button>
     </sidebar>
 
     <div class="main-content">
@@ -61,8 +63,8 @@
             <a href="index.html" class="back-site-btn"><i class="fa-solid fa-globe"></i> Siteye Git</a>
         </div>
 
-        <!-- YENİ KATEGORİ EKLEME KARTI -->
-        <div class="card">
+        <!-- 1. KATEGORİLER TAB -->
+        <div id="kategorilerTab" class="card active-tab">
             <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Yemek Kategorisi Ekle</h3>
             <div class="form-grid">
                 <div class="form-group">
@@ -83,11 +85,8 @@
                 </div>
             </div>
             <button type="button" class="btn-primary" onclick="kategoriEkle()"><i class="fa-solid fa-upload"></i> Kategoriyi Yükle ve Ekle</button>
-        </div>
 
-        <!-- MEVCUT KATEGORİLER LİSTESİ -->
-        <div class="card">
-            <h3><i class="fa-solid fa-list" style="color:#f97316;"></i> Sistemdeki Kategoriler</h3>
+            <h3 style="margin-top: 30px;"><i class="fa-solid fa-list" style="color:#f97316;"></i> Sistemdeki Kategoriler</h3>
             <table>
                 <thead>
                     <tr>
@@ -98,14 +97,46 @@
                         <th>İşlem</th>
                     </tr>
                 </thead>
-                <tbody id="kategoriListesi">
-                    <!-- Dinamik yüklenecek -->
-                </tbody>
+                <tbody id="kategoriListesi"></tbody>
             </table>
+        </div>
+
+        <!-- 2. SATICI BAŞVURULARI TAB -->
+        <div id="basvurularTab" class="card">
+            <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> Gelen Satıcı Başvuruları ve Onay Paneli</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>İşletme Adı</th>
+                        <th>Yetkili</th>
+                        <th>Telefon</th>
+                        <th>Kategori</th>
+                        <th>Tarih</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="basvuruListesi"></tbody>
+            </table>
+        </div>
+
+        <!-- 3. GENEL AYARLAR TAB -->
+        <div id="ayarlarTab" class="card">
+            <h3><i class="fa-solid fa-image" style="color:#f97316;"></i> Site Görselleri ve Genel Başlık Ayarları</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Ana Başlık (Hero Title)</label>
+                    <input type="text" id="siteBaslik" value="Ankara'nın En Lezzetli Pazar Yeri">
+                </div>
+                <div class="form-group">
+                    <label>Alt Açıklama (Hero Slogan)</label>
+                    <input type="text" id="siteSlogan" value="Yüzlerce lezzet, binlerce restoran kapında!">
+                </div>
+            </div>
+            <button type="button" class="btn-primary" onclick="ayarlariKaydet()"><i class="fa-solid fa-floppy-disk"></i> Ayarları Güncelle</button>
         </div>
     </div>
 
-    <!-- Firebase SDK (Hem Database hem Storage destekli) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -122,6 +153,14 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
         const storage = firebase.storage();
+
+        // Sekme Değiştirme Fonksiyonu
+        function tabDegistir(tabId, btnElement) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active-tab'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-tab');
+            btnElement.classList.add('active');
+        }
 
         // Kategorileri Listele
         db.ref('categories').on('value', (snapshot) => {
@@ -146,7 +185,76 @@
             });
         });
 
-        // Yeni Kategori Ekle ve Firebase Storage'a Resim Yükle
+        // Satıcı Başvurularını Listele
+        db.ref('seller_applications').on('value', (snapshot) => {
+            const tbody = document.getElementById('basvuruListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Bekleyen başvuru bulunmuyor.</td></tr>';
+                return;
+            }
+            Object.keys(data).forEach(key => {
+                const b = data[key];
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${b.isletmeAdi}</strong></td>
+                        <td>${b.yetkiliAdi}</td>
+                        <td>${b.telefon}</td>
+                        <td>${b.kategori || 'Genel'}</td>
+                        <td>${b.tarih}</td>
+                        <td>
+                            <button class="success-btn" onclick="saticiOnayla('${key}')"><i class="fa-solid fa-check"></i> Onayla</button>
+                            <button class="action-btn" onclick="basvuruSil('${key}')"><i class="fa-solid fa-xmark"></i> Reddet</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        });
+
+        // Satıcıyı Onayla ve Aktif İşletmelere Ekle
+        function saticiOnayla(key) {
+            db.ref('seller_applications/' + key).once('value').then(snapshot => {
+                const b = snapshot.val();
+                if(!b) return;
+                
+                // Aktif işletmeler node'una ekle
+                constdukkanKey = 'dukkan_' + Date.now();
+                db.ref('active_restaurants/' + dukkanKey).set({
+                    ad: b.isletmeAdi,
+                    kategori: b.kategori,
+                    telefon: b.telefon,
+                    puan: "5.0",
+                    onayTarihi: new Date().toLocaleDateString('tr-TR')
+                }).then(() => {
+                    // Başvuruyu listeden kaldır
+                    return db.ref('seller_applications/' + key).remove();
+                }).then(() => {
+                    alert(b.isletmeAdi + " başarıyla onaylandı ve aktif işletmelere eklendi!");
+                });
+            });
+        }
+
+        function basvuruSil(key) {
+            if(confirm("Bu başvuruyu reddetmek/silmek istediğinize emin misiniz?")) {
+                db.ref('seller_applications/' + key).remove();
+            }
+        }
+
+        // Genel Ayarları Kaydet
+        function ayarlariKaydet() {
+            const baslik = document.getElementById('siteBaslik').value;
+            const slogan = document.getElementById('siteSlogan').value;
+
+            db.ref('site_settings').set({
+                heroBaslik: baslik,
+                heroSlogan: slogan
+            }).then(() => {
+                alert("Site ayarları güncellendi!");
+            });
+        }
+
+        // Yeni Kategori Ekle
         function kategoriEkle() {
             const ad = document.getElementById('katAdi').value.trim();
             const slug = document.getElementById('katSlug').value.trim();
@@ -186,12 +294,9 @@
             });
         }
 
-        // Kategori Sil
         function kategoriSil(key) {
             if(confirm("Bu kategoriyi silmek istediğinize emin misiniz?")) {
-                db.ref('categories/' + key).remove().then(() => {
-                    alert("Kategori silindi.");
-                });
+                db.ref('categories/' + key).remove();
             }
         }
     </script>

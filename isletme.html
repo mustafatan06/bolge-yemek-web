@@ -10,7 +10,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #f8fafc; color: #1e293b; padding-bottom: 90px; overflow-x: hidden; }
 
-        /* MOBİL SAFE AREA STICKY HEADER */
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
@@ -39,7 +38,6 @@
         .adet-input { width: 26px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 10px; font-weight: 700; background: #fff; }
         .siparis-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
-        /* KESİN OLARAK EKRANIN ALTINA SABİTLENMİŞ SEPET ÇUBUĞU */
         .sabit-sepet-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 99999; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
         .sabit-sepet-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; }
         .sabit-sepet-bar .bilgi span { color: #f97316; font-size: 13px; }
@@ -124,9 +122,9 @@
                                     <p>${u.aciklama || ''}</p>
                                     <span>${u.fiyat} ₺</span>
                                     <div class="adet-box">
-                                        <button type="button" class="adet-btn" onclick="degisAdet('${k}', -1, ${u.fiyat})">-</button>
+                                        <button type="button" class="adet-btn" onclick="degisAdet('${k}', -1)">-</button>
                                         <input type="text" id="adet_${k}" class="adet-input" value="1" readonly>
-                                        <button type="button" class="adet-btn" onclick="degisAdet('${k}', 1, ${u.fiyat})">+</button>
+                                        <button type="button" class="adet-btn" onclick="degisAdet('${k}', 1)">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +136,7 @@
             });
         }
 
-        function degisAdet(key, m, birimFiyat) {
+        function degisAdet(key, m) {
             const inp = document.getElementById('adet_' + key);
             let val = parseInt(inp.value) + m;
             if(val < 1) val = 1;
@@ -165,8 +163,8 @@
                 birimFiyat: birimFiyat
             };
 
-            // Sabit sepet çubuğunu göster ve güncelle
-            document.getElementById('sepetOzetMetin.innerHTML').innerHTML = `${adet} Ürün | <span id="sepetToplamFiyat">${toplamFiyat}</span> ₺`;
+            // DÜZELTİLDİ: Doğru element ID güncelleniyor
+            document.getElementById('sepetOzetMetin').innerHTML = `${adet} Ürün | <span id="sepetToplamFiyat">${toplamFiyat}</span> ₺`;
             document.getElementById('sabitSepetBar').style.display = 'flex';
             alert("'" + urunAdi + "' sepete eklendi! Aşağıdaki çubuktan siparişi onaylayabilirsiniz.");
         }

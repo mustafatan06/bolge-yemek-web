@@ -8,19 +8,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; overflow-x: hidden; }
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
         .logo .bolge { color: #0f172a; }
         .logo .yemek { color: #f97316; }
         
-        .header-buttons { display: flex; gap: 8px; align-items: center; }
+        .header-buttons { display: flex; gap: 8px; align-items: center; position: relative; }
         .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; transition: 0.3s; white-space: nowrap; }
         .satici-ol-btn { background: #10b981; color: white; border: none; box-shadow: 0 2px 10px rgba(16,185,129,0.2); }
         .satici-ol-btn:hover { background: #059669; }
-        .satici-giris-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
-        .satici-giris-btn:hover { background: #f97316; color: #fff; }
+        .musteri-giris-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
+        .musteri-giris-btn:hover { background: #f97316; color: #fff; }
+
+        /* Gizli Yönetici Menüsü (Açılır Menü) */
+        .admin-dropdown { position: relative; display: inline-block; }
+        .admin-toggle-btn { background: #0f172a; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+        .admin-menu-content { display: none; position: absolute; right: 0; background-color: #fff; min-width: 140px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; border: 1px solid #e2e8f0; }
+        .admin-menu-content a { color: #0f172a; padding: 10px 12px; text-decoration: none; display: block; font-size: 11px; font-weight: 700; }
+        .admin-menu-content a:hover { background: #f1f5f9; color: #f97316; }
+        .admin-dropdown:hover .admin-menu-content { display: block; }
 
         .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 35px 20px; text-align: center; }
         .hero-section h1 { font-size: 22px; font-weight: 900; color: #0f172a; margin-bottom: 6px; }
@@ -50,11 +58,15 @@
         .rest-puanlar { display: flex; gap: 8px; font-size: 10px; color: #475569; font-weight: 600; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; }
 
+        /* Sabit Sepet Çubuğu */
+        .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); display: none; }
+        .floating-cart button { background: #f97316; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .form-group { margin-bottom: 10px; text-align: left; }
         .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 3px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; font-size: 12px; outline: none; }
+        .form-group input, .form-group textarea { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; font-size: 12px; outline: none; }
         .form-group input:focus { border-color: #f97316; }
 
         .footer { text-align: center; margin-top: 40px; padding: 20px 0; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; }
@@ -67,7 +79,16 @@
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
         <div class="header-buttons">
             <button type="button" class="btn-small satici-ol-btn" onclick="document.getElementById('saticiModal').style.display='flex'"><i class="fa-solid fa-store"></i> Satıcı Ol</button>
-            <a href="satici-giris.html" class="btn-small satici-giris-btn"><i class="fa-solid fa-right-to-bracket"></i> Satıcı Giriş</a>
+            <button type="button" class="btn-small musteri-giris-btn" onclick="musteriGirisAc()"><i class="fa-solid fa-user"></i> <span id="musteriAdText">Giriş Yap</span></button>
+            
+            <!-- Gizli Yönetici Açılır Menüsü -->
+            <div class="admin-dropdown">
+                <button class="admin-toggle-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                <div class="admin-menu-content">
+                    <a href="panel.html"><i class="fa-solid fa-lock"></i> Süper Yönetici</a>
+                    <a href="satici-giris.html"><i class="fa-solid fa-store"></i> Satıcı Giriş</a>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -93,14 +114,35 @@
         </div>
     </div>
 
+    <!-- Sabit Sepet Çubuğu -->
+    <div id="floatingCart" class="floating-cart">
+        <div>
+            <strong id="cartCount">0 Ürün</strong> | <span id="cartTotal">0.00 ₺</span>
+        </div>
+        <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
+    </div>
+
+    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
+    <div id="musteriModal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-user-check" style="color:#f97316;"></i> Müşteri Girişi & Konum</h3>
+            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="mAd" placeholder="Adınız Soyadınız"></div>
+            <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="mTel" placeholder="05XXXXXXXXX"></div>
+            <div class="form-group"><label>Teslimat Adresi / Konum *</label><textarea id="mAdres" rows="2" placeholder="Mahalle, Cadde, Sokak, No..."></textarea></div>
+            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Bilgileri Kaydet ve Devam Et</button>
+            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
+        </div>
+    </div>
+
+    <!-- SATICI OL MODALI -->
     <div id="saticiModal" class="modal">
         <div class="modal-content">
             <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
             <div class="form-group"><label>Yetkili Ad Soyad *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
             <div class="form-group"><label>Telefon Numaranız *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori / Faaliyet Alanı *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza, Çiğ Köfte"></div>
-            <div class="form-group"><label>Satıcı Paneli İçin Şifre Belirle *</label><input type="password" id="basvuruSifre" placeholder="Şifreniz"></div>
+            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza, Çiğ Köfte"></div>
+            <div class="form-group"><label>Satıcı Paneli Şifresi *</label><input type="password" id="basvuruSifre" placeholder="Şifreniz"></div>
             <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</button>
             <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
         </div>
@@ -121,11 +163,119 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        // Müşteri Giriş Kontrolü
+        window.addEventListener('DOMContentLoaded', () => {
+            const mTel = localStorage.getItem('musteriTel');
+            const mAd = localStorage.getItem('musteriAd');
+            if(mAd) {
+                document.getElementById('musteriAdText').innerText = mAd.split(' ')[0];
+            }
+            sepetiGuncelleUI();
+        });
+
+        function musteriGirisAc() {
+            document.getElementById('musteriModal').style.display = 'flex';
+            if(localStorage.getItem('musteriAd')) {
+                document.getElementById('mAd').value = localStorage.getItem('musteriAd');
+                document.getElementById('mTel').value = localStorage.getItem('musteriTel');
+                document.getElementById('mAdres').value = localStorage.getItem('musteriAdres');
+            }
+        }
+
+        function musteriKaydet() {
+            const ad = document.getElementById('mAd').value.trim();
+            const tel = document.getElementById('mTel').value.trim();
+            const adres = document.getElementById('mAdres').value.trim();
+
+            if(!ad || !tel || !adres) { alert("Lütfen ad, telefon ve konum adresinizi eksiksiz doldurun."); return; }
+
+            localStorage.setItem('musteriAd', ad);
+            localStorage.setItem('musteriTel', tel);
+            localStorage.setItem('musteriAdres', adres);
+            document.getElementById('musteriAdText').innerText = ad.split(' ')[0];
+            document.getElementById('musteriModal').style.display = 'none';
+            alert("Müşteri bilgileri ve konum kaydedildi!");
+        }
+
+        // Sepet Mantığı ve Çoklu Restoran Koruma
+        function sepeteUrunEkle(restoranId, restoranAdi, urunAdi, fiyat, gorsel) {
+            let aktifMusteri = localStorage.getItem('musteriTel');
+            if(!aktifMusteri) {
+                alert("Sipariş verebilmek için lütfen önce giriş yapın ve konumunuzu belirtin!");
+                musteriGirisAc();
+                return;
+            }
+
+            let sepet = JSON.parse(localStorage.getItem('aktifSepet')) || { restoranId: '', restoranAdi: '', urunler: [] };
+
+            if(sepet.restoranId && sepet.restoranId !== restoranId) {
+                if(confirm("Sepetinizde başka bir restorana ait ürünler var. Yeni restorandan ürün eklemek için eski sepetiniz temizlenecek. Onaylıyor musunuz?")) {
+                    sepet = { restoranId: restoranId, restoranAdi: restoranAdi, urunler: [] };
+                } else {
+                    return;
+                }
+            }
+
+            sepet.restoranId = restoranId;
+            sepet.restoranAdi = restoranAdi;
+            
+            // Ürün zaten var mı kontrol et
+            let mevcutUrun = sepet.urunler.find(u => u.ad === urunAdi);
+            if(mevcutUrun) {
+                mevcutUrun.adet += 1;
+            } else {
+                sepet.urunler.push({ ad: urunAdi, fiyat: parseFloat(fiyat), adet: 1, gorsel: gorsel });
+            }
+
+            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
+            sepetiGuncelleUI();
+            alert(urunAdi + " sepete eklendi!");
+        }
+
+        function sepetiGuncelleUI() {
+            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
+            const cartBar = document.getElementById('floatingCart');
+            if(sepet && sepet.urunler && sepet.urunler.length > 0) {
+                let toplamAdet = 0;
+                let toplam Tutar = 0;
+                sepet.urunler.forEach(u => {
+                    toplamAdet += u.adet;
+                    toplamTutar += (u.fiyat * u.adet);
+                });
+                document.getElementById('cartCount').innerText = toplamAdet + ' Ürün (' + sepet.restoranAdi + ')';
+                document.getElementById('cartTotal').innerText = toplamTutar.toFixed(2) + ' ₺';
+                cartBar.style.display = 'flex';
+            } else {
+                cartBar.style.display = 'none';
+            }
+        }
+
+        function sepetiAc() {
+            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
+            if(!sepet || sepet.urunler.length === 0) { alert("Sepetiniz boş."); return; }
+
+            let mesaj = "--- SEPETİNİZ (" + sepet.restoranAdi + ") ---\n\n";
+            let toplam = 0;
+            sepet.urunler.forEach(u => {
+                let t = u.fiyat * u.adet;
+                toplam += t;
+                mesaj += `${u.ad} x ${u.adet} = ${t.toFixed(2)} ₺\n`;
+            });
+            mesaj += `\nToplam Tutar: ${toplam.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\nSiparişi onaylıyor musunuz?`;
+
+            if(confirm(mesaj)) {
+                alert("Siparişiniz başarıyla alındı! Restoran hazırlamaya başladı.");
+                localStorage.removeItem('aktifSepet');
+                sepetiGuncelleUI();
+            }
+        }
+
+        // Kategoriler ve İşletmeler Listesi
         db.ref('categories').on('value', (snapshot) => {
             const slider = document.getElementById('dynamicCategories');
             slider.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { slider.innerHTML = '<div style="padding:10px; font-size:12px; color:#64748b;">Henüz kategori eklenmemiş.</div>'; return; }
+            if(!data) { slider.innerHTML = '<div style="padding:10px; font-size:12px; color:#64748b;">Kategori yok.</div>'; return; }
             const sortedKeys = Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99));
             sortedKeys.forEach(key => {
                 const kat = data[key];
@@ -152,7 +302,7 @@
         db.ref('active_restaurants').on('value', (snapshot) => {
             const container = document.getElementById('dynamicRestaurants');
             const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="padding:10px; font-size:12px; color:#64748b;">Henüz aktif işletme bulunmuyor.</div>'; return; }
+            if(!data) { container.innerHTML = '<div style="padding:10px; font-size:12px; color:#64748b;">İşletme yok.</div>'; return; }
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
@@ -180,19 +330,13 @@
             const kat = document.getElementById('basvuruKategori').value.trim();
             const sifre = document.getElementById('basvuruSifre').value.trim();
 
-            if(!isletme || !yetkili || !tel || !sifre) { alert("Lütfen tüm zorunlu alanları doldurun."); return; }
+            if(!isletme || !yetkili || !tel || !sifre) { alert("Tüm alanları doldurun."); return; }
 
             const basvuruId = 'BASVURU-' + Date.now();
             db.ref('seller_applications/' + basvuruId).set({
-                id: basvuruId,
-                isletmeAdi: isletme,
-                yetkiliAdi: yetkili,
-                telefon: tel,
-                kategori: kat,
-                sifre: sifre,
-                tarih: new Date().toLocaleDateString('tr-TR')
+                id: basvuruId, isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, sifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
             }).then(() => {
-                alert("Başvurunuz alındı! Onaylandığında belirlediğiniz şifre ile satıcı paneline giriş yapabilirsiniz.");
+                alert("Başvurunuz alındı!");
                 document.getElementById('saticiModal').style.display = 'none';
             });
         }

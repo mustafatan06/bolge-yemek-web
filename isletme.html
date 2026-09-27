@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; }
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
@@ -21,12 +21,18 @@
         .section-title { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-left: 4px solid #f97316; padding-left: 8px; }
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
-        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; }
+        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .menu-card-top { display: flex; }
         .menu-item-card img { width: 100px; height: 100px; object-fit: cover; background: #f1f5f9; }
         .menu-info { padding: 12px; display: flex; flex-direction: column; justify-content: center; flex: 1; }
         .menu-info h4 { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
         .menu-info p { font-size: 11px; color: #64748b; margin-bottom: 6px; }
         .menu-info span { font-size: 13px; font-weight: 800; color: #f97316; }
+        .add-cart-btn { background: #f97316; color: white; border: none; padding: 8px; width: 100%; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; }
+        .add-cart-btn:hover { background: #ea580c; }
+
+        .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); display: none; }
+        .floating-cart button { background: #f97316; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -51,6 +57,14 @@
         </div>
     </div>
 
+    <!-- Sabit Sepet Çubuğu -->
+    <div id="floatingCart" class="floating-cart">
+        <div>
+            <strong id="cartCount">0 Ürün</strong> | <span id="cartTotal">0.00 ₺</span>
+        </div>
+        <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
@@ -68,11 +82,13 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const isletmeId = urlParams.get('id');
+        let aktifRestoranAdi = "";
 
         if(isletmeId) {
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
                 const r = snapshot.val();
                 if(r) {
+                    aktifRestoranAdi = r.ad;
                     document.getElementById('restAdi').innerText = r.ad;
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzetler') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
@@ -90,17 +106,95 @@
                     const u = data[key];
                     html += `
                         <div class="menu-item-card">
-                            <img src="${u.gorsel}" alt="${u.ad}">
-                            <div class="menu-info">
-                                <h4>${u.ad}</h4>
-                                <p>${u.aciklama || ''}</p>
-                                <span>${u.fiyat} ₺</span>
+                            <div class="menu-card-top">
+                                <img src="${u.gorsel}" alt="${u.ad}">
+                                <div class="menu-info">
+                                    <h4>${u.ad}</h4>
+                                    <p>${u.aciklama || ''}</p>
+                                    <span>${u.fiyat} ₺</span>
+                                </div>
                             </div>
+                            <button class="add-cart-btn" onclick="sepeteUrunEkle('${isletmeId}', '${aktifRestoranAdi}', '${u.ad}', '${u.fiyat}', '${u.gorsel}')"><i class="fa-solid fa-cart-plus"></i> Sepete Ekle</button>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            sepetiGuncelleUI();
+        });
+
+        function sepeteUrunEkle(restoranId, restoranAdi, urunAdi, fiyat, gorsel) {
+            let aktifMusteri = localStorage.getItem('musteriTel');
+            if(!aktifMusteri) {
+                alert("Sipariş verebilmek için lütfen ana sayfadan veya menüden müşteri girişi yapın ve konum belirtin!");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            let sepet = JSON.parse(localStorage.getItem('aktifSepet')) || { restoranId: '', restoranAdi: '', urunler: [] };
+
+            if(sepet.restoranId && sepet.restoranId !== restoranId) {
+                if(confirm("Sepetinizde başka bir restorana ait ürünler var. Yeni restorandan ürün eklemek için eski sepetiniz temizlenecek. Onaylıyor musunuz?")) {
+                    sepet = { restoranId: restoranId, restoranAdi: restoranAdi, urunler: [] };
+                } else {
+                    return;
+                }
+            }
+
+            sepet.restoranId = restoranId;
+            sepet.restoranAdi = restoranAdi;
+            
+            let mevcutUrun = sepet.urunler.find(u => u.ad === urunAdi);
+            if(mevcutUrun) {
+                mevcutUrun.adet += 1;
+            } else {
+                sepet.urunler.push({ ad: urunAdi, fiyat: parseFloat(fiyat), adet: 1, gorsel: gorsel });
+            }
+
+            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
+            sepetiGuncelleUI();
+            alert(urunAdi + " sepete eklendi!");
+        }
+
+        function sepetiGuncelleUI() {
+            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
+            const cartBar = document.getElementById('floatingCart');
+            if(sepet && sepet.urunler && sepet.urunler.length > 0) {
+                let toplamAdet = 0;
+                let toplamTutar = 0;
+                sepet.urunler.forEach(u => {
+                    toplamAdet += u.adet;
+                    toplamTutar += (u.fiyat * u.adet);
+                });
+                document.getElementById('cartCount').innerText = toplamAdet + ' Ürün (' + sepet.restoranAdi + ')';
+                document.getElementById('cartTotal').innerText = toplamTutar.toFixed(2) + ' ₺';
+                cartBar.style.display = 'flex';
+            } else {
+                cartBar.style.display = 'none';
+            }
+        }
+
+        function sepetiAc() {
+            const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
+            if(!sepet || sepet.urunler.length === 0) { alert("Sepetiniz boş."); return; }
+
+            let mesaj = "--- SEPETİNİZ (" + sepet.restoranAdi + ") ---\n\n";
+            let toplam = 0;
+            sepet.urunler.forEach(u => {
+                let t = u.fiyat * u.adet;
+                toplam += t;
+                mesaj += `${u.ad} x ${u.adet} = ${t.toFixed(2)} ₺\n`;
+            });
+            mesaj += `\nToplam Tutar: ${toplam.toFixed(2)} ₺\nTeslimat Adresi: ${localStorage.getItem('musteriAdres')}\n\nSiparişi onaylıyor musunuz?`;
+
+            if(confirm(mesaj)) {
+                alert("Siparişiniz başarıyla alındı! Restoran hazırlamaya başladı.");
+                localStorage.removeItem('aktifSepet');
+                sepetiGuncelleUI();
+            }
         }
     </script>
 </body>

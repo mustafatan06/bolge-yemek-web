@@ -71,7 +71,7 @@
         <div class="sabit-sepet-info">
             <i class="fa-solid fa-basket-shopping" style="color:#f97316;"></i> <span id="sepetAdetYazi">0 Ürün</span> | <span id="sepetTutarYazi" style="color:#f97316; font-size:14px;">0 ₺</span>
         </div>
-        <button class="sabit-sepet-btn" onclick="sepetiOnaylaModalAc()">Sepeti Onayla & Sipariş Ver</button>
+        <button type="button" class="sabit-sepet-btn" onclick="sepetiOnaylaModalAc()">Sepeti Onayla & Sipariş Ver</button>
     </div>
 
     <!-- ÜRÜN DETAY MODALI -->
@@ -108,7 +108,7 @@
                 <input type="text" id="modalSiparisNotu" placeholder="Örn: Bol soslu olsun." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11px;">
             </div>
 
-            <!-- AYRI BAĞIMSIZ KAPINOYA BIRAK SEÇENEĞİ -->
+            <!-- AYRI BAĞIMSIZ KAPIYA BIRAK SEÇENEĞİ -->
             <div style="background:#f1f5f9; padding:10px; border-radius:8px; margin-bottom:12px;">
                 <label style="display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#0f172a; cursor:pointer; margin:0;">
                     <input type="checkbox" id="kapıyaBirakChk" style="width:15px; height:15px; accent-color:#f97316;"> 
@@ -237,7 +237,9 @@
             inp.value = val;
         }
 
-        function sepeteUrunEkleOnayla() {
+        function sepeteUrunEkleOnayla(event) {
+            if(event) event.preventDefault();
+            
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             if(!musteriAdi) {
                 alert("Sipariş verebilmek için lütfen ana sayfadan giriş yapın / kaydolun!");

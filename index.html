@@ -15,20 +15,12 @@
         .logo .bolge { color: #0f172a; }
         .logo .yemek { color: #f97316; }
         
-        .header-buttons { display: flex; gap: 8px; align-items: center; position: relative; }
+        .header-buttons { display: flex; gap: 8px; align-items: center; }
         .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; transition: 0.3s; white-space: nowrap; }
         .satici-ol-btn { background: #10b981; color: white; border: none; box-shadow: 0 2px 10px rgba(16,185,129,0.2); }
         .satici-ol-btn:hover { background: #059669; }
         .musteri-giris-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
         .musteri-giris-btn:hover { background: #f97316; color: #fff; }
-
-        /* Gizli Yönetici Menüsü (Açılır Menü) */
-        .admin-dropdown { position: relative; display: inline-block; }
-        .admin-toggle-btn { background: #0f172a; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
-        .admin-menu-content { display: none; position: absolute; right: 0; background-color: #fff; min-width: 140px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; border: 1px solid #e2e8f0; }
-        .admin-menu-content a { color: #0f172a; padding: 10px 12px; text-decoration: none; display: block; font-size: 11px; font-weight: 700; }
-        .admin-menu-content a:hover { background: #f1f5f9; color: #f97316; }
-        .admin-dropdown:hover .admin-menu-content { display: block; }
 
         .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 35px 20px; text-align: center; }
         .hero-section h1 { font-size: 22px; font-weight: 900; color: #0f172a; margin-bottom: 6px; }
@@ -58,7 +50,6 @@
         .rest-puanlar { display: flex; gap: 8px; font-size: 10px; color: #475569; font-weight: 600; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; }
 
-        /* Sabit Sepet Çubuğu */
         .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; color: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); display: none; }
         .floating-cart button { background: #f97316; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer; }
 
@@ -80,15 +71,6 @@
         <div class="header-buttons">
             <button type="button" class="btn-small satici-ol-btn" onclick="document.getElementById('saticiModal').style.display='flex'"><i class="fa-solid fa-store"></i> Satıcı Ol</button>
             <button type="button" class="btn-small musteri-giris-btn" onclick="musteriGirisAc()"><i class="fa-solid fa-user"></i> <span id="musteriAdText">Giriş Yap</span></button>
-            
-            <!-- Gizli Yönetici Açılır Menüsü -->
-            <div class="admin-dropdown">
-                <button class="admin-toggle-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                <div class="admin-menu-content">
-                    <a href="panel.html"><i class="fa-solid fa-lock"></i> Süper Yönetici</a>
-                    <a href="satici-giris.html"><i class="fa-solid fa-store"></i> Satıcı Giriş</a>
-                </div>
-            </div>
         </div>
     </header>
 
@@ -163,9 +145,7 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        // Müşteri Giriş Kontrolü
         window.addEventListener('DOMContentLoaded', () => {
-            const mTel = localStorage.getItem('musteriTel');
             const mAd = localStorage.getItem('musteriAd');
             if(mAd) {
                 document.getElementById('musteriAdText').innerText = mAd.split(' ')[0];
@@ -197,47 +177,12 @@
             alert("Müşteri bilgileri ve konum kaydedildi!");
         }
 
-        // Sepet Mantığı ve Çoklu Restoran Koruma
-        function sepeteUrunEkle(restoranId, restoranAdi, urunAdi, fiyat, gorsel) {
-            let aktifMusteri = localStorage.getItem('musteriTel');
-            if(!aktifMusteri) {
-                alert("Sipariş verebilmek için lütfen önce giriş yapın ve konumunuzu belirtin!");
-                musteriGirisAc();
-                return;
-            }
-
-            let sepet = JSON.parse(localStorage.getItem('aktifSepet')) || { restoranId: '', restoranAdi: '', urunler: [] };
-
-            if(sepet.restoranId && sepet.restoranId !== restoranId) {
-                if(confirm("Sepetinizde başka bir restorana ait ürünler var. Yeni restorandan ürün eklemek için eski sepetiniz temizlenecek. Onaylıyor musunuz?")) {
-                    sepet = { restoranId: restoranId, restoranAdi: restoranAdi, urunler: [] };
-                } else {
-                    return;
-                }
-            }
-
-            sepet.restoranId = restoranId;
-            sepet.restoranAdi = restoranAdi;
-            
-            // Ürün zaten var mı kontrol et
-            let mevcutUrun = sepet.urunler.find(u => u.ad === urunAdi);
-            if(mevcutUrun) {
-                mevcutUrun.adet += 1;
-            } else {
-                sepet.urunler.push({ ad: urunAdi, fiyat: parseFloat(fiyat), adet: 1, gorsel: gorsel });
-            }
-
-            localStorage.setItem('aktifSepet', JSON.stringify(sepet));
-            sepetiGuncelleUI();
-            alert(urunAdi + " sepete eklendi!");
-        }
-
         function sepetiGuncelleUI() {
             const sepet = JSON.parse(localStorage.getItem('aktifSepet'));
             const cartBar = document.getElementById('floatingCart');
             if(sepet && sepet.urunler && sepet.urunler.length > 0) {
                 let toplamAdet = 0;
-                let toplam Tutar = 0;
+                let toplamTutar = 0;
                 sepet.urunler.forEach(u => {
                     toplamAdet += u.adet;
                     toplamTutar += (u.fiyat * u.adet);
@@ -270,7 +215,6 @@
             }
         }
 
-        // Kategoriler ve İşletmeler Listesi
         db.ref('categories').on('value', (snapshot) => {
             const slider = document.getElementById('dynamicCategories');
             slider.innerHTML = '';

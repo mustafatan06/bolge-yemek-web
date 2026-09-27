@@ -2,41 +2,41 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bölge Yemek | Online Yemek Pazar Yeri</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #f8fafc; color: #1e293b; padding-bottom: 70px; overflow-x: hidden; }
 
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .logo { font-size: 18px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
+        .logo { font-size: 17px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         
-        .header-right { display: flex; gap: 6px; align-items: center; }
-        .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; border: none; white-space: nowrap; }
+        .header-right { display: flex; gap: 5px; align-items: center; }
+        .btn-small { padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; border: none; white-space: nowrap; }
         .satici-menu-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
         .profil-btn { background: #10b981; color: #fff; }
 
         .dropdown { position: relative; display: inline-block; }
-        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 150px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; margin-top: 5px; }
-        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 9px 12px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 140px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; margin-top: 5px; }
+        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 8px 10px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
         .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f5f9; color: #f97316; }
         .dropdown.active .dropdown-content { display: block; }
 
         .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 25px 15px; text-align: center; }
-        .hero-section h1 { font-size: 19px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+        .hero-section h1 { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
         .hero-section p { font-size: 11px; color: #64748b; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 12px; }
-        .section-title { font-size: 15px; font-weight: 800; color: #0f172a; margin: 20px 0 10px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
+        .section-title { font-size: 14px; font-weight: 800; color: #0f172a; margin: 18px 0 10px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
         
         .categories-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .categories-slider::-webkit-scrollbar { display: none; }
 
-        .category-card { min-width: 100px; width: 100px; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
-        .cat-img { width: 100%; height: 75px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
+        .category-card { min-width: 95px; width: 95px; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .cat-img { width: 100%; height: 70px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
         .cat-body { padding: 6px; text-align: center; }
         .cat-body h3 { font-size: 10px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .cat-body span { font-size: 8px; color: #64748b; }
@@ -44,17 +44,17 @@
         .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
         .restaurant-card { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; box-shadow: 0 3px 12px rgba(0,0,0,0.03); }
-        .rest-logo { width: 90px; height: 90px; object-fit: cover; background: #f1f5f9; }
+        .rest-logo { width: 85px; height: 85px; object-fit: cover; background: #f1f5f9; }
         .rest-info { padding: 10px; display: flex; flex-direction: column; justify-content: center; }
-        .rest-info h4 { font-size: 13px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
+        .rest-info h4 { font-size: 12px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
         .rest-info p { font-size: 10px; color: #64748b; margin-bottom: 4px; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 10px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 380px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 360px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
         .form-group { margin-bottom: 10px; text-align: left; }
         .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 3px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
 
         .footer { text-align: center; margin-top: 30px; padding: 15px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
@@ -66,10 +66,10 @@
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
         <div class="header-right">
             <div id="musteriProfilAlani">
-                <button class="btn-small profil-btn" onclick="openMusteriModal()"><i class="fa-solid fa-user"></i> Giriş / Kayıt Ol</button>
+                <button class="btn-small profil-btn" onclick="openMusteriModal()"><i class="fa-solid fa-user"></i> Giriş / Kayıt</button>
             </div>
             <div class="dropdown" id="saticiDropdown">
-                <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı <i class="fa-solid fa-chevron-down" style="font-size:8px;"></i></button>
+                <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı <i class="fa-solid fa-chevron-down" style="font-size:7px;"></i></button>
                 <div class="dropdown-content">
                     <a href="satici-giris.html"><i class="fa-solid fa-right-to-bracket" style="color:#f97316;"></i> Satıcı Girişi</a>
                     <button type="button" onclick="openSaticiModal()"><i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Satıcı Ol</button>
@@ -79,35 +79,36 @@
     </header>
 
     <div class="hero-section">
-        <h1 id="heroBaslikYuklenen">Ankara'nın En Lezzetli Pazar Yeri</h1>
+        <h1 id="heroBaslikYuklenen">Altındağ'ın En Lezzetli Pazar Yeri</h1>
         <p id="heroSloganYuklenen">Yüzlerce lezzet, binlerce restoran kapında!</p>
     </div>
 
     <div class="container">
-        <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Kategoriler</h3>
+        <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Yemek Kategorileri</h3>
         <div class="categories-slider" id="dynamicCategories">
             <div style="font-size: 11px; color: #64748b;">Yükleniyor...</div>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-store"></i> Aktif İşletmeler</h3>
+        <h3 class="section-title"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
         <div class="restaurants-grid" id="dynamicRestaurants">
             <div style="font-size: 11px; color: #64748b;">Yükleniyor...</div>
         </div>
 
         <div class="footer">
             <p>&copy; 2026 Bölge Yemek. Tüm hakları saklıdır.</p>
-            <span>TAN MEDYA TASARIM</span>
+            <span>TAN MEDYA TASARIM Tarafından Kurulmuştur.</span>
         </div>
     </div>
 
-    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
+    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI (İsim, Soyisim, Telefon, Mail, Adres) -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
-            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Müşteri Giriş / Kayıt</h3>
-            <p style="font-size: 10px; color: #64748b; margin-bottom: 10px;">Sipariş verebilmek için bilgilerinizi giriniz.</p>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-user" style="color:#10b981;"></i> Müşteri Giriş / Kayıt Ol</h3>
             <div class="form-group"><label>Ad Soyad *</label><input type="text" id="musteriAd" placeholder="Adınız Soyadınız"></div>
             <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="musteriTel" placeholder="05XXXXXXXXX"></div>
-            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Devam Et</button>
+            <div class="form-group"><label>E-posta Adresi *</label><input type="email" id="musteriMail" placeholder="ornek@mail.com"></div>
+            <div class="form-group"><label>Teslimat Adresi *</label><textarea id="musteriAdres" rows="2" placeholder="Mahalle, sokak, bina no, daire..."></textarea></div>
+            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Kaydet ve Devam Et</button>
             <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:5px; cursor:pointer; margin-top:4px; font-size:11px;">İptal</button>
         </div>
     </div>
@@ -115,7 +116,7 @@
     <!-- SATICI BAŞVURU MODALI -->
     <div id="saticiModal" class="modal">
         <div class="modal-content">
-            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Satıcı Başvurusu</h3>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
             <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
             <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
@@ -140,20 +141,24 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        // Müşteri oturum kontrolü
         const aktifMusteri = localStorage.getItem('aktifMusteriAdi');
         if(aktifMusteri) {
-            document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:11px; font-weight:700; color:#0f172a;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
+            document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:10px; font-weight:700; color:#0f172a; background:#f1f5f9; padding:5px 8px; border-radius:6px; display:inline-block;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
         }
 
         function openMusteriModal() { document.getElementById('musteriModal').style.display = 'flex'; }
         function musteriKaydet() {
             const ad = document.getElementById('musteriAd').value.trim();
             const tel = document.getElementById('musteriTel').value.trim();
-            if(!ad || !tel) { alert("Lütfen adınızı ve telefonunuzu yazın."); return; }
+            const mail = document.getElementById('musteriMail').value.trim();
+            const adres = document.getElementById('musteriAdres').value.trim();
+
+            if(!ad || !tel || !mail || !adres) { alert("Lütfen tüm alanları (Ad Soyad, Telefon, E-posta, Adres) doldurun."); return; }
             localStorage.setItem('aktifMusteriAdi', ad);
             localStorage.setItem('aktifMusteriTel', tel);
-            alert("Giriş yapıldı! Artık sipariş verebilirsiniz.");
+            localStorage.setItem('aktifMusteriMail', mail);
+            localStorage.setItem('aktifMusteriAdres', adres);
+            alert("Kayıt ve giriş başarılı!");
             document.getElementById('musteriModal').style.display = 'none';
             location.reload();
         }

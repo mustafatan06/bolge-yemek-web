@@ -38,17 +38,30 @@
             <button class="logout-btn" onclick="localStorage.clear(); window.location.href='satici-giris.html';">Çıkış</button>
         </div>
 
+        <!-- İŞLETME BİLGİLERİ VE LOGO DÜZENLEME ALANI -->
+        <div class="card">
+            <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> İşletme Bilgileri & Logo Güncelle</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>İşletme Adı</label><input type="text" id="dukkanAdi"></div>
+                <div class="form-group"><label>Telefon</label><input type="text" id="dukkanTel"></div>
+                <div class="form-group"><label>Yeni Şifre</label><input type="password" id="dukkanSifre" placeholder="Boş bırakırsanız değişmez"></div>
+                <div class="form-group"><label>İşletme Logosu (Dosya Seç)</label><input type="file" id="dukkanLogo" accept="image/*"></div>
+            </div>
+            <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Bilgileri Kaydet</button>
+        </div>
+
         <!-- GELEN SİPARİŞLER (SESLİ UYARI SİSTEMİ) -->
         <div class="card" style="border: 2px solid #10b981; background: #f0fdf4;">
             <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Gelen Canlı Siparişler (Sesli Bildirim Aktif)</h3>
             <table>
-                <thead><tr><th>Müşteri</th><th>Ürün / Adet</th><th>Tutar</th><th>Telefon</th><th>İşlem</th></tr></thead>
+                <thead><tr><th>Müşteri</th><th>Ürün / Adet</th><th>Tutar</th><th>Telefon & Adres</th><th>İşlem</th></tr></thead>
                 <tbody id="gelenSiparislerListesi"><tr><td colspan="5" style="color:#64748b;">Yeni sipariş bekleniyor...</td></tr></tbody>
             </table>
         </div>
 
+        <!-- YENİ ÜRÜN EKLEME -->
         <div class="card">
-            <h3>Yeni Ürün Ekle</h3>
+            <h3>Yeni Ürün Ekle (Onaya Gider)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Zurna Dürüm"></div>
                 <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
@@ -58,6 +71,7 @@
             <button type="button" class="btn-primary" onclick="urunEkle()">Onaya Gönder</button>
         </div>
 
+        <!-- YAYINDAKİ ÜRÜNLER -->
         <div class="card">
             <h3>Yayındaki Ürünler</h3>
             <table><thead><tr><th>Görsel</th><th>Ad</th><th>Fiyat</th><th>İşlem</th></tr></thead><tbody id="menuListesi"></tbody></table>
@@ -82,9 +96,47 @@
         const saticiKey = localStorage.getItem('aktifSaticiKey');
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
-        document.getElementById('isletmeAdiBaslik').innerText = saticiAdi || 'İşletme';
 
-        // BİP SESİ ÇALMA FONKSİYONU
+        // İşletme mevcut bilgilerini çek
+        db.ref('active_restaurants/' + saticiKey).once('value').then(snapshot => {
+            const r = snapshot.val();
+            if(r) {
+                document.getElementById('isletmeAdiBaslik').innerText = r.ad;
+                document.getElementById('dukkanAdi').value = r.ad;
+                document.getElementById('dukkanTel').value = r.telefon;
+            }
+        });
+
+        // İŞLETME BİLGİLERİ VE LOGO GÜNCELLEME
+        function bilgileriGuncelle() {
+            const yeniAd = document.getElementById('dukkanAdi').value.trim();
+            const yeniTel = document.getElementById('dukkanTel').value.trim();
+            const yeniSifre = document.getElementById('dukkanSifre').value.trim();
+            const logoInput = document.getElementById('dukkanLogo');
+
+            const guncellemeVerisi = { ad: yeniAd, telefon: yeniTel };
+            if(yeniSifre) guncellemeVerisi.sifre = yeniSifre;
+
+            if(logoInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.readAsDataURL(logoInput.files[0]);
+                reader.onload = function(e) {
+                    guncellemeVerisi.gorsel = e.target.result;
+                    db.ref('active_restaurants/' + saticiKey).update(guncellemeVerisi).then(() => {
+                        alert("İşletme bilgileri ve logo güncellendi!");
+                        localStorage.setItem('aktifSaticiAdi', yeniAd);
+                        location.reload();
+                    });
+                };
+            } else {
+                db.ref('active_restaurants/' + saticiKey).update(guncellemeVerisi).then(() => {
+                    alert("İşletme bilgileri güncellendi!");
+                    localStorage.setItem('aktifSaticiAdi', yeniAd);
+                    location.reload();
+                });
+            }
+        }
+
         function bipSesiCal() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -98,7 +150,6 @@
             } catch(e) {}
         }
 
-        // CANLI SİPARİŞ DİNLEME VE SESLİ UYARI
         db.ref('orders/' + saticiKey).on('value', snapshot => {
             const tbody = document.getElementById('gelenSiparislerListesi');
             tbody.innerHTML = '';
@@ -114,63 +165,37 @@
                         <td><strong>${o.musteriAdi}</strong></td>
                         <td>${o.urunAdi} (Adet: ${o.adet})</td>
                         <td style="color:#f97316; font-weight:800;">${o.toplamFiyat} ₺</td>
-                        <td>${o.musteriTel}</td>
+                        <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
                         <td><button class="success-btn" onclick="db.ref('orders/${saticiKey}/${sKey}').remove()">Tamamla</button></td>
                     </tr>
                 `;
             });
         });
 
-        // GÖRSEL SEÇME VE ÜRÜN EKLEME (GÜNCELLENMİŞ HIZLI ÇÖZÜM)
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
             const fileInput = document.getElementById('urunDosya');
 
-            if(!ad || !fiyat) { alert("Lütfen ürün adı ve fiyatını yazın."); return; }
-            if(fileInput.files.length === 0) { alert("Lütfen bir ürün görseli seçin."); return; }
+            if(!ad || !fiyat) { alert("Ürün adı ve fiyatı zorunludur."); return; }
+            if(fileInput.files.length === 0) { alert("Lütfen ürün görseli seçin."); return; }
 
-            const file = fileInput.files[0];
             const reader = new FileReader();
-            
+            reader.readAsDataURL(fileInput.files[0]);
             reader.onload = function (e) {
-                const base64Gorsel = e.target.result;
                 const uId = 'urun_' + Date.now();
-                
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, 
-                    ad: ad, 
-                    fiyat: fiyat, 
-                    aciklama: aciklama || '', 
-                    gorsel: base64Gorsel, 
-                    isletmeAdi: saticiAdi
-                }).then(() => { 
-                    alert("Ürününüz başarıyla yönetici onayına gönderildi!"); 
-                    document.getElementById('urunAdi').value = '';
-                    document.getElementById('urunFiyat').value = '';
-                    document.getElementById('urunAciklama').value = '';
-                    document.getElementById('urunDosya').value = '';
-                }).catch(err => {
-                    alert("Hata oluştu: " + err.message);
-                });
+                    id: uId, ad, fiyat, aciklama: aciklama || '', gorsel: e.target.result, isletmeAdi: saticiAdi
+                }).then(() => { alert("Onaya gönderildi!"); location.reload(); });
             };
-
-            reader.onerror = function() {
-                alert("Görsel okunurken bir hata oluştu. Lütfen başka bir görsel deneyin.");
-            };
-
-            reader.readAsDataURL(file);
         }
 
         db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {
             const tbody = document.getElementById('menuListesi'); 
             tbody.innerHTML = '';
             const data = snapshot.val(); 
-            if(!data) {
-                tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Yayında ürün yok.</td></tr>';
-                return;
-            }
+            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Ürün yok.</td></tr>'; return; }
             Object.keys(data).forEach(key => {
                 const u = data[key];
                 tbody.innerHTML += `<tr><td><img src="${u.gorsel}"></td><td><strong>${u.ad}</strong></td><td>${u.fiyat} ₺</td><td><button class="action-btn" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td></tr>`;

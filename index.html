@@ -104,16 +104,15 @@
         <button onclick="sepetiAc()">Sepete Git / Sipariş Ver</button>
     </div>
 
-    <!-- MÜŞTERİ KAYIT / DOĞRULAMA MODALI (Yemeksepeti Standartlarında) -->
+    <!-- MÜŞTERİ KAYIT / DOĞRULAMA MODALI -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
             <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:12px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-shield-halved" style="color:#f97316;"></i> Güvenli Müşteri Üyeliği</h3>
             
-            <!-- Adım 1: Bilgi Girişi -->
             <div id="adim1">
                 <div class="form-group"><label>Ad Soyad *</label><input type="text" id="mAd" placeholder="Adınız Soyadınız"></div>
                 <div class="form-group"><label>E-posta Adresi *</label><input type="email" id="mMail" placeholder="ornek@mail.com"></div>
-                <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="mTel" placeholder="05XXXXXXXXX"></div>
+                <div class="form-group"><label>Telefon Numarası (05XXXXXXXXX) *</label><input type="tel" id="mTel" placeholder="05XXXXXXXXX" maxlength="11"></div>
                 <div class="form-group"><label>Teslimat Adresi / Konum *</label><textarea id="mAdres" rows="2" placeholder="Mahalle, Cadde, Sokak, No..."></textarea></div>
                 
                 <div class="recaptcha-box" onclick="document.getElementById('robotCheck').checked = !document.getElementById('robotCheck').checked">
@@ -124,10 +123,9 @@
                 <button type="button" onclick="kodGonderAdimi()" style="width:100%; background:#f97316; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer;">Onay Kodu Gönder</button>
             </div>
 
-            <!-- Adım 2: E-posta / SMS Onay Kodu -->
             <div id="adim2" style="display:none; text-align:center;">
                 <p style="font-size:12px; color:#64748b; margin-bottom:15px;">E-posta adresinize gönderilen 6 haneli onay kodunu giriniz:<br><strong id="gonderilenMailInfo" style="color:#f97316;"></strong></p>
-                <div class="form-group"><label>Onay Kodu (Örn: 123456)</label><input type="text" id="girilenKod" placeholder="6 haneli kod" style="text-align:center; font-size:18px; letter-spacing:3px; font-weight:800;"></div>
+                <div class="form-group"><label>Onay Kodu</label><input type="text" id="girilenKod" placeholder="6 haneli kod" style="text-align:center; font-size:18px; letter-spacing:3px; font-weight:800;" maxlength="6"></div>
                 <button type="button" onclick="kodDogrulaVeKaydet()" style="width:100%; background:#10b981; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:5px;">Kodu Onayla ve Kaydı Tamamla</button>
                 <button type="button" onclick="geriDonAdim1()" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:8px; font-size:12px;">Bilgileri Düzenle</button>
             </div>
@@ -145,7 +143,7 @@
             <div class="form-group"><label>Telefon Numaranız *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
             <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza, Çiğ Köfte"></div>
             <div class="form-group"><label>Satıcı Paneli Şifresi *</label><input type="password" id="basvuruSifre" placeholder="Şifreniz"></div>
-            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</label>
+            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:11px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</button>
             <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
         </div>
     </div>
@@ -182,14 +180,9 @@
             document.getElementById('musteriModal').style.display = 'flex';
             document.getElementById('adim1').style.display = 'block';
             document.getElementById('adim2').style.display = 'none';
-            if(localStorage.getItem('musteriAd')) {
-                document.getElementById('mAd').value = localStorage.getItem('musteriAd');
-                document.getElementById('mMail').value = localStorage.getItem('musteriMail') || '';
-                document.getElementById('mTel').value = localStorage.getItem('musteriTel');
-                document.getElementById('mAdres').value = localStorage.getItem('musteriAdres');
-            }
         }
 
+        // Sıkı E-posta ve Telefon Doğrulama Kontrolü
         function kodGonderAdimi() {
             const ad = document.getElementById('mAd').value.trim();
             const mail = document.getElementById('mMail').value.trim();
@@ -197,18 +190,31 @@
             const adres = document.getElementById('mAdres').value.trim();
             const robot = document.getElementById('robotCheck').checked;
 
-            if(!ad || !mail || !tel || !adres) { alert("Lütfen tüm alanları eksiksiz doldurun."); return; }
+            if(!ad || !mail || !tel || !adres) { alert("Lütfen tüm zorunlu alanları doldurun."); return; }
+            
+            // E-posta geçerlilik kontrolü (@ ve . içermeli)
+            const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!mailRegex.test(mail)) {
+                alert("Lütfen geçerli bir e-posta adresi girin (Örn: ad soyad@mail.com).");
+                return;
+            }
+
+            // Telefon kontrolü (05 ile başlamalı ve 11 hane olmalı)
+            const telRegex = /^05\d{9}$/;
+            if(!telRegex.test(tel)) {
+                alert("Lütfen geçerli bir telefon numarası girin (05 ile başlamalı ve 11 haneli olmalıdır, örn: 05554443322).");
+                return;
+            }
+
             if(!robot) { alert("Lütfen 'Ben robot değilim' doğrulamasını işaretleyin."); return; }
 
-            // 6 haneli rastgele onay kodu üret
             uretilenKod = Math.floor(100000 + Math.random() * 900000).toString();
-            geciciMusteriVerisi = { ad, mail, tel, adres };
+            geciciMusteriVerisi = { ad, mail, tel, adres, tarih: new Date().toLocaleDateString('tr-TR') };
 
             document.getElementById('gonderilenMailInfo').innerText = mail;
             document.getElementById('adim1').style.display = 'none';
             document.getElementById('adim2').style.display = 'block';
 
-            // Gerçekçi simülasyon bildirimi (Geliştirici kolaylığı için alert ile kod gösterilir)
             alert("🔒 GÜVENLİK DOĞRULAMASI\nE-posta adresinize onay kodu gönderildi.\n(Test Onay Kodunuz: " + uretilenKod + ")");
         }
 
@@ -224,13 +230,19 @@
                 return;
             }
 
-            localStorage.setItem('musteriAd', geciciMusteriVerisi.ad);
-            localStorage.setItem('musteriMail', geciciMusteriVerisi.mail);
-            localStorage.setItem('musteriTel', geciciMusteriVerisi.tel);
-            localStorage.setItem('musteriAdres', geciciMusteriVerisi.adres);
+            const musteriId = 'musteri_' + Date.now();
+            
+            // Firebase veritabanına müşteriyi kalıcı olarak kaydet
+            db.ref('registered_customers/' + musteriId).set(geciciMusteriVerisi).then(() => {
+                localStorage.setItem('musteriId', musteriId);
+                localStorage.setItem('musteriAd', geciciMusteriVerisi.ad);
+                localStorage.setItem('musteriMail', geciciMusteriVerisi.mail);
+                localStorage.setItem('musteriTel', geciciMusteriVerisi.tel);
+                localStorage.setItem('musteriAdres', geciciMusteriVerisi.adres);
 
-            alert("Doğrulama başarılı! Hesabınız oluşturuldu.");
-            window.location.reload();
+                alert("Doğrulama başarılı! Hesabınız oluşturuldu ve sisteme kaydedildi.");
+                window.location.reload();
+            });
         }
 
         function sepetiGuncelleUI() {

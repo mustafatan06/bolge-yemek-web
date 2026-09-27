@@ -10,184 +10,161 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         body { background: #f1f5f9; color: #1e293b; display: flex; min-height: 100vh; }
 
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 99999; }
+        .login-box { background: #fff; padding: 30px; border-radius: 16px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .login-box h2 { font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 20px; }
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
+        .login-box button { width: 100%; background: #f97316; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+
         sidebar { width: 270px; background: #0f172a; color: #fff; display: flex; flex-direction: column; padding: 20px; }
-        .sidebar-brand { font-size: 19px; font-weight: 900; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 0.5px; }
+        .sidebar-brand { font-size: 18px; font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
         .sidebar-brand span { color: #f97316; }
-        .menu-item { padding: 12px 15px; color: #94a3b8; text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; transition: 0.3s; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+        .menu-item { padding: 11px 14px; color: #94a3b8; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; transition: 0.3s; }
         .menu-item:hover, .menu-item.active { background: #f97316; color: #fff; }
 
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: #fff; padding: 15px 25px; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
-        .top-bar h2 { font-size: 20px; font-weight: 800; color: #0f172a; }
-        .back-site-btn { background: rgba(249,115,22,0.1); color: #f97316; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; }
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; display: none; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: #fff; padding: 12px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .top-bar h2 { font-size: 18px; font-weight: 800; color: #0f172a; }
+        .back-site-btn { background: rgba(249,115,22,0.1); color: #f97316; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 12px; }
 
-        .card { background: #fff; border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; display: none; }
+        .card { background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: none; }
         .card.active-tab { display: block; }
-        .card h3 { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+        .card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
         
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; outline: none; }
-        .form-group input:focus { border-color: #f97316; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
 
-        .btn-primary { background: #f97316; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(249,115,22,0.3); }
+        .btn-primary { background: #f97316; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(249,115,22,0.2); }
         .btn-primary:hover { background: #ea580c; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
-        td img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
-        .action-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; }
-        .success-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
-        .edit-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
+        td img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; background: #f1f5f9; }
+        .action-btn { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; }
+        .success-btn { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; margin-right: 4px; }
+        .edit-btn { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: 600; font-size: 10px; margin-right: 4px; }
         
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; color: white; font-size: 18px; font-weight: 700; }
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; justify-content: center; align-items: center; color: white; font-size: 16px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <div id="loadingOverlay" class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i> İşlem Yapılıyor, Lütfen Bekleyin...</div>
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h2>Süper Admin Girişi</h2>
+            <input type="password" id="adminSifreInput" placeholder="Yönetici Şifrenizi Girin">
+            <button onclick="adminGirisYap()">Sisteme Giriş Yap</button>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i> İşlem Yapılıyor...</div>
 
     <sidebar>
         <div class="sidebar-brand">Bölge <span>Süper Admin</span></div>
-        <button class="menu-item active" onclick="tabDegistir('kategorilerTab', this)"><i class="fa-solid fa-utensils"></i> Kategorileri & Görselleri Yönet</button>
+        <button class="menu-item active" onclick="tabDegistir('kategorilerTab', this)"><i class="fa-solid fa-utensils"></i> Kategoriler & Görseller</button>
+        <button class="menu-item" onclick="tabDegistir('musterilerTab', this)"><i class="fa-solid fa-users"></i> Kayıtlı Müşteriler</button>
+        <button class="menu-item" onclick="tabDegistir('kuponlarTab', this)"><i class="fa-solid fa-ticket"></i> Kupon & İndirim Yönetimi</button>
         <button class="menu-item" onclick="tabDegistir('basvurularTab', this)"><i class="fa-solid fa-store"></i> Satıcı Başvuruları</button>
         <button class="menu-item" onclick="tabDegistir('saticilarTab', this)"><i class="fa-solid fa-shop"></i> Tüm Aktif İşletmeler</button>
         <button class="menu-item" onclick="tabDegistir('ayarlarTab', this)"><i class="fa-solid fa-gear"></i> Genel Site Ayarları</button>
     </sidebar>
 
-    <div class="main-content">
+    <div class="main-content" id="mainPanelContent">
         <div class="top-bar">
             <h2>Süper Admin Kontrol Merkezi</h2>
             <a href="index.html" class="back-site-btn" target="_blank"><i class="fa-solid fa-globe"></i> Siteye Git</a>
         </div>
 
-        <!-- 1. KATEGORİLER & GÖRSELLER TAB -->
+        <!-- 1. KATEGORİLER -->
         <div id="kategorilerTab" class="card active-tab">
-            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Kategori Ekle ve Görsel Yükle</h3>
+            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Kategori Ekle</h3>
             <div class="form-grid">
-                <div class="form-group">
-                    <label>Kategori Adı *</label>
-                    <input type="text" id="katAdi" placeholder="Örn: Çiğ Köfte">
-                </div>
-                <div class="form-group">
-                    <label>URL Slug *</label>
-                    <input type="text" id="katSlug" placeholder="Örn: cigkofte">
-                </div>
-                <div class="form-group">
-                    <label>Sıralama (Öncelik Numarası)</label>
-                    <input type="number" id="katSira" value="1" placeholder="1, 2, 3...">
-                </div>
-                <div class="form-group">
-                    <label>Durum / Etiket</label>
-                    <input type="text" id="katDurum" value="Aktif" placeholder="Aktif veya Yakında">
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Bilgisayardan Görsel Dosyası Seç *</label>
-                    <input type="file" id="katDosya" accept="image/*">
-                </div>
+                <div class="form-group"><label>Kategori Adı *</label><input type="text" id="katAdi" placeholder="Örn: Pizza"></div>
+                <div class="form-group"><label>URL Slug *</label><input type="text" id="katSlug" placeholder="Örn: pizza"></div>
+                <div class="form-group"><label>Sıralama Önceliği</label><input type="number" id="katSira" value="1"></div>
+                <div class="form-group"><label>Durum / Etiket</label><input type="text" id="katDurum" value="Aktif"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Görsel Seç (Dosya) *</label><input type="file" id="katDosya" accept="image/*"></div>
             </div>
-            <button type="button" class="btn-primary" onclick="kategoriEkle()"><i class="fa-solid fa-upload"></i> Sunucuya Yükle ve Ekle</button>
+            <button type="button" class="btn-primary" onclick="kategoriEkle()">Kategoriyi Ekle</button>
 
-            <h3 style="margin-top: 35px;"><i class="fa-solid fa-list" style="color:#f97316;"></i> Mevcut Kategoriler (Sıralama ve Görsel Düzenleme)</h3>
+            <h3 style="margin-top: 25px;"><i class="fa-solid fa-list" style="color:#f97316;"></i> Mevcut Kategoriler</h3>
             <table>
-                <thead>
-                    <tr>
-                        <th>Görsel</th>
-                        <th>Sıra</th>
-                        <th>Kategori Adı</th>
-                        <th>Slug</th>
-                        <th>Durum</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Görsel</th><th>Sıra</th><th>Ad</th><th>Slug</th><th>Durum</th><th>İşlemler</th></tr></thead>
                 <tbody id="kategoriListesi"></tbody>
             </table>
         </div>
 
-        <!-- 2. SATICI BAŞVURULARI TAB -->
+        <!-- 2. KAYITLI MÜŞTERİLER -->
+        <div id="musterilerTab" class="card">
+            <h3><i class="fa-solid fa-users" style="color:#f97316;"></i> Sistemdeki Kayıtlı Müşteri Veritabanı</h3>
+            <table>
+                <thead><tr><th>Ad Soyad</th><th>E-posta</th><th>Telefon</th><th>Adres</th><th>Kayıt Tarihi</th><th>İşlem</th></tr></thead>
+                <tbody id="musteriListesi"></tbody>
+            </table>
+        </div>
+
+        <!-- 3. KUPON YÖNETİMİ -->
+        <div id="kuponlarTab" class="card">
+            <h3><i class="fa-solid fa-ticket" style="color:#f97316;"></i> Müşteriler İçin Özel İndirim Kuponu Oluştur</h3>
+            <div class="form-grid">
+                <div class="form-group"><label>Kupon Kodu *</label><input type="text" id="kuponKodu" placeholder="Örn: ANKARA50"></div>
+                <div class="form-group"><label>İndirim Miktarı (TL veya %) *</label><input type="text" id="kuponIndirim" placeholder="Örn: 50 TL veya %20"></div>
+            </div>
+            <button type="button" class="btn-primary" onclick="kuponOlustur()">Kuponu Aktif Et</button>
+
+            <h3 style="margin-top: 25px;"><i class="fa-solid fa-list-check" style="color:#f97316;"></i> Aktif Kuponlar</h3>
+            <table>
+                <thead><tr><th>Kupon Kodu</th><th>İndirim</th><th>İşlem</th></tr></thead>
+                <tbody id="kuponListesi"></tbody>
+            </table>
+        </div>
+
+        <!-- 4. SATICI BAŞVURULARI -->
         <div id="basvurularTab" class="card">
             <h3><i class="fa-solid fa-store" style="color:#f97316;"></i> Bekleyen Satıcı Başvuruları</h3>
             <table>
-                <thead>
-                    <tr>
-                        <th>İşletme Adı</th>
-                        <th>Yetkili</th>
-                        <th>Telefon</th>
-                        <th>Kategori</th>
-                        <th>Tarih</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>İşletme</th><th>Yetkili</th><th>Tel</th><th>Kategori</th><th>Tarih</th><th>İşlem</th></tr></thead>
                 <tbody id="basvuruListesi"></tbody>
             </table>
         </div>
 
-        <!-- 3. TÜM AKTİF İŞLETMELER TAB -->
+        <!-- 5. TÜM AKTİF İŞLETMELER -->
         <div id="saticilarTab" class="card">
-            <h3><i class="fa-solid fa-shop" style="color:#f97316;"></i> Sistemdeki Tüm Aktif İşletmeler ve Panelleri</h3>
+            <h3><i class="fa-solid fa-shop" style="color:#f97316;"></i> Tüm Aktif İşletmeler</h3>
             <table>
-                <thead>
-                    <tr>
-                        <th>İşletme Adı</th>
-                        <th>Faaliyet Alanı</th>
-                        <th>Telefon</th>
-                        <th>Puan</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Logo</th><th>İşletme Adı</th><th>Kategori</th><th>Tel</th><th>Puan</th><th>İşlem</th></tr></thead>
                 <tbody id="aktifIsletmelerListesi"></tbody>
             </table>
         </div>
 
-        <!-- 4. GENEL AYARLAR TAB -->
+        <!-- 6. GENEL AYARLAR -->
         <div id="ayarlarTab" class="card">
-            <h3><i class="fa-solid fa-gear" style="color:#f97316;"></i> Ana Sayfa Slogan ve Başlık Yönetimi</h3>
+            <h3><i class="fa-solid fa-gear" style="color:#f97316;"></i> Ana Sayfa Slogan ve Başlık</h3>
             <div class="form-grid">
-                <div class="form-group">
-                    <label>Ana Başlık (Hero Title)</label>
-                    <input type="text" id="siteBaslik" value="Ankara'nın En Lezzetli Pazar Yeri">
-                </div>
-                <div class="form-group">
-                    <label>Alt Açıklama (Hero Slogan)</label>
-                    <input type="text" id="siteSlogan" value="Yüzlerce lezzet, binlerce restoran kapında!">
-                </div>
+                <div class="form-group"><label>Ana Başlık</label><input type="text" id="siteBaslik"></div>
+                <div class="form-group"><label>Alt Açıklama</label><input type="text" id="siteSlogan"></div>
             </div>
-            <button type="button" class="btn-primary" onclick="ayarlariKaydet()"><i class="fa-solid fa-floppy-disk"></i> Ayarları Güncelle</button>
+            <button type="button" class="btn-primary" onclick="ayarlariKaydet()">Ayarları Güncelle</button>
         </div>
     </div>
 
     <!-- DÜZENLEME MODALI -->
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:#fff; padding:25px; border-radius:16px; width:100%; max-width:400px;">
-            <h3 style="margin-bottom:15px; font-size:16px; font-weight:800;">Kategoriyi ve Görseli Düzenle</h3>
+        <div style="background:#fff; padding:20px; border-radius:14px; width:100%; max-width:380px;">
+            <h3 style="margin-bottom:12px; font-size:15px; font-weight:800;">Kategoriyi Düzenle</h3>
             <input type="hidden" id="editKey">
-            <div class="form-group" style="margin-bottom:10px;">
-                <label>Kategori Adı</label>
-                <input type="text" id="editAd">
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-                <label>Slug</label>
-                <input type="text" id="editSlug">
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-                <label>Sıralama Önceliği</label>
-                <input type="number" id="editSira">
-            </div>
-            <div class="form-group" style="margin-bottom:10px;">
-                <label>Durum</label>
-                <input type="text" id="editDurum">
-            </div>
-            <div class="form-group" style="margin-bottom:15px;">
-                <label>Yeni Görsel Dosyası Seç (İsteğe Bağlı)</label>
-                <input type="file" id="editDosya" accept="image/*">
-            </div>
-            <button type="button" class="btn-primary" onclick="kategoriGuncelleKaydet()">Güncellemeyi Kaydet</button>
-            <button type="button" onclick="document.getElementById('editModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:10px; cursor:pointer;">İptal</button>
+            <div class="form-group"><label>Kategori Adı</label><input type="text" id="editAd"></div>
+            <div class="form-group"><label>Slug</label><input type="text" id="editSlug"></div>
+            <div class="form-group"><label>Sıra</label><input type="number" id="editSira"></div>
+            <div class="form-group"><label>Durum</label><input type="text" id="editDurum"></div>
+            <div class="form-group"><label>Yeni Görsel (İsteğe Bağlı)</label><input type="file" id="editDosya" accept="image/*"></div>
+            <button type="button" class="btn-primary" onclick="kategoriGuncelleKaydet()" style="margin-top:10px; width:100%;">Kaydet</button>
+            <button type="button" onclick="document.getElementById('editModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:8px; cursor:pointer; font-size:12px;">İptal</button>
         </div>
     </div>
 
-    <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
@@ -203,6 +180,18 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        function adminGirisYap() {
+            const sifre = document.getElementById('adminSifreInput').value.trim();
+            if(sifre === "123456") {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('mainPanelContent').style.display = 'block';
+                musterileriListele();
+                kuponlariListele();
+            } else {
+                alert("Hatalı Süper Admin Şifresi!");
+            }
+        }
+
         function tabDegistir(tabId, btnElement) {
             document.querySelectorAll('.card').forEach(c => c.classList.remove('active-tab'));
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -210,18 +199,74 @@
             btnElement.classList.add('active');
         }
 
-        // 1. KATEGORİLERİ LİSTELE (SIRALAMAYA GÖRE)
+        // Kayıtlı Müşterileri Listele
+        function musterileriListele() {
+            db.ref('registered_customers').on('value', (snapshot) => {
+                const tbody = document.getElementById('musteriListesi');
+                tbody.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Henüz kayıtlı müşteri yok.</td></tr>'; return; }
+                Object.keys(data).forEach(key => {
+                    const m = data[key];
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${m.ad}</strong></td>
+                            <td>${m.mail}</td>
+                            <td>${m.tel}</td>
+                            <td>${m.adres}</td>
+                            <td>${m.tarih || 'Bilinmiyor'}</td>
+                            <td><button class="action-btn" onclick="musteriSil('${key}')">Sil</button></td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        function musteriSil(key) {
+            if(confirm("Bu müşteriyi silmek istediğinize emin misiniz?")) {
+                db.ref('registered_customers/' + key).remove();
+            }
+        }
+
+        // Kupon Yönetimi
+        function kuponOlustur() {
+            const kod = document.getElementById('kuponKodu').value.trim().toUpperCase();
+            const indirim = document.getElementById('kuponIndirim').value.trim();
+            if(!kod || !indirim) { alert("Lütfen kupon kodu ve indirim miktarını yazın."); return; }
+
+            db.ref('coupons/' + kod).set({ kod, indirim }).then(() => {
+                alert("Kupon başarıyla oluşturuldu!");
+                document.getElementById('kuponKodu').value = '';
+                document.getElementById('kuponIndirim').value = '';
+            });
+        }
+
+        function kuponlariListele() {
+            db.ref('coupons').on('value', (snapshot) => {
+                const tbody = document.getElementById('kuponListesi');
+                tbody.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#64748b;">Aktif kupon yok.</td></tr>'; return; }
+                Object.keys(data).forEach(key => {
+                    const k = data[key];
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${k.kod}</strong></td>
+                            <td style="color:#f97316; font-weight:800;">${k.indirim}</td>
+                            <td><button class="action-btn" onclick="db.ref('coupons/${key}').remove()">Kaldır</button></td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        // Kategoriler
         db.ref('categories').on('value', (snapshot) => {
             const tbody = document.getElementById('kategoriListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Henüz kategori eklenmemiş.</td></tr>';
-                return;
-            }
-            
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Kategori yok.</td></tr>'; return; }
             const sortedKeys = Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99));
-
             sortedKeys.forEach(key => {
                 const kat = data[key];
                 tbody.innerHTML += `
@@ -232,15 +277,14 @@
                         <td><code>${kat.slug}</code></td>
                         <td>${kat.durum}</td>
                         <td>
-                            <button class="edit-btn" onclick="kategoriDuzenleAc('${key}', '${kat.ad}', '${kat.slug}', '${kat.sira || 1}', '${kat.durum}')"><i class="fa-solid fa-pen"></i> Düzenle</button>
-                            <button class="action-btn" onclick="kategoriSil('${key}')"><i class="fa-solid fa-trash"></i> Sil</button>
+                            <button class="edit-btn" onclick="kategoriDuzenleAc('${key}', '${kat.ad}', '${kat.slug}', '${kat.sira || 1}', '${kat.durum}')">Düzenle</button>
+                            <button class="action-btn" onclick="kategoriSil('${key}')">Sil</button>
                         </td>
                     </tr>
                 `;
             });
         });
 
-        // 2. KATEGORİ EKLE (BASE64 İLE ANINDA YÜKLEME)
         function kategoriEkle() {
             const ad = document.getElementById('katAdi').value.trim();
             const slug = document.getElementById('katSlug').value.trim();
@@ -248,43 +292,20 @@
             const durum = document.getElementById('katDurum').value.trim();
             const fileInput = document.getElementById('katDosya');
 
-            if(!ad || !slug || fileInput.files.length === 0) {
-                alert("Lütfen kategori adını, slug kodunu ve görsel dosyasını seçin.");
-                return;
-            }
-
-            const file = fileInput.files[0];
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            if(!ad || !slug || fileInput.files.length === 0) { alert("Lütfen tüm alanları doldurun ve görsel seçin."); return; }
 
             const reader = new FileReader();
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(fileInput.files[0]);
+            document.getElementById('loadingOverlay').style.display = 'flex';
             reader.onload = function () {
-                const base64Image = reader.result;
                 const catId = 'cat_' + Date.now();
-
                 db.ref('categories/' + catId).set({
-                    id: catId,
-                    ad: ad,
-                    slug: slug,
-                    sira: sira,
-                    durum: durum || 'Aktif',
-                    gorsel: base64Image
+                    id: catId, ad: ad, slug: slug, sira: sira, durum: durum || 'Aktif', gorsel: reader.result
                 }).then(() => {
                     document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Kategori başarıyla eklendi ve ana sayfaya yansıtıldı!");
-                    document.getElementById('katAdi').value = '';
-                    document.getElementById('katSlug').value = '';
-                    document.getElementById('katSira').value = '1';
-                    document.getElementById('katDurum').value = 'Aktif';
-                    document.getElementById('katDosya').value = '';
-                }).catch(error => {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Hata: " + error.message);
+                    alert("Kategori eklendi!");
+                    document.getElementById('katAdi').value = ''; document.getElementById('katSlug').value = ''; document.getElementById('katDosya').value = '';
                 });
-            };
-            reader.onerror = function (error) {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Dosya okuma hatası: " + error);
             };
         }
 
@@ -294,7 +315,6 @@
             document.getElementById('editSlug').value = slug;
             document.getElementById('editSira').value = sira;
             document.getElementById('editDurum').value = durum;
-            document.getElementById('editDosya').value = '';
             document.getElementById('editModal').style.display = 'flex';
         }
 
@@ -310,39 +330,31 @@
             document.getElementById('editModal').style.display = 'none';
 
             if(fileInput.files.length > 0) {
-                const file = fileInput.files[0];
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(fileInput.files[0]);
                 reader.onload = function () {
-                    const base64Image = reader.result;
-                    db.ref('categories/' + key).update({ ad, slug, sira, durum, gorsel: base64Image }).then(() => {
+                    db.ref('categories/' + key).update({ ad, slug, sira, durum, gorsel: reader.result }).then(() => {
                         document.getElementById('loadingOverlay').style.display = 'none';
-                        alert("Kategori ve yeni görseli güncellendi!");
+                        alert("Güncellendi!");
                     });
                 };
             } else {
                 db.ref('categories/' + key).update({ ad, slug, sira, durum }).then(() => {
                     document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Kategori bilgileri güncellendi!");
+                    alert("Güncellendi!");
                 });
             }
         }
 
         function kategoriSil(key) {
-            if(confirm("Bu kategoriyi silmek istediğinize emin misiniz? Ana sayfadan anında kaldırılacaktır.")) {
-                db.ref('categories/' + key).remove();
-            }
+            if(confirm("Silmek istediğinize emin misiniz?")) { db.ref('categories/' + key).remove(); }
         }
 
-        // 3. SATICI BAŞVURULARI
         db.ref('seller_applications').on('value', (snapshot) => {
             const tbody = document.getElementById('basvuruListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Bekleyen başvuru bulunmuyor.</td></tr>';
-                return;
-            }
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">Başvuru yok.</td></tr>'; return; }
             Object.keys(data).forEach(key => {
                 const b = data[key];
                 tbody.innerHTML += `
@@ -353,8 +365,8 @@
                         <td>${b.kategori || 'Genel'}</td>
                         <td>${b.tarih}</td>
                         <td>
-                            <button class="success-btn" onclick="saticiOnayla('${key}')"><i class="fa-solid fa-check"></i> Onayla</button>
-                            <button class="action-btn" onclick="basvuruSil('${key}')"><i class="fa-solid fa-xmark"></i> Reddet</button>
+                            <button class="success-btn" onclick="saticiOnayla('${key}')">Onayla</button>
+                            <button class="action-btn" onclick="db.ref('seller_applications/${key}').remove()">Red</button>
                         </td>
                     </tr>
                 `;
@@ -367,56 +379,31 @@
                 if(!b) return;
                 const dukkanKey = 'dukkan_' + Date.now();
                 db.ref('active_restaurants/' + dukkanKey).set({
-                    id: dukkanKey,
-                    ad: b.isletmeAdi,
-                    kategori: b.kategori,
-                    telefon: b.telefon,
-                    puan: "5.0",
-                    onayTarihi: new Date().toLocaleDateString('tr-TR')
-                }).then(() => db.ref('seller_applications/' + key).remove()).then(() => {
-                    alert(b.isletmeAdi + " onaylandı ve aktif işletmelere eklendi!");
-                });
+                    id: dukkanKey, ad: b.isletmeAdi, kategori: b.kategori, telefon: b.telefon, sifre: b.sifre, puan: "5.0", onayTarihi: new Date().toLocaleDateString('tr-TR')
+                }).then(() => db.ref('seller_applications/' + key).remove()).then(() => alert(b.isletmeAdi + " onaylandı!"));
             });
         }
 
-        function basvuruSil(key) {
-            if(confirm("Bu başvuruyu silmek istediğinize emin misiniz?")) {
-                db.ref('seller_applications/' + key).remove();
-            }
-        }
-
-        // 4. TÜM AKTİF İŞLETMELER
         db.ref('active_restaurants').on('value', (snapshot) => {
             const tbody = document.getElementById('aktifIsletmelerListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">Henüz onaylanmış işletme yok.</td></tr>';
-                return;
-            }
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">İşletme yok.</td></tr>'; return; }
             Object.keys(data).forEach(key => {
                 const r = data[key];
                 tbody.innerHTML += `
                     <tr>
+                        <td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt=""></td>
                         <td><strong>${r.ad}</strong></td>
                         <td>${r.kategori || 'Genel'}</td>
                         <td>${r.telefon}</td>
-                        <td><span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-star"></i> ${r.puan || '5.0'}</span></td>
-                        <td>
-                            <button class="action-btn" onclick="isletmeSil('${key}')"><i class="fa-solid fa-trash"></i> Kaldır</button>
-                        </td>
+                        <td style="color:#f59e0b; font-weight:700;">${r.puan || '5.0'}</td>
+                        <td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove()">Kaldır</button></td>
                     </tr>
                 `;
             });
         });
 
-        function isletmeSil(key) {
-            if(confirm("Bu işletmeyi aktif pazar yerinden kaldırmak istediğinize emin misiniz?")) {
-                db.ref('active_restaurants/' + key).remove();
-            }
-        }
-
-        // 5. GENEL AYARLAR
         db.ref('site_settings').on('value', (snapshot) => {
             const settings = snapshot.val();
             if(settings) {
@@ -426,11 +413,10 @@
         });
 
         function ayarlariKaydet() {
-            const baslik = document.getElementById('siteBaslik').value;
-            const slogan = document.getElementById('siteSlogan').value;
-            db.ref('site_settings').set({ heroBaslik: baslik, heroSlogan: slogan }).then(() => {
-                alert("Site ayarları güncellendi ve ana sayfaya yansıtıldı!");
-            });
+            db.ref('site_settings').set({
+                heroBaslik: document.getElementById('siteBaslik').value,
+                heroSlogan: document.getElementById('siteSlogan').value
+            }).then(() => alert("Ayarlar güncellendi!"));
         }
     </script>
 </body>

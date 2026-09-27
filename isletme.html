@@ -2,27 +2,32 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İşletme Menüsü</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>İşletme Menüsü | Bölge Yemek</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 18px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 60px; overflow-x: hidden; }
+
+        /* APK / MOBİL ÜST ÇUBUK ÇAKIŞMASI ÖNLEYİCİ SAFE AREA */
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
+        
+        .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
+        
         .container { max-width: 900px; margin: 0 auto; padding: 15px; }
-        .rest-header { background: #fff; padding: 20px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .rest-left { display: flex; gap: 15px; align-items: center; }
+        .rest-header { background: #fff; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 12px rgba(0,0,0,0.03); }
+        .rest-left { display: flex; gap: 12px; align-items: center; }
         .rest-header img { width: 75px; height: 75px; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
-        .rest-header h1 { font-size: 17px; font-weight: 900; color: #0f172a; margin-bottom: 2px; }
+        .rest-header h1 { font-size: 16px; font-weight: 900; color: #0f172a; margin-bottom: 2px; }
         .rest-header p { font-size: 11px; color: #64748b; }
 
         .section-title { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-left: 4px solid #f97316; padding-left: 8px; }
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
-        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
         .menu-item-left { display: flex; gap: 10px; align-items: center; }
         .menu-item-card img { width: 65px; height: 65px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
         .menu-info h4 { font-size: 12px; font-weight: 800; color: #0f172a; margin-bottom: 2px; }
@@ -33,6 +38,9 @@
         .adet-btn { width: 22px; height: 22px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 10px; }
         .adet-input { width: 30px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; font-weight: 700; }
         .siparis-btn { background: #10b981; color: white; border: none; padding: 7px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
+
+        .puan-box { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 25px; text-align: center; }
+        .puan-box select { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600; margin-right: 10px; font-size: 11px; }
     </style>
 </head>
 <body>
@@ -46,29 +54,58 @@
                 <img id="restLogo" src="https://i.imgur.com/7y4aCVb.jpg">
                 <div><h1 id="restAdi">Yükleniyor...</h1><p id="restKategoriTel">Yükleniyor...</p></div>
             </div>
+            <div style="text-align: right;">
+                <span style="font-size: 14px; font-weight: 900; color: #f59e0b;" id="restPuanYazi"><i class="fa-solid fa-star"></i> Yeni İşletme</span>
+            </div>
         </div>
         <h3 class="section-title">İşletme Menüsü</h3>
         <div class="menu-grid" id="isletmeUrunleri"><div style="font-size:11px; color:#64748b;">Menü yükleniyor...</div></div>
+
+        <!-- PUANLAMA ALANI (SADECE SİPARİŞ VERENLER GÖrebilir) -->
+        <div class="puan-box" id="puanlamaAlani" style="display:none;">
+            <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 8px; color: #0f172a;">Bu İşletmeyi Puanla</h4>
+            <select id="puanSecim">
+                <option value="5">⭐⭐⭐⭐⭐ (5 - Mükemmel)</option>
+                <option value="4">⭐⭐⭐⭐ (4 - İyi)</option>
+                <option value="3">⭐⭐⭐ (3 - Orta)</option>
+                <option value="2">⭐⭐ (2 - Zayıf)</option>
+                <option value="1">⭐ (1 - Çok Kötü)</option>
+            </select>
+            <button onclick="puanVer()" style="background:#f97316; color:white; border:none; padding:8px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:11px;">Puanı Gönder</button>
+        </div>
     </div>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
+          authDomain: "eretankartal.firebaseapp.com",
+          databaseURL: "https://eretankartal-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "eretankartal",
+          storageBucket: "eretankartal.firebasestorage.app",
+          messagingSenderId: "775846519838",
+          appId: "1:775846519838:web:75b1d7dfb4ef942a3f7a0f"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
-        const id = new URLSearchParams(window.location.search).get('id');
 
-        if(id) {
-            db.ref('active_restaurants/' + id).once('value').then(snapshot => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isletmeId = urlParams.get('id');
+
+        if(isletmeId) {
+            db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
                 const r = snapshot.val();
                 if(r) {
                     document.getElementById('restAdi').innerText = r.ad;
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
+                    if(r.puan) document.getElementById('restPuanYazi').innerHTML = `<i class="fa-solid fa-star"></i> ${r.puan}`;
                 }
             });
 
-            db.ref('restaurant_products/' + id).once('value').then(snapshot => {
+            db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
                 const container = document.getElementById('isletmeUrunleri'); container.innerHTML = '';
-                const data = snapshot.val(); if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Ürün yok.</div>'; return; }
+                const data = snapshot.val(); if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Bu işletmenin menü ürünü yok.</div>'; return; }
                 let html = '';
                 Object.keys(data).forEach(k => {
                     const u = data[k];
@@ -93,6 +130,10 @@
                 });
                 container.innerHTML = html;
             });
+
+            if(localStorage.getItem('siparis_verildi_' + isletmeId) === 'true') {
+                document.getElementById('puanlamaAlani').style.display = 'block';
+            }
         }
 
         function degisAdet(key, m) {
@@ -105,6 +146,8 @@
         function sepeteEkle(urunAdi, birimFiyat, key) {
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             const musteriTel = localStorage.getItem('aktifMusteriTel');
+            const musteriAdres = localStorage.getItem('aktifMusteriAdres') || 'Adres belirtilmemiş';
+
             if(!musteriAdi || !musteriTel) {
                 alert("Sipariş verebilmek için lütfen önce ana sayfadan giriş yapın / kaydolun!");
                 window.location.href = 'index.html';
@@ -113,12 +156,35 @@
 
             const adet = parseInt(document.getElementById('adet_' + key).value);
             const toplamFiyat = birimFiyat * adet;
-
             const siparisId = 'siparis_' + Date.now();
-            db.ref('orders/' + id + '/' + siparisId).set({
-                siparisId, musteriAdi, musteriTel, urunAdi, adet, toplamFiyat, tarih: new Date().toLocaleTimeString('tr-TR')
+
+            db.ref('orders/' + isletmeId + '/' + siparisId).set({
+                siparisId, musteriAdi, musteriTel, musteriAdres, urunAdi, adet, toplamFiyat, tarih: new Date().toLocaleTimeString('tr-TR')
             }).then(() => {
-                alert("Siparişiniz başarıyla işletmeye iletildi! Sesli bildirim çalmıştır.");
+                alert("Siparişiniz başarıyla işletmeye iletildi!");
+                localStorage.setItem('siparis_verildi_' + isletmeId, 'true');
+                document.getElementById('puanlamaAlani').style.display = 'block';
+            });
+        }
+
+        function puanVer() {
+            const secilenPuan = parseFloat(document.getElementById('puanSecim').value);
+            db.ref('restaurant_ratings/' + isletmeId).once('value').then(snapshot => {
+                let toplam = secilenPuan;
+                let adet = 1;
+                if(snapshot.exists()) {
+                    const eski = snapshot.val();
+                    toplam = (eski.toplam || 5.0) + secilenPuan;
+                    adet = (eski.adet || 1) + 1;
+                }
+                const yeniOrtalama = (toplam / adet).toFixed(1);
+                db.ref('restaurant_ratings/' + isletmeId).set({ toplam, adet, ortalama: yeniOrtalama }).then(() => {
+                    return db.ref('active_restaurants/' + isletmeId).update({ puan: yeniOrtalama });
+                }).then(() => {
+                    alert("Puanınız kaydedildi, teşekkür ederiz!");
+                    document.getElementById('restPuanYazi').innerHTML = `<i class="fa-solid fa-star"></i> ${yeniOrtalama}`;
+                    document.getElementById('puanlamaAlani').style.display = 'none';
+                });
             });
         }
     </script>

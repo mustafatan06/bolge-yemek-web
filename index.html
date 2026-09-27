@@ -100,7 +100,7 @@
         </div>
     </div>
 
-    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI (İsim, Soyisim, Telefon, Mail, Adres) -->
+    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
             <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-user" style="color:#10b981;"></i> Müşteri Giriş / Kayıt Ol</h3>
@@ -120,7 +120,7 @@
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
             <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
             <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza"></div>
+            <div class="form-group"><label>Kategori (Örn: Pizza, Köfte, Döner) *</label><input type="text" id="basvuruKategori" placeholder="Pizza"></div>
             <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Başvuruyu Gönder</button>
             <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:5px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
         </div>
@@ -153,12 +153,12 @@
             const mail = document.getElementById('musteriMail').value.trim();
             const adres = document.getElementById('musteriAdres').value.trim();
 
-            if(!ad || !tel || !mail || !adres) { alert("Lütfen tüm alanları (Ad Soyad, Telefon, E-posta, Adres) doldurun."); return; }
+            if(!ad || !tel || !mail || !adres) { alert("Lütfen tüm alanları doldurun."); return; }
             localStorage.setItem('aktifMusteriAdi', ad);
             localStorage.setItem('aktifMusteriTel', tel);
             localStorage.setItem('aktifMusteriMail', mail);
             localStorage.setItem('aktifMusteriAdres', adres);
-            alert("Kayıt ve giriş başarılı!");
+            alert("Kayıt başarılı!");
             document.getElementById('musteriModal').style.display = 'none';
             location.reload();
         }
@@ -194,11 +194,12 @@
             }
         });
 
+        // İŞLETMELERİ ANINDA VE HATASIZ LİSTELEME
         db.ref('active_restaurants').once('value').then((snapshot) => {
             const container = document.getElementById('dynamicRestaurants');
             container.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Aktif işletme yok.</div>'; return; }
+            if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Henüz aktif işletme bulunmuyor.</div>'; return; }
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
@@ -214,6 +215,8 @@
                 `;
             });
             container.innerHTML = html;
+        }).catch(err => {
+            document.getElementById('dynamicRestaurants').innerHTML = '<div style="font-size:11px; color:#ef4444;">İşletmeler yüklenirken hata oluştu.</div>';
         });
 
         function saticiBasvuruGonder() {
@@ -221,11 +224,11 @@
             const yetkili = document.getElementById('basvuruYetkili').value.trim();
             const tel = document.getElementById('basvuruTel').value.trim();
             const kat = document.getElementById('basvuruKategori').value.trim();
-            if(!isletme || !yetkili || !tel) { alert("Alanları doldurun."); return; }
+            if(!isletme || !yetkili || !tel || !kat) { alert("Lütfen tüm alanları doldurun."); return; }
             const sifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
             db.ref('seller_applications/' + ('BASVURU-' + Date.now())).set({
                 isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => { alert("Başvuru alındı! Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
+            }).then(() => { alert("Başvurunuz alındı! Geçici Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
         }
     </script>
 </body>

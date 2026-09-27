@@ -75,9 +75,8 @@
             <h3>Kategori Ekle</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Adı *</label><input type="text" id="katAdi" placeholder="Örn: Pizza"></div>
-                <div class="form-group"><label>Slug *</label><input type="text" id="katSlug" placeholder="pizza"></div>
+                <div class="form-group"><label>Slug (Küçük Harf) *</label><input type="text" id="katSlug" placeholder="pizza"></div>
                 <div class="form-group"><label>Sıra</label><input type="number" id="katSira" value="1"></div>
-                <div class="form-group"><label>Durum</label><input type="text" id="katDurum" value="Aktif"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Görsel *</label><input type="file" id="katDosya" accept="image/*"></div>
             </div>
             <button type="button" class="btn-primary" onclick="kategoriEkle()">Ekle</button>
@@ -87,7 +86,7 @@
 
         <div id="basvurularTab" class="card">
             <h3>Satıcı Başvuruları</h3>
-            <table><thead><tr><th>İşletme</th><th>Yetkili</th><th>Tel</th><th>Şifre</th><th>İşlem</th></tr></thead><tbody id="basvuruListesi"></tbody></table>
+            <table><thead><tr><th>İşletme</th><th>Yetkili</th><th>Kategori</th><th>Tel</th><th>Şifre</th><th>İşlem</th></tr></thead><tbody id="basvuruListesi"></tbody></table>
         </div>
 
         <div id="moderasyonTab" class="card">
@@ -97,7 +96,7 @@
 
         <div id="saticilarTab" class="card">
             <h3>Aktif İşletmeler</h3>
-            <table><thead><tr><th>Logo</th><th>Ad</th><th>Tel</th><th>Şifre</th><th>İşlem</th></tr></thead><tbody id="aktifIsletmelerListesi"></tbody></table>
+            <table><thead><tr><th>Logo</th><th>Ad</th><th>Kategori</th><th>Tel</th><th>Şifre</th><th>İşlem</th></tr></thead><tbody id="aktifIsletmelerListesi"></tbody></table>
         </div>
 
         <div id="ayarlarTab" class="card">
@@ -150,7 +149,7 @@
 
         function kategoriEkle() {
             const ad = document.getElementById('katAdi').value.trim();
-            const slug = document.getElementById('katSlug').value.trim();
+            const slug = document.getElementById('katSlug').value.trim().toLowerCase();
             const sira = parseInt(document.getElementById('katSira').value) || 1;
             const fileInput = document.getElementById('katDosya');
             if(!ad || !slug || fileInput.files.length === 0) { alert("Eksik alan."); return; }
@@ -166,7 +165,7 @@
             const data = snapshot.val(); if(!data) return;
             Object.keys(data).forEach(key => {
                 const b = data[key];
-                tbody.innerHTML += `<tr><td><strong>${b.isletmeAdi}</strong></td><td>${b.yetkiliAdi}</td><td>${b.telefon}</td><td><code>${b.otomatikSifre}</code></td><td><button class="success-btn" onclick="saticiOnayla('${key}')">Onayla</button><button class="action-btn" onclick="db.ref('seller_applications/${key}').remove(); location.reload();">Red</button></td></tr>`;
+                tbody.innerHTML += `<tr><td><strong>${b.isletmeAdi}</strong></td><td>${b.yetkiliAdi}</td><td><span style="color:#f97316; font-weight:700;">${b.kategori}</span></td><td>${b.telefon}</td><td><code>${b.otomatikSifre}</code></td><td><button class="success-btn" onclick="saticiOnayla('${key}')">Onayla</button><button class="action-btn" onclick="db.ref('seller_applications/${key}').remove(); location.reload();">Red</button></td></tr>`;
             });
         });
 
@@ -174,8 +173,17 @@
             db.ref('seller_applications/' + key).once('value').then(snapshot => {
                 const b = snapshot.val(); if(!b) return;
                 const dKey = 'dukkan_' + Date.now();
-                db.ref('active_restaurants/' + dKey).set({ id: dKey, ad: b.isletmeAdi, kategori: b.kategori, telefon: b.telefon, sifre: b.otomatikSifre, puan: "" }).then(() => {
-                    db.ref('seller_applications/' + key).remove(); location.reload();
+                db.ref('active_restaurants/' + dKey).set({ 
+                    id: dKey, 
+                    ad: b.isletmeAdi, 
+                    kategori: b.kategori, // Kategori otomatik kaydediliyor
+                    telefon: b.telefon, 
+                    sifre: b.otomatikSifre, 
+                    puan: "" 
+                }).then(() => {
+                    db.ref('seller_applications/' + key).remove(); 
+                    alert("İşletme onaylandı ve ilgili kategoriye bağlandı!");
+                    location.reload();
                 });
             });
         }
@@ -206,7 +214,7 @@
             const data = snapshot.val(); if(!data) return;
             Object.keys(data).forEach(key => {
                 const r = data[key];
-                tbody.innerHTML += `<tr><td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}"></td><td><strong>${r.ad}</strong></td><td>${r.telefon}</td><td><code>${r.sifre}</code></td><td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove(); location.reload();">Kaldır</button></td></tr>`;
+                tbody.innerHTML += `<tr><td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}"></td><td><strong>${r.ad}</strong></td><td>${r.kategori || 'Genel'}</td><td>${r.telefon}</td><td><code>${r.sifre}</code></td><td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove(); location.reload();">Kaldır</button></td></tr>`;
             });
         });
 

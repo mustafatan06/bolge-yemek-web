@@ -25,7 +25,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         th, td { padding: 8px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 11px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
-        td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; }
+        td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; background: #eee; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
         .success-btn { background: #10b981; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 10px; }
     </style>
@@ -53,7 +53,7 @@
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Zurna Dürüm"></div>
                 <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2"></textarea></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Görsel *</label><input type="file" id="urunDosya" accept="image/*"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Görsel Dosyası *</label><input type="file" id="urunDosya" accept="image/*"></div>
             </div>
             <button type="button" class="btn-primary" onclick="urunEkle()">Onaya Gönder</button>
         </div>
@@ -82,7 +82,7 @@
         const saticiKey = localStorage.getItem('aktifSaticiKey');
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
-        document.getElementById('isletmeAdiBaslik').innerText = saticiAdi;
+        document.getElementById('isletmeAdiBaslik').innerText = saticiAdi || 'İşletme';
 
         // BİP SESİ ÇALMA FONKSİYONU
         function bipSesiCal() {
@@ -105,7 +105,7 @@
             const data = snapshot.val();
             if(!data) { tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; return; }
             
-            bipSesiCal(); // Yeni sipariş gelince ses çal
+            bipSesiCal();
 
             Object.keys(data).forEach(sKey => {
                 const o = data[sKey];
@@ -121,24 +121,56 @@
             });
         });
 
+        // GÖRSEL SEÇME VE ÜRÜN EKLEME (GÜNCELLENMİŞ HIZLI ÇÖZÜM)
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
             const fileInput = document.getElementById('urunDosya');
-            if(!ad || !fiyat || fileInput.files.length === 0) return alert("Alanları doldurun.");
-            const reader = new FileReader(); reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = function () {
+
+            if(!ad || !fiyat) { alert("Lütfen ürün adı ve fiyatını yazın."); return; }
+            if(fileInput.files.length === 0) { alert("Lütfen bir ürün görseli seçin."); return; }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function (e) {
+                const base64Gorsel = e.target.result;
                 const uId = 'urun_' + Date.now();
+                
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, ad, fiyat, aciklama, gorsel: reader.result, isletmeAdi: saticiAdi
-                }).then(() => { alert("Onaya gönderildi!"); location.reload(); });
+                    id: uId, 
+                    ad: ad, 
+                    fiyat: fiyat, 
+                    aciklama: aciklama || '', 
+                    gorsel: base64Gorsel, 
+                    isletmeAdi: saticiAdi
+                }).then(() => { 
+                    alert("Ürününüz başarıyla yönetici onayına gönderildi!"); 
+                    document.getElementById('urunAdi').value = '';
+                    document.getElementById('urunFiyat').value = '';
+                    document.getElementById('urunAciklama').value = '';
+                    document.getElementById('urunDosya').value = '';
+                }).catch(err => {
+                    alert("Hata oluştu: " + err.message);
+                });
             };
+
+            reader.onerror = function() {
+                alert("Görsel okunurken bir hata oluştu. Lütfen başka bir görsel deneyin.");
+            };
+
+            reader.readAsDataURL(file);
         }
 
         db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {
-            const tbody = document.getElementById('menuListesi'); tbody.innerHTML = '';
-            const data = snapshot.val(); if(!data) return;
+            const tbody = document.getElementById('menuListesi'); 
+            tbody.innerHTML = '';
+            const data = snapshot.val(); 
+            if(!data) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Yayında ürün yok.</td></tr>';
+                return;
+            }
             Object.keys(data).forEach(key => {
                 const u = data[key];
                 tbody.innerHTML += `<tr><td><img src="${u.gorsel}"></td><td><strong>${u.ad}</strong></td><td>${u.fiyat} ₺</td><td><button class="action-btn" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td></tr>`;

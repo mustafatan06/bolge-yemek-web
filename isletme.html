@@ -22,7 +22,6 @@
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
         
-        /* ÜRÜN KARTI DAHA KALIN VE DOLGUN HALE GETİRİLDİ */
         .menu-item-card { background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .menu-item-card:hover { border-color: #f97316; transform: translateY(-2px); }
         .menu-item-left { display: flex; gap: 12px; align-items: center; flex: 1; }
@@ -56,7 +55,9 @@
                 <div><h1 id="restAdi">Yükleniyor...</h1><p id="restKategoriTel">Yükleniyor...</p></div>
             </div>
         </div>
-        <div class="menu-grid" id="isletmeUrunleri"></div>
+        <div class="menu-grid" id="isletmeUrunleri">
+            <div style="font-size:12px; color:#64748b;">Menü yükleniyor...</div>
+        </div>
     </div>
 
     <div class="sabit-sepet" id="sabitSepetBar" style="display:none;">
@@ -138,34 +139,67 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
+          authDomain: "eretankartal.firebaseapp.com",
+          databaseURL: "https://eretankartal-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "eretankartal",
+          storageBucket: "eretankartal.firebasestorage.app",
+          messagingSenderId: "775846519838",
+          appId: "1:775846519838:web:75b1d7dfb4ef942a3f7a0f"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
-        const isletmeId = new URLSearchParams(window.location.search).get('id');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const isletmeId = urlParams.get('id');
         let aktifSecilenUrun = null;
-        let sepet = JSON.parse(localStorage.getItem('aktif_sepet_' + isletmeId)) || [];
+        let sepet = [];
+
+        try {
+            sepet = JSON.parse(localStorage.getItem('aktif_sepet_' + isletmeId)) || [];
+        } catch(e) {
+            sepet = [];
+        }
+
         let indirimOrani = 0;
 
-        if(isletmeId) {
+        if(!isletmeId) {
+            alert("İşletme ID bulunamadı!");
+            window.location.href = 'index.html';
+        } else {
+            // İşletme bilgilerini çek
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
                 const r = snapshot.val();
                 if(r) {
-                    document.getElementById('restAdi').innerText = r.ad;
-                    document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
+                    document.getElementById('restAdi').innerText = r.ad || 'İşletme';
+                    document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + (r.telefon || '-');
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
                 }
+            }).catch(err => {
+                console.error(err);
             });
 
-            // "Menü yükleniyor" takılma sorunu giderildi, veriler anında once ile çekilip mermi gibi yükleniyor
+            // Menü ürünlerini çek
             db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
-                const container = document.getElementById('isletmeUrunleri'); container.innerHTML = '';
+                const container = document.getElementById('isletmeUrunleri'); 
+                container.innerHTML = '';
                 const data = snapshot.val(); 
-                if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Bu işletmede henüz ürün bulunmuyor.</div>'; return; }
+                
+                if(!data) { 
+                    container.innerHTML = '<div style="font-size:12px; color:#64748b; text-align:center; padding:20px;">Bu işletmede henüz aktif ürün bulunmuyor.</div>'; 
+                    return; 
+                }
+
                 let html = '';
                 Object.keys(data).forEach(k => {
                     const u = data[k];
+                    // Güvenli stringify ile tıklama hatası önlendi
+                    const urunJson = JSON.stringify(u).replace(/"/g, '&quot;');
                     html += `
-                        <div class="menu-item-card" onclick='urunSecVeModalAc(${JSON.stringify(u)})'>
+                        <div class="menu-item-card" onclick="urunSecVeModalAc('${k}')">
                             <div class="menu-item-left">
-                                <img src="${u.gorsel}">
+                                <img src="${u.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${u.ad}">
                                 <div class="menu-info">
                                     <h4>${u.ad}</h4>
                                     <p>${u.aciklama || ''}</p>
@@ -177,18 +211,25 @@
                     `;
                 });
                 container.innerHTML = html;
+            }).catch(err => {
+                document.getElementById('isletmeUrunleri').innerHTML = '<div style="font-size:12px; color:#ef4444; text-align:center; padding:20px;">Menü yüklenirken hata oluştu.</div>';
             });
         }
 
         sabitSepetiGuncelle();
 
-        function urunSecVeModalAc(urun) {
-            aktifSecilenUrun = urun;
-            document.getElementById('modalUrunAdi').innerText = urun.ad;
-            document.getElementById('modalUrunFiyat').innerText = urun.fiyat + ' ₺';
-            document.getElementById('modalUrunAdet').value = 1;
-            document.getElementById('modalSiparisNotu').value = '';
-            document.getElementById('urunDetayModal').style.display = 'flex';
+        // Ürünü global hafızadan güvenle çekip modalı açan fonksiyon
+        function urunSecVeModalAc(k) {
+            db.ref('restaurant_products/' + isletmeId + '/' + k).once('value').then(snapshot => {
+                const urun = snapshot.val();
+                if(!urun) return;
+                aktifSecilenUrun = urun;
+                document.getElementById('modalUrunAdi').innerText = urun.ad;
+                document.getElementById('modalUrunFiyat').innerText = urun.fiyat + ' ₺';
+                document.getElementById('modalUrunAdet').value = 1;
+                document.getElementById('modalSiparisNotu').value = '';
+                document.getElementById('urunDetayModal').style.display = 'flex';
+            });
         }
 
         function adetDegis(m) {

@@ -8,70 +8,72 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 70px; overflow-x: hidden; }
 
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .logo { font-size: 20px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .logo { font-size: 18px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
         
-        .dropdown { position: relative; display: inline-block; }
-        .btn-small { padding: 6px 14px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; transition: 0.3s; white-space: nowrap; border: none; }
+        .header-right { display: flex; gap: 6px; align-items: center; }
+        .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; border: none; white-space: nowrap; }
         .satici-menu-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
-        .satici-menu-btn:hover { background: #f97316; color: #fff; }
-        
-        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 160px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; overflow: hidden; margin-top: 5px; }
-        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 10px 14px; text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
+        .profil-btn { background: #10b981; color: #fff; }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 150px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; margin-top: 5px; }
+        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 9px 12px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
         .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f5f9; color: #f97316; }
         .dropdown.active .dropdown-content { display: block; }
 
-        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 35px 20px; text-align: center; }
-        .hero-section h1 { font-size: 22px; font-weight: 900; color: #0f172a; margin-bottom: 6px; }
-        .hero-section p { font-size: 12px; color: #64748b; }
+        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 25px 15px; text-align: center; }
+        .hero-section h1 { font-size: 19px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+        .hero-section p { font-size: 11px; color: #64748b; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 15px; }
-        .section-title { font-size: 16px; font-weight: 800; color: #0f172a; margin: 25px 0 12px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 8px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 12px; }
+        .section-title { font-size: 15px; font-weight: 800; color: #0f172a; margin: 20px 0 10px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
         
-        .categories-slider { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .categories-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .categories-slider::-webkit-scrollbar { display: none; }
 
-        .category-card { min-width: 110px; width: 110px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; transition: 0.3s; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .category-card:hover { border-color: #f97316; transform: translateY(-3px); }
-        .cat-img { width: 100%; height: 85px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
-        .cat-body { padding: 8px; text-align: center; }
-        .cat-body h3 { font-size: 11px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .cat-body span { font-size: 9px; color: #64748b; font-weight: 600; }
+        .category-card { min-width: 100px; width: 100px; background: #ffffff; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .cat-img { width: 100%; height: 75px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
+        .cat-body { padding: 6px; text-align: center; }
+        .cat-body h3 { font-size: 10px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cat-body span { font-size: 8px; color: #64748b; }
 
-        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; } }
-        .restaurant-card { background: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .restaurant-card:hover { border-color: #f97316; transform: translateY(-2px); }
-        .rest-logo { width: 100px; height: 100px; object-fit: cover; background: #f1f5f9; }
-        .rest-info { padding: 12px; display: flex; flex-direction: column; justify-content: center; }
-        .rest-info h4 { font-size: 14px; color: #0f172a; font-weight: 800; margin-bottom: 3px; }
-        .rest-info p { font-size: 11px; color: #64748b; margin-bottom: 6px; }
-        .rest-puanlar { display: flex; gap: 8px; font-size: 10px; color: #475569; font-weight: 600; }
-        .rest-puanlar span { color: #f59e0b; font-weight: 800; }
+        .restaurant-card { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; box-shadow: 0 3px 12px rgba(0,0,0,0.03); }
+        .rest-logo { width: 90px; height: 90px; object-fit: cover; background: #f1f5f9; }
+        .rest-info { padding: 10px; display: flex; flex-direction: column; justify-content: center; }
+        .rest-info h4 { font-size: 13px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
+        .rest-info p { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+        .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 10px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 380px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
         .form-group { margin-bottom: 10px; text-align: left; }
         .form-group label { display: block; font-size: 11px; color: #475569; margin-bottom: 3px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; color: #0f172a; font-size: 12px; outline: none; }
-        .form-group input:focus { border-color: #f97316; }
+        .form-group input { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; }
 
-        .footer { text-align: center; margin-top: 40px; padding: 20px 0; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; }
-        .footer span { color: #f97316; font-weight: 700; display: inline-block; margin-top: 3px; }
+        .footer { text-align: center; margin-top: 30px; padding: 15px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
+        .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
     </style>
 </head>
 <body>
 
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <div class="dropdown" id="saticiDropdown">
-            <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı Paneli <i class="fa-solid fa-chevron-down" style="font-size:9px;"></i></button>
-            <div class="dropdown-content">
-                <a href="satici-giris.html"><i class="fa-solid fa-right-to-bracket" style="color:#f97316;"></i> Satıcı Girişi</a>
-                <button type="button" onclick="openSaticiModal()"><i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Satıcı Ol (Başvur)</button>
+        <div class="header-right">
+            <div id="musteriProfilAlani">
+                <button class="btn-small profil-btn" onclick="openMusteriModal()"><i class="fa-solid fa-user"></i> Giriş / Kayıt Ol</button>
+            </div>
+            <div class="dropdown" id="saticiDropdown">
+                <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı <i class="fa-solid fa-chevron-down" style="font-size:8px;"></i></button>
+                <div class="dropdown-content">
+                    <a href="satici-giris.html"><i class="fa-solid fa-right-to-bracket" style="color:#f97316;"></i> Satıcı Girişi</a>
+                    <button type="button" onclick="openSaticiModal()"><i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Satıcı Ol</button>
+                </div>
             </div>
         </div>
     </header>
@@ -82,31 +84,44 @@
     </div>
 
     <div class="container">
-        <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Yemek Kategorileri</h3>
+        <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Kategoriler</h3>
         <div class="categories-slider" id="dynamicCategories">
-            <div style="padding: 10px; color: #64748b; font-size: 12px;">Yükleniyor...</div>
+            <div style="font-size: 11px; color: #64748b;">Yükleniyor...</div>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
+        <h3 class="section-title"><i class="fa-solid fa-store"></i> Aktif İşletmeler</h3>
         <div class="restaurants-grid" id="dynamicRestaurants">
-            <div style="padding: 10px; color: #64748b; font-size: 12px;">Yükleniyor...</div>
+            <div style="font-size: 11px; color: #64748b;">Yükleniyor...</div>
         </div>
 
         <div class="footer">
             <p>&copy; 2026 Bölge Yemek. Tüm hakları saklıdır.</p>
-            <span>TAN MEDYA TASARIM Tarafından Kurulmuştur.</span>
+            <span>TAN MEDYA TASARIM</span>
         </div>
     </div>
 
+    <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
+    <div id="musteriModal" class="modal">
+        <div class="modal-content">
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Müşteri Giriş / Kayıt</h3>
+            <p style="font-size: 10px; color: #64748b; margin-bottom: 10px;">Sipariş verebilmek için bilgilerinizi giriniz.</p>
+            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="musteriAd" placeholder="Adınız Soyadınız"></div>
+            <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="musteriTel" placeholder="05XXXXXXXXX"></div>
+            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Devam Et</button>
+            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:5px; cursor:pointer; margin-top:4px; font-size:11px;">İptal</button>
+        </div>
+    </div>
+
+    <!-- SATICI BAŞVURU MODALI -->
     <div id="saticiModal" class="modal">
         <div class="modal-content">
-            <h3 style="color:#0f172a; font-size:16px; font-weight:800; margin-bottom:10px; border-bottom:1px solid #e2e8f0; padding-bottom:6px;"><i class="fa-solid fa-store" style="color:#f97316;"></i> Satıcı Başvurusu</h3>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Satıcı Başvurusu</h3>
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
-            <div class="form-group"><label>Yetkili Ad Soyad *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
-            <div class="form-group"><label>Telefon Numaranız *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori / Faaliyet Alanı *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza"></div>
-            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:10px; border-radius:6px; font-weight:800; font-size:13px; cursor:pointer; margin-top:8px;">Başvuruyu Gönder</button>
-            <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:6px; cursor:pointer; margin-top:5px; font-size:12px;">Vazgeç</button>
+            <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
+            <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
+            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza"></div>
+            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Başvuruyu Gönder</button>
+            <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:5px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
         </div>
     </div>
 
@@ -125,18 +140,34 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        // Müşteri oturum kontrolü
+        const aktifMusteri = localStorage.getItem('aktifMusteriAdi');
+        if(aktifMusteri) {
+            document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:11px; font-weight:700; color:#0f172a;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
+        }
+
+        function openMusteriModal() { document.getElementById('musteriModal').style.display = 'flex'; }
+        function musteriKaydet() {
+            const ad = document.getElementById('musteriAd').value.trim();
+            const tel = document.getElementById('musteriTel').value.trim();
+            if(!ad || !tel) { alert("Lütfen adınızı ve telefonunuzu yazın."); return; }
+            localStorage.setItem('aktifMusteriAdi', ad);
+            localStorage.setItem('aktifMusteriTel', tel);
+            alert("Giriş yapıldı! Artık sipariş verebilirsiniz.");
+            document.getElementById('musteriModal').style.display = 'none';
+            location.reload();
+        }
+
         function toggleDropdown(event) { event.stopPropagation(); document.getElementById('saticiDropdown').classList.toggle('active'); }
         window.onclick = function() { document.getElementById('saticiDropdown').classList.remove('active'); }
         function openSaticiModal() { document.getElementById('saticiDropdown').classList.remove('active'); document.getElementById('saticiModal').style.display='flex'; }
 
-        // ANINDA YÜKLEME (once ile gecikmesiz)
         db.ref('categories').once('value').then((snapshot) => {
             const slider = document.getElementById('dynamicCategories');
             slider.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { slider.innerHTML = '<div style="font-size:12px; color:#64748b;">Kategori yok.</div>'; return; }
-            const sortedKeys = Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99));
-            sortedKeys.forEach(key => {
+            if(!data) { slider.innerHTML = '<div style="font-size:11px; color:#64748b;">Kategori yok.</div>'; return; }
+            Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99)).forEach(key => {
                 const kat = data[key];
                 slider.innerHTML += `
                     <a href="kategori.html?kat=${kat.slug}" class="category-card">
@@ -151,10 +182,10 @@
         });
 
         db.ref('site_settings').once('value').then((snapshot) => {
-            const settings = snapshot.val();
-            if(settings) {
-                if(settings.heroBaslik) document.getElementById('heroBaslikYuklenen').innerText = settings.heroBaslik;
-                if(settings.heroSlogan) document.getElementById('heroSloganYuklenen').innerText = settings.heroSlogan;
+            const s = snapshot.val();
+            if(s) {
+                if(s.heroBaslik) document.getElementById('heroBaslikYuklenen').innerText = s.heroBaslik;
+                if(s.heroSlogan) document.getElementById('heroSloganYuklenen').innerText = s.heroSlogan;
             }
         });
 
@@ -162,20 +193,17 @@
             const container = document.getElementById('dynamicRestaurants');
             container.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="font-size:12px; color:#64748b;">Aktif işletme yok.</div>'; return; }
+            if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Aktif işletme yok.</div>'; return; }
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
-                const puanGosterim = r.puan ? r.puan : 'Yeni İşletme';
                 html += `
                     <a href="isletme.html?id=${key}" class="restaurant-card">
                         <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}" class="rest-logo">
                         <div class="rest-info">
                             <h4>${r.ad}</h4>
                             <p>${r.kategori || 'Lezzetler'}</p>
-                            <div class="rest-puanlar">
-                                <span><i class="fa-solid fa-star"></i> ${puanGosterim}</span>
-                            </div>
+                            <div class="rest-puanlar"><span><i class="fa-solid fa-star"></i> ${r.puan || 'Yeni İşletme'}</span></div>
                         </div>
                     </a>
                 `;
@@ -188,16 +216,11 @@
             const yetkili = document.getElementById('basvuruYetkili').value.trim();
             const tel = document.getElementById('basvuruTel').value.trim();
             const kat = document.getElementById('basvuruKategori').value.trim();
-            if(!isletme || !yetkili || !tel) { alert("Lütfen tüm alanları doldurun."); return; }
-
-            const otomatikSifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
-            const basvuruId = 'BASVURU-' + Date.now();
-            db.ref('seller_applications/' + basvuruId).set({
-                id: basvuruId, isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: otomatikSifre, tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => {
-                alert("Başvurunuz alındı! Geçici Şifreniz: " + otomatikSifre);
-                document.getElementById('saticiModal').style.display = 'none';
-            });
+            if(!isletme || !yetkili || !tel) { alert("Alanları doldurun."); return; }
+            const sifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
+            db.ref('seller_applications/' + ('BASVURU-' + Date.now())).set({
+                isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
+            }).then(() => { alert("Başvuru alındı! Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
         }
     </script>
 </body>

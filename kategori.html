@@ -8,74 +8,42 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .logo { font-size: 20px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 40px; }
+        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 18px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-        .section-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 20px 0; border-left: 4px solid #f97316; padding-left: 8px; }
-        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 15px; }
+        .section-title { font-size: 16px; font-weight: 800; color: #0f172a; margin: 15px 0; border-left: 4px solid #f97316; padding-left: 8px; }
+        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); } }
-        .restaurant-card { background: #ffffff; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .rest-logo { width: 110px; height: 110px; object-fit: cover; background: #f1f5f9; }
-        .rest-info { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
-        .rest-info h4 { font-size: 15px; color: #0f172a; font-weight: 800; margin-bottom: 4px; }
-        .rest-info p { font-size: 12px; color: #64748b; margin-bottom: 6px; }
+        .restaurant-card { background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .rest-logo { width: 90px; height: 90px; object-fit: cover; background: #f1f5f9; }
+        .rest-info { padding: 10px; display: flex; flex-direction: column; justify-content: center; }
+        .rest-info h4 { font-size: 13px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
     </style>
 </head>
 <body>
-
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <a href="index.html" style="font-size:12px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
+        <a href="index.html" style="font-size:11px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
-
     <div class="container">
-        <h3 class="section-title" id="kategoriBaslik">Kategori İşletmeleri</h3>
-        <div class="restaurants-grid" id="kategoriIsletmeler">
-            <div style="color: #64748b; font-size: 13px;">Yükleniyor...</div>
-        </div>
+        <h3 class="section-title" id="kategoriBaslik">İşletmeler</h3>
+        <div class="restaurants-grid" id="kategoriIsletmeler"><div style="font-size:11px; color:#64748b;">Yükleniyor...</div></div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
-          authDomain: "eretankartal.firebaseapp.com",
-          databaseURL: "https://eretankartal-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "eretankartal",
-          storageBucket: "eretankartal.firebasestorage.app",
-          messagingSenderId: "775846519838",
-          appId: "1:775846519838:web:75b1d7dfb4ef942a3f7a0f"
-        };
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const katSlug = urlParams.get('kat');
-        document.getElementById('kategoriBaslik').innerText = katSlug ? (katSlug.toUpperCase() + ' KATEGORİSİ') : 'Kategori';
-
-        db.ref('active_restaurants').once('value').then((snapshot) => {
-            const container = document.getElementById('kategoriIsletmeler');
-            container.innerHTML = '';
-            const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="color:#64748b; font-size:13px;">Bu kategoride işletme yok.</div>'; return; }
-            
+        const kat = new URLSearchParams(window.location.search).get('kat');
+        document.getElementById('kategoriBaslik').innerText = kat ? (kat.toUpperCase() + ' KATEGORİSİ') : 'Kategori';
+        db.ref('active_restaurants').once('value').then(snapshot => {
+            const container = document.getElementById('kategoriIsletmeler'); container.innerHTML = '';
+            const data = snapshot.val(); if(!data) return;
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
-                const puanGosterim = r.puan ? r.puan : 'Yeni İşletme';
-                html += `
-                    <a href="isletme.html?id=${key}" class="restaurant-card">
-                        <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}" class="rest-logo">
-                        <div class="rest-info">
-                            <h4>${r.ad}</h4>
-                            <p>${r.kategori || 'Lezzetler'}</p>
-                            <span style="color:#f59e0b; font-weight:800; font-size:11px;"><i class="fa-solid fa-star"></i> ${puanGosterim}</span>
-                        </div>
-                    </a>
-                `;
+                html += `<a href="isletme.html?id=${key}" class="restaurant-card"><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" class="rest-logo"><div class="rest-info"><h4>${r.ad}</h4><p style="font-size:10px; color:#64748b;">${r.kategori || 'Lezzet'}</p></div></a>`;
             });
             container.innerHTML = html;
         });

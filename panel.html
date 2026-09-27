@@ -36,7 +36,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
-        td img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; }
+        td img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; background: #f1f5f9; }
         .action-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; }
         .success-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
         .edit-btn { background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px; margin-right: 5px; }
@@ -59,7 +59,7 @@
     <div class="main-content">
         <div class="top-bar">
             <h2>Süper Admin Kontrol Merkezi</h2>
-            <a href="index.html" class="back-site-btn"><i class="fa-solid fa-globe"></i> Siteye Git</a>
+            <a href="index.html" class="back-site-btn" target="_blank"><i class="fa-solid fa-globe"></i> Siteye Git</a>
         </div>
 
         <!-- 1. KATEGORİLER & GÖRSELLER TAB -->
@@ -68,11 +68,11 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>Kategori Adı *</label>
-                    <input type="text" id="katAdi" placeholder="Örn: Pizza">
+                    <input type="text" id="katAdi" placeholder="Örn: Çiğ Köfte">
                 </div>
                 <div class="form-group">
                     <label>URL Slug *</label>
-                    <input type="text" id="katSlug" placeholder="Örn: pizza">
+                    <input type="text" id="katSlug" placeholder="Örn: cigkofte">
                 </div>
                 <div class="form-group">
                     <label>Sıralama (Öncelik Numarası)</label>
@@ -80,7 +80,7 @@
                 </div>
                 <div class="form-group">
                     <label>Durum / Etiket</label>
-                    <input type="text" id="katDurum" value="Yakında" placeholder="Yakında veya Aktif">
+                    <input type="text" id="katDurum" value="Aktif" placeholder="Aktif veya Yakında">
                 </div>
                 <div class="form-group" style="grid-column: span 2;">
                     <label>Bilgisayardan Görsel Dosyası Seç *</label>
@@ -187,10 +187,9 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <script>
         const firebaseConfig = {
           apiKey: "AIzaSyDMIz96KNZF-7zWGRuI-2fvQ72fZImHtUw",
@@ -203,7 +202,6 @@
         };
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
-        const storage = firebase.storage();
 
         function tabDegistir(tabId, btnElement) {
             document.querySelectorAll('.card').forEach(c => c.classList.remove('active-tab'));
@@ -222,7 +220,6 @@
                 return;
             }
             
-            // Sıralama (sira değerine göre)
             const sortedKeys = Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99));
 
             sortedKeys.forEach(key => {
@@ -243,7 +240,7 @@
             });
         });
 
-        // 2. KATEGORİ EKLE
+        // 2. KATEGORİ EKLE (BASE64 İLE ANINDA YÜKLEME)
         function kategoriEkle() {
             const ad = document.getElementById('katAdi').value.trim();
             const slug = document.getElementById('katSlug').value.trim();
@@ -257,29 +254,38 @@
             }
 
             const file = fileInput.files[0];
-            const storageRef = storage.ref('categories/' + Date.now() + '_' + file.name);
             document.getElementById('loadingOverlay').style.display = 'flex';
 
-            storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(downloadURL => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                const base64Image = reader.result;
                 const catId = 'cat_' + Date.now();
-                return db.ref('categories/' + catId).set({
+
+                db.ref('categories/' + catId).set({
                     id: catId,
                     ad: ad,
                     slug: slug,
                     sira: sira,
-                    durum: durum || 'Yakında',
-                    gorsel: downloadURL
+                    durum: durum || 'Aktif',
+                    gorsel: base64Image
+                }).then(() => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert("Kategori başarıyla eklendi ve ana sayfaya yansıtıldı!");
+                    document.getElementById('katAdi').value = '';
+                    document.getElementById('katSlug').value = '';
+                    document.getElementById('katSira').value = '1';
+                    document.getElementById('katDurum').value = 'Aktif';
+                    document.getElementById('katDosya').value = '';
+                }).catch(error => {
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    alert("Hata: " + error.message);
                 });
-            }).then(() => {
+            };
+            reader.onerror = function (error) {
                 document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Kategori başarıyla eklendi ve ana sayfaya yansıtıldı!");
-                document.getElementById('katAdi').value = '';
-                document.getElementById('katSlug').value = '';
-                document.getElementById('katDosya').value = '';
-            }).catch(error => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                alert("Hata: " + error.message);
-            });
+                alert("Dosya okuma hatası: " + error);
+            };
         }
 
         function kategoriDuzenleAc(key, ad, slug, sira, durum) {
@@ -305,13 +311,15 @@
 
             if(fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const storageRef = storage.ref('categories/' + Date.now() + '_' + file.name);
-                storageRef.put(file).then(snapshot => snapshot.ref.getDownloadURL()).then(downloadURL => {
-                    return db.ref('categories/' + key).update({ ad, slug, sira, durum, gorsel: downloadURL });
-                }).then(() => {
-                    document.getElementById('loadingOverlay').style.display = 'none';
-                    alert("Kategori ve yeni görseli güncellendi!");
-                });
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    const base64Image = reader.result;
+                    db.ref('categories/' + key).update({ ad, slug, sira, durum, gorsel: base64Image }).then(() => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        alert("Kategori ve yeni görseli güncellendi!");
+                    });
+                };
             } else {
                 db.ref('categories/' + key).update({ ad, slug, sira, durum }).then(() => {
                     document.getElementById('loadingOverlay').style.display = 'none';

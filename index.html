@@ -21,32 +21,32 @@
         .panel-giris-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
         .panel-giris-btn:hover { background: #f97316; color: #fff; }
 
-        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 50px 20px; text-align: center; }
-        .hero-section h1 { font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 10px; }
-        .hero-section p { font-size: 14px; color: #64748b; margin-bottom: 25px; }
+        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 40px 20px; text-align: center; }
+        .hero-section h1 { font-size: 24px; font-weight: 900; color: #0f172a; margin-bottom: 8px; }
+        .hero-section p { font-size: 13px; color: #64748b; margin-bottom: 0px; }
 
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
-        .section-title { font-size: 19px; font-weight: 800; color: #0f172a; margin: 30px 0 15px 0; border-left: 5px solid #f97316; padding-left: 10px; display: flex; align-items: center; gap: 10px; }
+        .section-title { font-size: 18px; font-weight: 800; color: #0f172a; margin: 25px 0 15px 0; border-left: 5px solid #f97316; padding-left: 10px; display: flex; align-items: center; gap: 10px; }
         
-        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        @media(min-width: 768px) { .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; } }
-        
-        .category-card { background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; transition: 0.3s; display: flex; flex-direction: column; box-shadow: 0 5px 20px rgba(0,0,0,0.04); }
-        .category-card:hover { border-color: #f97316; transform: translateY(-4px); box-shadow: 0 10px 30px rgba(249,115,22,0.15); }
-        .cat-img { width: 100%; height: 120px; object-fit: cover; border-bottom: 2px solid #f97316; }
-        @media(min-width: 768px) { .cat-img { height: 140px; } }
-        .cat-body { padding: 14px; text-align: center; }
-        .cat-body h3 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
-        .cat-body span { font-size: 11px; color: #64748b; font-weight: 600; }
+        /* YEMEKSEPETİ TARZI YATAY KAYDIRMALI KATEGORİLER (HORIZONTAL SCROLL) */
+        .categories-slider { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; -ms-overflow-style: none; }
+        .categories-slider::-webkit-scrollbar { display: none; }
+
+        .category-card { min-width: 120px; width: 120px; background: #ffffff; border-radius: 14px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; transition: 0.3s; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .category-card:hover { border-color: #f97316; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(249,115,22,0.12); }
+        .cat-img { width: 100%; height: 95px; object-fit: cover; border-bottom: 2px solid #f97316; }
+        .cat-body { padding: 10px; text-align: center; }
+        .cat-body h3 { font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cat-body span { font-size: 10px; color: #64748b; font-weight: 600; }
 
         .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
         .restaurant-card { background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; transition: 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.04); }
         .restaurant-card:hover { border-color: #f97316; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(249,115,22,0.12); }
-        .rest-logo { width: 120px; height: 120px; object-fit: cover; background: #f1f5f9; }
+        .rest-logo { width: 110px; height: 110px; object-fit: cover; background: #f1f5f9; }
         .rest-info { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
-        .rest-info h4 { font-size: 16px; color: #0f172a; font-weight: 800; margin-bottom: 4px; }
+        .rest-info h4 { font-size: 15px; color: #0f172a; font-weight: 800; margin-bottom: 4px; }
         .rest-info p { font-size: 12px; color: #64748b; margin-bottom: 8px; }
         .rest-puanlar { display: flex; gap: 10px; font-size: 11px; color: #475569; font-weight: 600; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; }
@@ -68,81 +68,28 @@
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
         <div class="header-buttons">
             <button type="button" class="satici-ol-btn" onclick="document.getElementById('saticiModal').style.display='flex'"><i class="fa-solid fa-store"></i> Satıcı Ol</button>
-            <a href="panel.html" class="panel-giris-btn"><i class="fa-solid fa-lock"></i> Giriş</a>
+            <a href="panel.html" class="panel-giris-btn"><i class="fa-solid fa-lock"></i> Yönetim</a>
         </div>
     </header>
 
     <div class="hero-section">
-        <h1>Ankara'nın En Lezzetli Pazar Yeri</h1>
-        <p>Yüzlerce lezzet, binlerce restoran kapında!</p>
+        <h1 id="heroBaslikYuklenen">Ankara'nın En Lezzetli Pazar Yeri</h1>
+        <p id="heroSloganYuklenen">Yüzlerce lezzet, binlerce restoran kapında!</p>
     </div>
 
     <div class="container">
-        <!-- TÜM KATEGORİLER -->
+        <!-- DİNAMİK YEMEK KATEGORİLERİ (YATAY KAYDIRMALI) -->
         <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Yemek Kategorileri</h3>
-        <div class="categories-grid">
-            <!-- 1. Çiğ Köfte -->
-            <a href="kategori.html?kat=cig-kofte" class="category-card">
-                <img src="images/kat-cigkofte.jpg" alt="Çiğ Köfte" class="cat-img">
-                <div class="cat-body"><h3>Çiğ Köfte</h3><span>1 Aktif Mağaza</span></div>
-            </a>
-            <!-- 2. Döner & Dürüm -->
-            <a href="kategori.html?kat=durum-doner" class="category-card">
-              <img src="https://i.imgur.com/7y4aCVb.jpg" alt="Döner & Dürüm" class="cat-img">
-                <div class="cat-body"><h3>Döner & Dürüm</h3><span>Yakında</span></div>
-            </a>
-            <!-- 3. Hamburger -->
-            <a href="kategori.html?kat=hamburger" class="category-card">
-                <img src="images/kat-hamburger.jpg" alt="Hamburger" class="cat-img">
-                <div class="cat-body"><h3>Hamburger</h3><span>Yakında</span></div>
-            </a>
-            <!-- 4. Lahmacun & Pide -->
-            <a href="kategori.html?kat=pide-lahmacun" class="category-card">
-                <img src="images/kat-lahmacun.jpg" alt="Lahmacun & Pide" class="cat-img">
-                <div class="cat-body"><h3>Lahmacun & Pide</h3><span>Yakında</span></div>
-            </a>
-            <!-- 5. Pizza -->
-            <a href="kategori.html?kat=pizza" class="category-card">
-                <img src="images/kat-pizza.jpg" alt="Pizza" class="cat-img">
-                <div class="cat-body"><h3>Pizza</h3><span>Yakında</span></div>
-            </a>
-            <!-- 6. Tatlı -->
-            <a href="kategori.html?kat=tatli" class="category-card">
-                <img src="images/kat-tatli.jpg" alt="Tatlı" class="cat-img">
-                <div class="cat-body"><h3>Tatlı</h3><span>Yakında</span></div>
-            </a>
-            <!-- 7. Tost & Sandviç -->
-            <a href="kategori.html?kat=tost-sandvic" class="category-card">
-                <img src="images/kat-tost.jpg" alt="Tost & Sandviç" class="cat-img">
-                <div class="cat-body"><h3>Tost & Sandviç</h3><span>Yakında</span></div>
-            </a>
-            <!-- 8. Ev Yemekleri -->
-            <a href="kategori.html?kat=ev-yemekleri" class="category-card">
-                <img src="images/kat-evyemek.jpg" alt="Ev Yemekleri" class="cat-img">
-                <div class="cat-body"><h3>Ev Yemekleri</h3><span>Yakında</span></div>
-            </a>
-            <!-- 9. Waffle -->
-            <a href="kategori.html?kat=waffle" class="category-card">
-                <img src="images/kat-waffle.jpg" alt="Waffle" class="cat-img">
-                <div class="cat-body"><h3>Waffle</h3><span>Yakında</span></div>
-            </a>
-            <!-- 10. Köfte -->
-            <a href="kategori.html?kat=kofte" class="category-card">
-                <img src="images/kat-kofte.jpg" alt="Köfte" class="cat-img">
-                <div class="cat-body"><h3>Köfte</h3><span>Yakında</span></div>
-            </a>
-            <!-- 11. Tantuni -->
-            <a href="kategori.html?kat=tantuni" class="category-card">
-                <img src="images/kat-tantuni.jpg" alt="Tantuni" class="cat-img">
-                <div class="cat-body"><h3>Tantuni</h3><span>Yakında</span></div>
-            </a>
+        <div class="categories-slider" id="dynamicCategories">
+            <div style="padding: 15px; color: #64748b; font-size: 13px;">Kategoriler yükleniyor... (Panelden ekleyebilirsiniz)</div>
         </div>
 
-        <!-- BÖLGEDEKİ AKTİF İŞLETME -->
+        <!-- BÖLGEDEKİ AKTİF İŞLETMELER -->
         <h3 class="section-title"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
-        <div class="restaurants-grid">
+        <div class="restaurants-grid" id="dynamicRestaurants">
+            <!-- Onaylanan satıcılar buraya otomatik düşecek -->
             <a href="isletme.html?dukkan=Pan Cig Kofte" class="restaurant-card">
-                <img src="images/pan-klasik.jpg" alt="Pan Çiğ Köfte" class="rest-logo">
+                <img src="https://i.imgur.com/7y4aCVb.jpg" alt="Pan Çiğ Köfte" class="rest-logo">
                 <div class="rest-info">
                     <h4>Pan Çiğ Köfte & Dürüm</h4>
                     <p>Çiğ Köfte, Porsiyon Menüler</p>
@@ -201,6 +148,67 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
+        // 1. ANLIK KATEGORİLERİ ÇEK VE YATAY SLIDER OLARAK DİZ
+        db.ref('categories').on('value', (snapshot) => {
+            const slider = document.getElementById('dynamicCategories');
+            slider.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) {
+                slider.innerHTML = '<div style="padding:10px; color:#64748b; font-size:13px;">Henüz kategori eklenmemiş. Yönetim panelinden ekleyin.</div>';
+                return;
+            }
+            Object.keys(data).forEach(key => {
+                const kat = data[key];
+                slider.innerHTML += `
+                    <a href="kategori.html?kat=${kat.slug}" class="category-card">
+                        <img src="${kat.gorsel}" alt="${kat.ad}" class="cat-img">
+                        <div class="cat-body">
+                            <h3>${kat.ad}</h3>
+                            <span>${kat.durum}</span>
+                        </div>
+                    </a>
+                `;
+            });
+        });
+
+        // 2. SİTE AYARLARINI ANLIK ÇEK (BAŞLIK & SLOGAN)
+        db.ref('site_settings').on('value', (snapshot) => {
+            const settings = snapshot.val();
+            if(settings) {
+                if(settings.heroBaslik) document.getElementById('heroBaslikYuklenen').innerText = settings.heroBaslik;
+                if(settings.heroSlogan) document.getElementById('heroSloganYuklenen').innerText = settings.heroSlogan;
+            }
+        });
+
+        // 3. ONAYLANAN AKTİF İŞLETMELERİ ANLIK ÇEK
+        db.ref('active_restaurants').on('value', (snapshot) => {
+            const container = document.getElementById('dynamicRestaurants');
+            // Sabit Pan Çiğ Köfte dursun, yanına yeni onaylananlar eklensin veya liste güncellensin
+            const data = snapshot.val();
+            if(data) {
+                // İstersen tamamen dinamik yapabiliriz
+                let html = '';
+                Object.keys(data).forEach(key => {
+                    const r = data[key];
+                    html += `
+                        <a href="isletme.html?dukkan=${encodeURIComponent(r.ad)}" class="restaurant-card">
+                            <img src="https://i.imgur.com/7y4aCVb.jpg" alt="${r.ad}" class="rest-logo">
+                            <div class="rest-info">
+                                <h4>${r.ad}</h4>
+                                <p>${r.kategori || 'Lezzetler'}</p>
+                                <div class="rest-puanlar">
+                                    <span><i class="fa-solid fa-star"></i> ${r.puan || '5.0'}</span>
+                                    <text>Sistem Onaylı İşletme</text>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+        });
+
+        // Satıcı Başvuru Gönderme Fonksiyonu
         function saticiBasvuruGonder() {
             const isletme = document.getElementById('basvuruIsletme').value.trim();
             const yetkili = document.getElementById('basvuruYetkili').value.trim();
@@ -223,6 +231,10 @@
             }).then(() => {
                 alert("Başvurunuz başarıyla alındı! En kısa sürede incelenip tarafınıza dönüş yapılacaktır.");
                 document.getElementById('saticiModal').style.display = 'none';
+                document.getElementById('basvuruIsletme').value = '';
+                document.getElementById('basvuruYetkili').value = '';
+                document.getElementById('basvuruTel').value = '';
+                document.getElementById('basvuruKategori').value = '';
             });
         }
     </script>

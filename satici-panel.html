@@ -28,10 +28,15 @@
         td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; background: #eee; }
         
         .durum-btn { padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 9px; border: none; cursor: pointer; margin-right: 3px; color: #fff; }
-        .btn-hazirlaniyor { background: #f59e0b; }
-        .btn-yolactikti { background: #3b82f6; }
-        .btn-teslim { background: #10b981; }
-        .btn-iptal { background: #ef4444; }
+        .btn-hazirlaniyor { background: #dc2626; } /* Kırmızı */
+        .btn-yolactikti { background: #2563eb; } /* Mavi */
+        .btn-teslim { background: #16a34a; } /* Yeşil */
+        .btn-iptal { background: #9ca3af; } /* Gri / İptal */
+
+        .badge-hazirlaniyor { background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
+        .badge-yolactikti { background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
+        .badge-teslim { background: #f3f4f6; color: #4b5563; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
+        .badge-iptal { background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
     </style>
 </head>
 <body>
@@ -53,12 +58,30 @@
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
 
-        <!-- GARANTİ SESLİ BİLDİRİM SİSTEMLİ SİPARİŞLER -->
+        <!-- AKTİF YENİ SİPARİŞLER (YEŞİL / KIRMIZI / MAVİ) -->
         <div class="card" style="border: 2px solid #10b981; background: #f0fdf4;">
-            <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Gelen Canlı Siparişler (Sesli Bildirim Aktif)</h3>
+            <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Aktif Yeni Siparişler (Sesli Bildirim Aktif)</h3>
             <table>
-                <thead><tr><th>Müşteri</th><th>Seçimli Ürünler / Tutar</th><th>Adres & Tel</th><th>Mevcut Durum</th><th>Durum Güncelle</th></tr></thead>
-                <tbody id="gelenSiparislerListesi"><tr><td colspan="5" style="color:#64748b;">Yeni sipariş bekleniyor...</td></tr></tbody>
+                <thead><tr><th>Müşteri</th><th>Seçimli Ürünler / Tutar</th><th>Adres & Tel</th><th>Durum</th><th>İşlemler</th></tr></thead>
+                <tbody id="aktifSiparislerListesi"><tr><td colspan="5" style="color:#64748b;">Yeni sipariş bekleniyor...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- TESLİM EDİLEN VEYA İPTAL EDİLEN GEÇMİŞ SİPARİŞLER (GRİ) -->
+        <div class="card" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+            <h3 style="color: #475569;"><i class="fa-solid fa-box-archive"></i> Teslim Edilen & İptal Edilen Geçmiş Siparişler</h3>
+            <table>
+                <thead><tr><th>Müşteri</th><th>Ürünler / Tutar</th><th>Adres & Tel</th><th>Son Durum</th></tr></thead>
+                <tbody id="gecmisSiparislerListesi"><tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- MÜŞTERİ YORUMLARI VE PUANLARI -->
+        <div class="card">
+            <h3><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Müşteri Puanları ve Yorumları</h3>
+            <table>
+                <thead><tr><th>Müşteri</th><th>Puan</th><th>Yorum</th><th>Tarih</th></tr></thead>
+                <tbody id="musteriYorumlariListesi"><tr><td colspan="4" style="color:#64748b;">Henüz yorum yapılmamış.</td></tr></tbody>
             </table>
         </div>
 
@@ -79,7 +102,6 @@
         </div>
     </div>
 
-    <!-- GARANTİ SES ÇALMA İÇİN GİZLİ AUDIO ELEMENTİ -->
     <audio id="bildirimSesi" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -123,45 +145,89 @@
                 reader.readAsDataURL(logoInput.files[0]);
                 reader.onload = function(e) {
                     data.gorsel = e.target.result;
-                    db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
+                    db.ref('active_restaurants/' + saticiKey).update(data).then(() => { location.reload(); });
                 };
             } else {
-                db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
+                db.ref('active_restaurants/' + saticiKey).update(data).then(() => { location.reload(); });
             }
         }
 
-        // GARANTİ SESLİ BİLDİRİM ÇALMA FONKSİYONU
         let ilkYukleme = true;
         db.ref('orders/' + saticiKey).on('value', snapshot => {
-            const tbody = document.getElementById('gelenSiparislerListesi');
-            tbody.innerHTML = '';
+            const aktifTbody = document.getElementById('aktifSiparislerListesi');
+            const gecmisTbody = document.getElementById('gecmisSiparislerListesi');
+            aktifTbody.innerHTML = '';
+            gecmisTbody.innerHTML = '';
+            
             const data = snapshot.val();
             if(!data) { 
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; 
+                aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; 
+                gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>'; 
                 ilkYukleme = false;
                 return; 
             }
             
             if(!ilkYukleme) {
                 const ses = document.getElementById('bildirimSesi');
-                ses.play().catch(err => console.log("Ses çalma izni bekleniyor"));
+                ses.play().catch(e => {});
             }
             ilkYukleme = false;
 
+            let aktifSayac = 0;
+            let gecmisSayac = 0;
+
             Object.keys(data).forEach(sKey => {
                 const o = data[sKey];
+                const durum = o.durum || 'Hazırlanıyor';
+
+                if(durum === 'Teslim Edildi' || durum === 'İptal Edildi') {
+                    gecmisSayac++;
+                    const badgeClass = durum === 'İptal Edildi' ? 'badge-iptal' : 'badge-teslim';
+                    gecmisTbody.innerHTML += `
+                        <tr style="background:#f1f5f9; color:#475569;">
+                            <td><strong>${o.musteriAdi}</strong></td>
+                            <td>${o.urunAdi}<br><strong>${o.toplamFiyat} ₺</strong></td>
+                            <td>${o.musteriTel}<br><small>${o.musteriAdres || ''}</small></td>
+                            <td><span class="${badgeClass}">${durum}</span></td>
+                        </tr>
+                    `;
+                } else {
+                    aktifSayac++;
+                    aktifTbody.innerHTML += `
+                        <tr>
+                            <td><strong>${o.musteriAdi}</strong></td>
+                            <td>${o.urunAdi}<br><strong style="color:#f97316;">${o.toplamFiyat} ₺</strong></td>
+                            <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
+                            <td><span style="font-weight:800; color:#0f172a;">${durum}</span></td>
+                            <td>
+                                <button class="durum-btn btn-hazirlaniyor" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazırlanıyor</button>
+                                <button class="durum-btn btn-yolactikti" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yola Çıktı</button>
+                                <button class="durum-btn btn-teslim" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
+                                <button class="durum-btn btn-iptal" onclick="siparisDurumGuncelle('${sKey}', 'İptal Edildi')">İptal</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+
+            if(aktifSayac === 0) aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>';
+            if(gecmisSayac === 0) gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
+        });
+
+        // Müşteri Yorumlarını Dinle
+        db.ref('restaurant_reviews/' + saticiKey).on('value', snapshot => {
+            const tbody = document.getElementById('musteriYorumlariListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Henüz yorum yapılmamış.</td></tr>'; return; }
+            Object.keys(data).forEach(k => {
+                const y = data[k];
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${o.musteriAdi}</strong></td>
-                        <td>${o.urunAdi}<br><strong style="color:#f97316;">${o.toplamFiyat} ₺</strong></td>
-                        <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
-                        <td><span style="font-weight:800; color:#0f172a;">${o.durum || 'Hazırlanıyor'}</span></td>
-                        <td>
-                            <button class="durum-btn btn-hazirlaniyor" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazırlanıyor</button>
-                            <button class="durum-btn btn-yolactikti" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yola Çıktı</button>
-                            <button class="durum-btn btn-teslim" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
-                            <button class="durum-btn btn-iptal" onclick="siparisDurumGuncelle('${sKey}', 'İptal Edildi')">İptal</button>
-                        </td>
+                        <td><strong>${y.musteriAdi}</strong></td>
+                        <td><span style="color:#f59e0b; font-weight:800;"><i class="fa-solid fa-star"></i> ${y.puan} / 5</span></td>
+                        <td>${y.yorum}</td>
+                        <td><small style="color:#64748b;">${y.tarih}</small></td>
                     </tr>
                 `;
             });
@@ -169,9 +235,7 @@
 
         function siparisDurumGuncelle(siparisId, yeniDurum) {
             db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: yeniDurum });
-            db.ref('customer_orders/' + siparisId).update({ durum: yeniDurum }).then(() => {
-                alert("Durum '" + yeniDurum + "' olarak güncellendi.");
-            });
+            db.ref('customer_orders/' + siparisId).update({ durum: yeniDurum });
         }
 
         function urunEkle() {

@@ -60,7 +60,6 @@
         .yildizlar .aktif { color: #f59e0b; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; font-size: 11px; }
 
-        /* YEŞİL TİK BİLDİRİM EKRANI VE KAPATMA BUTONU */
         #teslimAnimasyonOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px; }
         #teslimAnimasyonOverlay i { font-size: 70px; margin-bottom: 15px; animation: bounce 1s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
@@ -68,7 +67,7 @@
 </head>
 <body>
 
-    <!-- YEŞİL TİK BİLDİRİMİ (KAPAT BUTONLU) -->
+    <!-- YEŞİLY TİK BİLDİRİMİ (TEK SEFERLİK) -->
     <div id="teslimAnimasyonOverlay">
         <i class="fa-solid fa-circle-check"></i>
         <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">Siparişiniz Teslim Edildi!</h2>
@@ -188,12 +187,12 @@
         </div>
     </div>
 
-    <!-- PUANLAMA MODALI (KAPATMA X TUŞU EKLENDİ) -->
+    <!-- PUANLAMA MODALI -->
     <div id="puanlamaModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>İşletmeyi Değerlendir</h3>
-                <button class="close-modal" onclick="document.getElementById('puanlamaModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-modal" onclick="puanModaliniKapat()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Lütfen detaylı değerlendirmenizi yapın:</p>
             
@@ -212,7 +211,7 @@
                 <label for="anonimCheck" style="margin-bottom: 0; font-size: 11px; cursor: pointer;">İsim ve Soyisimi Gizli Tut (Anonim)</label>
             </div>
             <button type="button" class="btn-tamamla" onclick="detayliPuanGonder()">Değerlendirmeyi Gönder</button>
-            <button type="button" onclick="document.getElementById('puanlamaModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:8px; cursor:pointer; margin-top:6px; font-size:11px; font-weight:600;">Şimdi Değil / Kapat</button>
+            <button type="button" onclick="puanModaliniKapat()" style="width:100%; background:transparent; color:#64748b; border:none; padding:8px; cursor:pointer; margin-top:6px; font-size:11px; font-weight:600;">Şimdi Değil / Kapat</button>
         </div>
     </div>
 
@@ -238,7 +237,6 @@
         let aktifSecilenUrun = null;
         let tumUrunlerVeri = {};
         let aktifSiparisKey = null;
-        let puanModalGosterildi = false;
         let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
 
         if(isletmeId) {
@@ -277,6 +275,7 @@
                 container.innerHTML = html;
             });
 
+            // Yorumlar ve Sıfır Yıldız Mantığı (Yeni İşletme Koruması)
             db.ref('restaurant_reviews/' + isletmeId).on('value', snapshot => {
                 const listeDiv = document.getElementById('isletmeYorumlarListesi');
                 const puanDiv = document.getElementById('isletmeOrtalamaPuan');
@@ -284,7 +283,7 @@
                 const data = snapshot.val();
                 if(!data) { 
                     listeDiv.innerHTML = '<div style="font-size: 11px; color: #64748b;">Henüz yorum yapılmamış.</div>'; 
-                    puanDiv.innerHTML = '<i class="fa-solid fa-star"></i> Yeni İşletme';
+                    puanDiv.innerHTML = '<i class="fa-solid fa-star" style="color:#94a3b8;"></i> Yeni İşletme (Puan Yok)';
                     return; 
                 }
 
@@ -327,8 +326,9 @@
                             aktifSiparis = s;
                             aktifSiparisKey = k;
                         }
-                        if(s.isletmeId === isletmeId && s.durum === 'Teslim Edildi' && !puanModalGosterildi) {
-                            puanModalGosterildi = true;
+                        // Sadece 1 kereye mahsus gösterim kontrolü (puanGosterildi bayrağı)
+                        if(s.isletmeId === isletmeId && s.durum === 'Teslim Edildi' && !s.puanGosterildi) {
+                            aktifSiparisKey = k;
                             document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
                         }
                     });
@@ -337,9 +337,6 @@
                         bilgiMetin.innerHTML = `Durum: <span style="color:#f97316;">${aktifSiparis.durum}</span>`;
                         if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
                             butonlarDiv.innerHTML = `<span style="font-size:10px; color:#f59e0b;">İptal Talebiniz İnceleniyor</span>`;
-                        } else if(aktifSiparis.durum === 'İptal Edildi' || aktifSiparis.durum === 'İptal Onaylandı') {
-                            bilgiMetin.innerHTML = `<span style="color:#ef4444; font-weight:800;">Siparişiniz işletme tarafından iptal edilmiştir.</span>`;
-                            butonlarDiv.innerHTML = '';
                         } else {
                             butonlarDiv.innerHTML = `<button type="button" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; font-weight:700; font-size:10px; cursor:pointer;">İptal Talebi</button>`;
                         }
@@ -362,6 +359,18 @@
         function teslimBildiriminiKapat() {
             document.getElementById('teslimAnimasyonOverlay').style.display = 'none';
             document.getElementById('puanlamaModal').style.display = 'flex';
+            if(aktifSiparisKey) {
+                db.ref('customer_orders/' + aktifSiparisKey).update({ puanGosterildi: true });
+                db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ puanGosterildi: true });
+            }
+        }
+
+        function puanModaliniKapat() {
+            document.getElementById('puanlamaModal').style.display = 'none';
+            if(aktifSiparisKey) {
+                db.ref('customer_orders/' + aktifSiparisKey).update({ puanGosterildi: true });
+                db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ puanGosterildi: true });
+            }
         }
 
         function iptalTalebiGonder() {
@@ -397,7 +406,7 @@
                 yorum: yorum || 'Değerlendirme yapıldı.', tarih: new Date().toLocaleDateString('tr-TR')
             }).then(() => {
                 alert("Teşekkür ederiz! Yorumunuz yayınlandı.");
-                document.getElementById('puanlamaModal').style.display = 'none';
+                puanModaliniKapat();
             });
         }
 
@@ -515,6 +524,7 @@
                 adet: sepet.reduce((a, b) => a + b.adet, 0), 
                 toplamFiyat: genelToplam, 
                 durum: 'Siparişiniz Alındı',
+                puanGosterildi: false,
                 tarih: new Date().toLocaleTimeString('tr-TR')
             };
 

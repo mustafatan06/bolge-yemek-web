@@ -35,8 +35,7 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
-        /* PROFESYONEL VE ŞIK MOBİL UYUMLU ALT SEPET ÇUBUĞU */
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 14px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 14px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(16px, env(safe-area-inset-top)); }
         .sabit-alt-bar .bilgi { color: #fff; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
         .sabit-alt-bar .bilgi span { color: #f97316; font-size: 15px; font-weight: 900; }
         .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 8px; }
@@ -57,7 +56,6 @@
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
         .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 13px; border-radius: 10px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 
-        /* KUPON ALANI TASARIMI */
         .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 12px; border-radius: 10px; margin: 12px 0; text-align: left; }
         .kupon-input-group { display: flex; gap: 8px; margin-top: 6px; }
         .kupon-input-group input { flex: 1; padding: 8px; font-size: 11px; border: 1px solid #fdba74; border-radius: 6px; outline: none; background: #fff; }
@@ -67,12 +65,23 @@
         .yildizlar .aktif { color: #f59e0b; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; font-size: 11px; }
 
+        /* KURYE YÜKLENME ANİMASYONU */
+        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
+        .kurye-ikon { font-size: 50px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
+        @keyframes kuryeSurus { 0%, 100% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
+
         #teslimAnimasyonOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px; }
         #teslimAnimasyonOverlay i { font-size: 70px; margin-bottom: 15px; animation: bounce 1s infinite; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
+
+    <!-- MOTOR KURYE YÜKLENME EKRANI -->
+    <div id="kuryeYukleniyor">
+        <div class="kurye-ikon"><i class="fa-solid fa-motorcycle fa-bounce"></i></div>
+        <div style="font-size: 14px; font-weight: 800; color: #0f172a;">Lezzetler Yükleniyor, Kurye Yola Çıkıyor...</div>
+    </div>
 
     <div id="teslimAnimasyonOverlay">
         <i class="fa-solid fa-circle-check"></i>
@@ -109,16 +118,15 @@
         </div>
     </div>
 
-    <!-- ŞIK VE PROFESYONEL SABİT ALT BAR -->
     <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
-        <div class="bilgi">
+        <div class="bilgi" id="altBarBilgiAlan">
             <span style="font-size: 10px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
             <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
         </div>
-        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
+        <button type="button" id="altBarButon" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
-    <!-- ÜRÜN SEÇENEKLERİ MODALI -->
+    <!-- MODALLAR -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -145,7 +153,6 @@
         </div>
     </div>
 
-    <!-- MÜŞTERİ KAYIT MODALI -->
     <div id="musteriKayitModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -160,7 +167,6 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODALI (KUPON ALANI EKLENMİŞ ŞIK TASARIM) -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -172,11 +178,10 @@
                 <div id="modalSepetListesi"></div>
             </div>
 
-            <!-- KUPON KODU ALANI -->
             <div class="kupon-box">
                 <div style="font-size: 11px; font-weight: 800; color: #c2410c;"><i class="fa-solid fa-ticket"></i> İndirim Kuponu Var mı?</div>
                 <div class="kupon-input-group">
-                    <input type="text" id="kuponKoduInput" placeholder="Örn: BÖLGE10 (10 TL İndirim)">
+                    <input type="text" id="kuponKoduInput" placeholder="Örn: BÖLGE10 (10 TL)">
                     <button type="button" onclick="kuponUygula()">Uygula</button>
                 </div>
                 <div id="kuponMesaj" style="font-size: 10px; margin-top: 4px; font-weight: 700;"></div>
@@ -198,7 +203,6 @@
         </div>
     </div>
 
-    <!-- İPTAL SEBEBİ MODALI -->
     <div id="iptalSebepModal" class="modal">
         <div class="modal-content">
             <h3>Sipariş İptal Talebi</h3>
@@ -208,7 +212,6 @@
         </div>
     </div>
 
-    <!-- PUANLAMA MODALI -->
     <div id="puanlamaModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -260,6 +263,31 @@
         let aktifSiparisKey = null;
         let indirimTutari = 0;
         let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
+
+        // Sayfa tam yüklenince kurye animasyonunu kaldır
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('kuryeYukleniyor');
+                if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
+            }, 600);
+        });
+
+        // GLOBAL (HER SAYFADA ÇALIŞAN) TESLİM EDİLDİ DİNLEYİCİSİ
+        const aktifTelGlobal = localStorage.getItem('aktifMusteriTel');
+        if(aktifTelGlobal) {
+            db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
+                const data = snapshot.val();
+                if(data) {
+                    Object.keys(data).forEach(k => {
+                        const s = data[k];
+                        if(s.durum === 'Teslim Edildi' && !s.puanGosterildi) {
+                            aktifSiparisKey = k;
+                            document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
+                        }
+                    });
+                }
+            });
+        }
 
         if(isletmeId) {
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
@@ -331,13 +359,13 @@
             });
         }
 
-        const aktifTel = localStorage.getItem('aktifMusteriTel');
-        if(aktifTel && isletmeId) {
-            db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTel).on('value', snapshot => {
+        // Aktif sipariş takip barı entegrasyonu
+        if(aktifTelGlobal && isletmeId) {
+            db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
                 const data = snapshot.val();
                 const altBar = document.getElementById('sabitAltBar');
-                const bilgiMetin = document.getElementById('altBarBilgiMetin');
-                const butonlarDiv = document.getElementById('altBarButonlar');
+                const bilgiAlan = document.getElementById('altBarBilgiAlan');
+                const butonAlan = document.getElementById('altBarButon');
 
                 if(data) {
                     let aktifSiparis = null;
@@ -347,19 +375,15 @@
                             aktifSiparis = s;
                             aktifSiparisKey = k;
                         }
-                        if(s.isletmeId === isletmeId && s.durum === 'Teslim Edildi' && !s.puanGosterildi) {
-                            aktifSiparisKey = k;
-                            document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
-                        }
                     });
 
                     if(aktifSiparis) {
                         altBar.style.display = 'flex';
-                        bilgiMetin.innerHTML = `<span style="font-size:10px; color:#94a3b8;">Sipariş Durumu</span><div><span style="color:#f97316;">${aktifSiparis.durum}</span></div>`;
+                        bilgiAlan.innerHTML = `<span style="font-size: 10px; color: #94a3b8;">Sipariş Durumu</span><div><span style="color:#f97316;">${aktifSiparis.durum}</span></div>`;
                         if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
-                            document.getElementById('sabitAltBar').querySelector('button').outerHTML = `<span style="font-size:11px; color:#f59e0b; font-weight:700;">İptal İnceleniyor</span>`;
+                            butonAlan.outerHTML = `<span id="altBarButon" style="font-size:11px; color:#f59e0b; font-weight:700;">İptal İnceleniyor</span>`;
                         } else {
-                            document.getElementById('sabitAltBar').querySelector('button').outerHTML = `<button type="button" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444;"><i class="fa-solid fa-ban"></i> İptal Talebi</button>`;
+                            butonAlan.outerHTML = `<button type="button" id="altBarButon" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444;"><i class="fa-solid fa-ban"></i> İptal Talebi</button>`;
                         }
                         return;
                     }
@@ -381,7 +405,7 @@
                 indirimTutari = 10;
                 mesaj.style.color = '#16a34a';
                 mesaj.innerText = 'Kupon uygulandı: 10 TL İndirim!';
-                sepetiOnaylaTikla(); // Fiyatı güncelle
+                sepetiOnaylaTikla();
             } else {
                 indirimTutari = 0;
                 mesaj.style.color = '#ef4444';
@@ -574,8 +598,9 @@
                 alert("Siparişiniz başarıyla alındı!");
                 sepet = [];
                 indirimTutari = 0;
-                sepetiGuncelleBar();
+                // SEPETİ OTOMATİK KAPAT VE TAKİP EKRANINA GEÇ
                 document.getElementById('checkoutModal').style.display = 'none';
+                sepetiGuncelleBar();
             });
         }
     </script>

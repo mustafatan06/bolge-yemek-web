@@ -38,13 +38,11 @@
         .adet-input { width: 26px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 10px; font-weight: 700; background: #fff; }
         .siparis-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
-        /* SABİT PROFESYONEL SEPET BAR */
         .sabit-sepet-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
         .sabit-sepet-bar .bilgi { color: #fff; font-size: 12px; font-weight: 700; }
         .sabit-sepet-bar .bilgi span { color: #f97316; font-size: 14px; }
         .sabit-sepet-bar button { background: #f97316; color: white; border: none; padding: 9px 18px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; }
 
-        /* PROFESYONEL CHECKOUT (ÖDEME/ADRES) MODALI */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
@@ -82,13 +80,28 @@
         </div>
     </div>
 
-    <!-- EKRANIN DİBİNE SABİTLENMİŞ SEPET BAR -->
     <div id="sabitSepetBar" class="sabit-sepet-bar">
         <div class="bilgi"><span id="sepetUrunSayisi">0</span> Ürün | <span id="sepetToplamFiyat">0</span> ₺</div>
-        <button type="button" onclick="checkoutModalAc()">Sepeti Onayla</button>
+        <button type="button" onclick="sepetiOnaylaTikla()">Sepeti Onayla</button>
     </div>
 
-    <!-- PROFESYONEL CHECKOUT (ADRES VE ÖDEME ONAY) MODALI -->
+    <!-- OTOMATİK GİRİŞ / KAYIT MODALI (EĞER GİRİŞ YAPILMAMIŞSA ÇIKAR) -->
+    <div id="musteriKayitModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-lock" style="color:#f97316;"></i> Sipariş İçin Giriş Yapın</h3>
+                <button class="close-modal" onclick="document.getElementById('musteriKayitModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="font-size: 10px; color: #64748b; margin-bottom: 10px;">Sipariş verebilmek için bilgilerinizi eksiksiz doldurun.</p>
+            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="modalAd" placeholder="Adınız Soyadınız"></div>
+            <div class="form-group"><label>Telefon Numarası *</label><input type="tel" id="modalTel" placeholder="05XXXXXXXXX"></div>
+            <div class="form-group"><label>E-posta *</label><input type="email" id="modalMail" placeholder="ornek@mail.com"></div>
+            <div class="form-group"><label>Teslimat Adresi *</label><textarea id="modalAdres" rows="2" placeholder="Mahalle, sokak, bina no..."></textarea></div>
+            <button type="button" class="btn-tamamla" onclick="musteriHizliKaydet()">Bilgileri Kaydet ve Devam Et</button>
+        </div>
+    </div>
+
+    <!-- PROFESYONEL CHECKOUT MODALI -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -103,7 +116,7 @@
 
             <div class="form-group">
                 <label>Teslimat Adresiniz *</label>
-                <textarea id="siparisAdres" rows="2" placeholder="Sokak, bina no, daire, tarif..."></textarea>
+                <textarea id="siparisAdres" rows="2"></textarea>
             </div>
 
             <div class="form-group">
@@ -141,7 +154,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const isletmeId = urlParams.get('id');
 
-        // SEPET ARRAY YAPISI
         let sepet = [];
 
         if(isletmeId) {
@@ -158,7 +170,7 @@
                 const container = document.getElementById('isletmeUrunleri');
                 container.innerHTML = '';
                 const data = snapshot.val();
-                if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Bu işletmenin menüsü henüz yok.</div>'; return; }
+                if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Ürün yok.</div>'; return; }
                 
                 let html = '';
                 Object.keys(data).forEach(k => {
@@ -197,69 +209,72 @@
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             const musteriTel = localStorage.getItem('aktifMusteriTel');
 
+            // GİRİŞ YAPILMAMIŞSA SAYFAYI YENİLEMEDEN MODAL AÇ
             if(!musteriAdi || !musteriTel) {
-                alert("Sipariş verebilmek için lütfen önce ana sayfadan giriş yapın / kaydolun!");
-                window.location.href = 'index.html';
+                document.getElementById('musteriKayitModal').style.display = 'flex';
                 return;
             }
 
             const adet = parseInt(document.getElementById('adet_' + key).value);
-            
-            // Sepette aynı ürün varsa adedini artır, yoksa yeni ekle
             const mevcutUrun = sepet.find(item => item.urunAdi === urunAdi);
             if(mevcutUrun) {
                 mevcutUrun.adet += adet;
                 mevcutUrun.toplamFiyat = mevcutUrun.adet * birimFiyat;
             } else {
-                sepet.push({
-                    urunAdi: urunAdi,
-                    birimFiyat: birimFiyat,
-                    adet: adet,
-                    toplamFiyat: birimFiyat * adet
-                });
+                sepet.push({ urunAdi, birimFiyat, adet, toplamFiyat: birimFiyat * adet });
             }
 
             sepetiGuncelleBar();
+            alert("'" + urunAdi + "' sepete eklendi!");
+        }
+
+        function musteriHizliKaydet() {
+            const ad = document.getElementById('modalAd').value.trim();
+            const tel = document.getElementById('modalTel').value.trim();
+            const mail = document.getElementById('modalMail').value.trim();
+            const adres = document.getElementById('modalAdres').value.trim();
+
+            if(!ad || !tel || !mail || !adres) { alert("Lütfen tüm alanları doldurun."); return; }
+            localStorage.setItem('aktifMusteriAdi', ad);
+            localStorage.setItem('aktifMusteriTel', tel);
+            localStorage.setItem('aktifMusteriMail', mail);
+            localStorage.setItem('aktifMusteriAdres', adres);
+
+            document.getElementById('musteriKayitModal').style.display = 'none';
+            alert("Giriş yapıldı! Şimdi ürünleri sepete ekleyebilirsiniz.");
         }
 
         function sepetiGuncelleBar() {
-            let toplamAdet = 0;
-            let genelToplam = 0;
-
-            sepet.forEach(item => {
-                toplamAdet += item.adet;
-                genelToplam += item.toplamFiyat;
-            });
-
+            let toplamAdet = 0, genelToplam = 0;
+            sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
             document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
             document.getElementById('sepetToplamFiyat').innerText = genelToplam;
+            document.getElementById('sabitSepetBar').style.display = (toplamAdet > 0) ? 'flex' : 'none';
+        }
 
-            const bar = document.getElementById('sabitSepetBar');
-            if(toplamAdet > 0) {
-                bar.style.display = 'flex';
-            } else {
-                bar.style.display = 'none';
+        function sepetiOnaylaTikla() {
+            const musteriAdi = localStorage.getItem('aktifMusteriAdi');
+            if(!musteriAdi) {
+                document.getElementById('musteriKayitModal').style.display = 'flex';
+                return;
             }
+            checkoutModalAc();
         }
 
         function checkoutModalAc() {
-            const musteriAdresKayitli = localStorage.getItem('aktifMusteriAdres') || '';
-            document.getElementById('siparisAdres').value = musteriAdresKayitli;
-
+            document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
             const listeDiv = document.getElementById('modalSepetListesi');
             listeDiv.innerHTML = '';
-
             let genelToplam = 0;
             sepet.forEach((item, index) => {
                 genelToplam += item.toplamFiyat;
                 listeDiv.innerHTML += `
                     <div class="sepet-urun-satir">
                         <span><strong>${item.adet}x</strong> ${item.urunAdi}</span>
-                        <span>${item.toplamFiyat} ₺ <button type="button" onclick="sepettenCikar(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer; margin-left:6px;"><i class="fa-solid fa-trash"></i></button></span>
+                        <span>${item.toplamFiyat} ₺ <button type="button" onclick="sepettenCikar(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></span>
                     </div>
                 `;
             });
-
             document.getElementById('modalToplamTutar').innerText = genelToplam + ' ₺';
             document.getElementById('checkoutModal').style.display = 'flex';
         }
@@ -267,41 +282,28 @@
         function sepettenCikar(index) {
             sepet.splice(index, 1);
             sepetiGuncelleBar();
-            if(sepet.length === 0) {
-                document.getElementById('checkoutModal').style.display = 'none';
-            } else {
-                checkoutModalAc();
-            }
+            if(sepet.length === 0) document.getElementById('checkoutModal').style.display = 'none';
+            else checkoutModalAc();
         }
 
         function siparişiKesinlestir() {
             const adres = document.getElementById('siparisAdres').value.trim();
             const odeme = document.getElementById('odemeYontemi').value;
-
-            if(!adres) {
-                alert("Lütfen teslimat adresinizi yazın.");
-                return;
-            }
-
-            if(sepet.length === 0) {
-                alert("Sepetiniz boş.");
-                return;
-            }
+            if(!adres) { alert("Adres gerekli."); return; }
 
             const musteriAdi = localStorage.getItem('aktifMusteriAdi');
             const musteriTel = localStorage.getItem('aktifMusteriTel');
 
-            // Toplam tutarı hesapla
-            let genelToplam = 0;
-            let urunlerOzet = [];
+            let genelToplam = 0, urunlerOzet = [];
             sepet.forEach(item => {
                 genelToplam += item.toplamFiyat;
                 urunlerOzet.push(`${item.adet}x ${item.urunAdi}`);
             });
 
             const siparisId = 'siparis_' + Date.now();
-            db.ref('orders/' + isletmeId + '/' + siparisId).set({
+            const siparisVerisi = {
                 siparisId, 
+                isletmeId,
                 musteriAdi, 
                 musteriTel, 
                 musteriAdres: adres, 
@@ -309,14 +311,18 @@
                 urunAdi: urunlerOzet.join(', '), 
                 adet: sepet.reduce((a, b) => a + b.adet, 0), 
                 toplamFiyat: genelToplam, 
+                durum: 'Hazırlanıyor',
                 tarih: new Date().toLocaleTimeString('tr-TR')
-            }).then(() => {
-                alert("Siparişiniz başarıyla alındı! İşletmeye sesli bildirim gönderildi.");
+            };
+
+            // Hem işletmeye sipariş düşür hem de müşteri takip tablosuna yaz
+            db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
+            db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
+                alert("Siparişiniz başarıyla alındı! Canlı takipten durumunu izleyebilirsiniz.");
                 sepet = [];
                 sepetiGuncelleBar();
                 document.getElementById('checkoutModal').style.display = 'none';
-            }).catch(err => {
-                alert("Sipariş hatası: " + err.message);
+                window.location.href = 'index.html';
             });
         }
     </script>

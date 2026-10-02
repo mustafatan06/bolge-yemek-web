@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 70px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 90px; overflow-x: hidden; }
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
         .logo { font-size: 17px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
@@ -49,6 +49,12 @@
         .rest-info h4 { font-size: 12px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
         .rest-info p { font-size: 10px; color: #64748b; margin-bottom: 4px; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 10px; }
+
+        /* SABİT CANLI SİPARİŞ TAKİP ÇUBUĞU (HER SAYFADA ORTAK) */
+        .sabit-takip-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #10b981; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+        .sabit-takip-bar .takip-bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .sabit-takip-bar .durum-badge { background: #f59e0b; color: #0f172a; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 900; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 360px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
@@ -100,6 +106,18 @@
         </div>
     </div>
 
+    <!-- HER SAYFADA SABİT CANLI SİPARİŞ TAKİP ÇUBUĞU -->
+    <div id="sabitTakipBar" class="sabit-takip-bar">
+        <div class="takip-bilgi">
+            <i class="fa-solid fa-motorcycle" style="color:#10b981; font-size:16px;"></i>
+            <div>
+                <div style="font-size: 10px; color:#94a3b8;">Aktif Sipariş Durumu</div>
+                <span id="takipDurumMetin" class="durum-badge">Hazırlanıyor</span>
+            </div>
+        </div>
+        <div style="color: #fff; font-size: 11px; font-weight: 700;" id="takipTutarMetin">0 ₺</div>
+    </div>
+
     <!-- MÜŞTERİ GİRİŞ / KAYIT MODALI -->
     <div id="musteriModal" class="modal">
         <div class="modal-content">
@@ -120,7 +138,7 @@
             <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="Örn: Lezzet Dürüm"></div>
             <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
             <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori (Örn: Pizza, Köfte, Döner) *</label><input type="text" id="basvuruKategori" placeholder="Pizza"></div>
+            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Pizza"></div>
             <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:9px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer; margin-top:6px;">Başvuruyu Gönder</button>
             <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:5px; cursor:pointer; margin-top:4px; font-size:11px;">Vazgeç</button>
         </div>
@@ -142,8 +160,33 @@
         const db = firebase.database();
 
         const aktifMusteri = localStorage.getItem('aktifMusteriAdi');
+        const aktifTel = localStorage.getItem('aktifMusteriTel');
+
         if(aktifMusteri) {
             document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:10px; font-weight:700; color:#0f172a; background:#f1f5f9; padding:5px 8px; border-radius:6px; display:inline-block;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
+            
+            // AKTİF SİPARİŞİ LİSTELE VE CANLI TAKİP ET
+            if(aktifTel) {
+                db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTel).on('value', snapshot => {
+                    const data = snapshot.val();
+                    const takipBar = document.getElementById('sabitTakipBar');
+                    if(data) {
+                        let sonSiparis = null;
+                        Object.keys(data).forEach(k => {
+                            sonSiparis = data[k];
+                        });
+                        if(sonSiparis && sonSiparis.durum !== 'Teslim Edildi' && sonSiparis.durum !== 'İptal Edildi') {
+                            document.getElementById('takipDurumMetin').innerText = sonSiparis.durum || 'Hazırlanıyor';
+                            document.getElementById('takipTutarMetin').innerText = sonSiparis.toplamFiyat + ' ₺';
+                            takipBar.style.display = 'flex';
+                        } else {
+                            takipBar.style.display = 'none';
+                        }
+                    } else {
+                        takipBar.style.display = 'none';
+                    }
+                });
+            }
         }
 
         function openMusteriModal() { document.getElementById('musteriModal').style.display = 'flex'; }
@@ -171,18 +214,10 @@
             const slider = document.getElementById('dynamicCategories');
             slider.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { slider.innerHTML = '<div style="font-size:11px; color:#64748b;">Kategori yok.</div>'; return; }
+            if(!data) return;
             Object.keys(data).sort((a, b) => (data[a].sira || 99) - (data[b].sira || 99)).forEach(key => {
                 const kat = data[key];
-                slider.innerHTML += `
-                    <a href="kategori.html?kat=${kat.slug}" class="category-card">
-                        <img src="${kat.gorsel}" alt="${kat.ad}" class="cat-img">
-                        <div class="cat-body">
-                            <h3>${kat.ad}</h3>
-                            <span>${kat.durum}</span>
-                        </div>
-                    </a>
-                `;
+                slider.innerHTML += `<a href="kategori.html?kat=${kat.slug}" class="category-card"><img src="${kat.gorsel}" class="cat-img"><div class="cat-body"><h3>${kat.ad}</h3><span>${kat.durum}</span></div></a>`;
             });
         });
 
@@ -194,29 +229,17 @@
             }
         });
 
-        // İŞLETMELERİ ANINDA VE HATASIZ LİSTELEME
         db.ref('active_restaurants').once('value').then((snapshot) => {
             const container = document.getElementById('dynamicRestaurants');
             container.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Henüz aktif işletme bulunmuyor.</div>'; return; }
+            if(!data) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">İşletme yok.</div>'; return; }
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
-                html += `
-                    <a href="isletme.html?id=${key}" class="restaurant-card">
-                        <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}" class="rest-logo">
-                        <div class="rest-info">
-                            <h4>${r.ad}</h4>
-                            <p>${r.kategori || 'Lezzetler'}</p>
-                            <div class="rest-puanlar"><span><i class="fa-solid fa-star"></i> ${r.puan || 'Yeni İşletme'}</span></div>
-                        </div>
-                    </a>
-                `;
+                html += `<a href="isletme.html?id=${key}" class="restaurant-card"><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" class="rest-logo"><div class="rest-info"><h4>${r.ad}</h4><p>${r.kategori || 'Lezzet'}</p><div class="rest-puanlar"><span><i class="fa-solid fa-star"></i> ${r.puan || 'Yeni İşletme'}</span></div></div></a>`;
             });
             container.innerHTML = html;
-        }).catch(err => {
-            document.getElementById('dynamicRestaurants').innerHTML = '<div style="font-size:11px; color:#ef4444;">İşletmeler yüklenirken hata oluştu.</div>';
         });
 
         function saticiBasvuruGonder() {
@@ -224,11 +247,11 @@
             const yetkili = document.getElementById('basvuruYetkili').value.trim();
             const tel = document.getElementById('basvuruTel').value.trim();
             const kat = document.getElementById('basvuruKategori').value.trim();
-            if(!isletme || !yetkili || !tel || !kat) { alert("Lütfen tüm alanları doldurun."); return; }
+            if(!isletme || !yetkili || !tel) { alert("Alanları doldurun."); return; }
             const sifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
             db.ref('seller_applications/' + ('BASVURU-' + Date.now())).set({
                 isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => { alert("Başvurunuz alındı! Geçici Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
+            }).then(() => { alert("Başvuru alındı! Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
         }
     </script>
 </body>

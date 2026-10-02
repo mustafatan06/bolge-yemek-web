@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 100px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 120px; overflow-x: hidden; }
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
@@ -35,10 +35,11 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
-        .sabit-sepet-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
-        .sabit-sepet-bar .bilgi { color: #fff; font-size: 12px; font-weight: 700; }
-        .sabit-sepet-bar .bilgi span { color: #f97316; font-size: 14px; }
-        .sabit-sepet-bar button { background: #f97316; color: white; border: none; padding: 9px 18px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; }
+        /* SABİT CANLI TAKİP VE SEPET ÇUBUĞU */
+        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); padding-bottom: max(12px, env(safe-area-inset-top)); }
+        .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; }
+        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 13px; }
+        .sabit-alt-bar button { background: #f97316; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 800; font-size: 11px; cursor: pointer; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; text-align: center; }
@@ -56,12 +57,23 @@
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
         .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; margin-top: 10px; }
 
-        /* YILDIZ PUANLAMA */
-        .yildizlar { display: flex; justify-content: center; gap: 8px; font-size: 22px; color: #cbd5e1; cursor: pointer; margin: 10px 0; }
+        /* YILDIZLAR VE YORUMLAR */
+        .yildizlar { display: flex; justify-content: center; gap: 6px; font-size: 20px; color: #cbd5e1; cursor: pointer; margin: 5px 0; }
         .yildizlar .aktif { color: #f59e0b; }
+        .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; font-size: 11px; }
+
+        #teslimAnimasyonOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px; }
+        #teslimAnimasyonOverlay i { font-size: 70px; margin-bottom: 15px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
+
+    <div id="teslimAnimasyonOverlay">
+        <i class="fa-solid fa-circle-check"></i>
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">Siparişiniz Teslim Edildi!</h2>
+        <p style="font-size: 13px; opacity: 0.9;">Afiyet olsun, bizi tercih ettiğiniz için teşekkür ederiz.</p>
+    </div>
 
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
@@ -75,6 +87,7 @@
                 <div>
                     <h1 id="restAdi">Yükleniyor...</h1>
                     <p id="restKategoriTel">Yükleniyor...</p>
+                    <div id="isletmeOrtalamaPuan" style="font-size: 11px; font-weight: 800; color: #f59e0b; margin-top: 3px;"></div>
                 </div>
             </div>
         </div>
@@ -83,12 +96,17 @@
         <div class="menu-grid" id="isletmeUrunleri">
             <div style="font-size: 11px; color: #64748b;">Menü yükleniyor...</div>
         </div>
+
+        <h3 class="section-title" style="margin-top: 25px;">Herkese Açık Müşteri Yorumları</h3>
+        <div id="isletmeYorumlarListesi">
+            <div style="font-size: 11px; color: #64748b;">Henüz yorum yapılmamış.</div>
+        </div>
     </div>
 
-    <!-- SABİT SEPET BAR -->
-    <div id="sabitSepetBar" class="sabit-sepet-bar">
-        <div class="bilgi"><span id="sepetUrunSayisi">0</span> Ürün | <span id="sepetToplamFiyat">0</span> ₺</div>
-        <button type="button" onclick="sepetiOnaylaTikla()">Sepeti Onayla</button>
+    <!-- SABİT ALT BAR (SEPET VEYA CANLI SİPARİŞ DURUMU / İPTAL TALEBİ) -->
+    <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
+        <div class="bilgi" id="altBarBilgiMetin"></div>
+        <div id="altBarButonlar"></div>
     </div>
 
     <!-- ÜRÜN SEÇENEKLERİ MODALI -->
@@ -160,23 +178,37 @@
         </div>
     </div>
 
-    <!-- PUANLAMA VE YORUM MODALI (TESLİM EDİLİNCE AÇILIR) -->
+    <!-- İPTAL SEBEBİ SORMA MODALI -->
+    <div id="iptalSebepModal" class="modal">
+        <div class="modal-content">
+            <h3>Sipariş İptal Talebi</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Lütfen iptal sebebinizi belirtin:</p>
+            <div class="form-group"><textarea id="iptalNedeni" rows="3" placeholder="Örn: Yanlış ürün ekledim..."></textarea></div>
+            <button type="button" class="btn-tamamla" style="background:#ef4444;" onclick="iptalTalebiGonder()">İptal Talebi Oluştur</button>
+        </div>
+    </div>
+
+    <!-- DETAYLI PUANLAMA VE YORUM MODALI -->
     <div id="puanlamaModal" class="modal">
         <div class="modal-content">
-            <h3 style="color: #16a34a; margin-bottom: 5px;"><i class="fa-solid fa-circle-check fa-bounce"></i> Siparişiniz Teslim Edildi!</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 15px;">İşletmemizi değerlendirir misiniz?</p>
+            <h3 style="color: #16a34a; margin-bottom: 5px;"><i class="fa-solid fa-circle-check"></i> Siparişiniz Teslim Edildi!</h3>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Lütfen detaylı değerlendirmenizi yapın:</p>
             
-            <div class="yildizlar" id="yildizContainer">
-                <i class="fa-solid fa-star" onclick="puanSec(1)"></i>
-                <i class="fa-solid fa-star" onclick="puanSec(2)"></i>
-                <i class="fa-solid fa-star" onclick="puanSec(3)"></i>
-                <i class="fa-solid fa-star" onclick="puanSec(4)"></i>
-                <i class="fa-solid fa-star" onclick="puanSec(5)"></i>
-            </div>
-            <input type="hidden" id="secilenPuan" value="5">
+            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 8px;">Lezzet Puanı</div>
+            <div class="yildizlar" id="yildizLezzet"><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 5)"></i></div>
+            
+            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 5px;">Paketleme Puanı</div>
+            <div class="yildizlar" id="yildizPaket"><i class="fa-solid fa-star" onclick="puanVer('Paket', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 5)"></i></div>
 
-            <div class="form-group"><label>Yorumunuz</label><textarea id="musteriYorum" rows="2" placeholder="Lezzet nasıldı?"></textarea></div>
-            <button type="button" class="btn-tamamla" onclick="puanVeYorumGonder()">Değerlendirmeyi Gönder</button>
+            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 5px;">Kurye Puanı</div>
+            <div class="yildizlar" id="yildizKurye"><i class="fa-solid fa-star" onclick="puanVer('Kurye', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 5)"></i></div>
+
+            <div class="form-group" style="margin-top: 10px;"><label>Yorumunuz</label><textarea id="musteriYorum" rows="2" placeholder="Düşünceleriniz..."></textarea></div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="anonimCheck" style="width: 14px; height: 14px; accent-color: #f97316;">
+                <label for="anonimCheck" style="margin-bottom: 0; font-size: 11px; cursor: pointer;">İsim ve Soyisimi Gizli Tut (Anonim)</label>
+            </div>
+            <button type="button" class="btn-tamamla" onclick="detayliPuanGonder()">Değerlendirmeyi Gönder</button>
         </div>
     </div>
 
@@ -201,8 +233,9 @@
         let sepet = [];
         let aktifSecilenUrun = null;
         let tumUrunlerVeri = {};
-        let aktifSiparisIdKey = null;
+        let aktifSiparisKey = null;
         let puanModalGosterildi = false;
+        let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
 
         if(isletmeId) {
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
@@ -239,51 +272,135 @@
                 });
                 container.innerHTML = html;
             });
+
+            // Yorumları ve Ortalama Puanı Listele
+            db.ref('restaurant_reviews/' + isletmeId).on('value', snapshot => {
+                const listeDiv = document.getElementById('isletmeYorumlarListesi');
+                const puanDiv = document.getElementById('isletmeOrtalamaPuan');
+                listeDiv.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) { 
+                    listeDiv.innerHTML = '<div style="font-size: 11px; color: #64748b;">Henüz yorum yapılmamış.</div>'; 
+                    puanDiv.innerHTML = '<i class="fa-solid fa-star"></i> Yeni İşletme';
+                    return; 
+                }
+
+                let toplamGenel = 0, adet = 0, yorumHtml = '';
+                Object.keys(data).forEach(k => {
+                    const y = data[k];
+                    toplamGenel += parseFloat(y.genelPuan || 5);
+                    adet++;
+                    yorumHtml += `
+                        <div class="yorum-karti">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <strong>${y.musteriAdi}</strong>
+                                <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> ${y.genelPuan} / 5</span>
+                            </div>
+                            <p style="color:#475569; margin-bottom:4px;">${y.yorum}</p>
+                            <div style="font-size:9px; color:#94a3b8;">Lezzet: ${y.puanLezzet} | Paket: ${y.puanPaket} | Kurye: ${y.puanKurye} (${y.tarih})</div>
+                        </div>
+                    `;
+                });
+
+                const ortalama = (toplamGenel / adet).toFixed(1);
+                puanDiv.innerHTML = `<i class="fa-solid fa-star"></i> ${ortalama} / 5 (${adet} Değerlendirme)`;
+                listeDiv.innerHTML = yorumHtml;
+            });
         }
 
-        // Müşteri Sipariş Durumu Dinleme (15 sn yeşil tik animasyonu ve puanlama)
+        // Müşteri Sipariş Takibi ve Alt Bar Yönetimi
         const aktifTel = localStorage.getItem('aktifMusteriTel');
-        if(aktifTel) {
+        if(aktifTel && isletmeId) {
             db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTel).on('value', snapshot => {
                 const data = snapshot.val();
+                const altBar = document.getElementById('sabitAltBar');
+                const bilgiMetin = document.getElementById('altBarBilgiMetin');
+                const butonlarDiv = document.getElementById('altBarButonlar');
+
                 if(data) {
+                    let aktifSiparis = null;
                     Object.keys(data).forEach(k => {
                         const s = data[k];
-                        if(s.isletmeId === isletmeId) {
-                            aktifSiparisIdKey = k;
-                            if(s.durum === 'Teslim Edildi' && !puanModalGosterildi) {
-                                puanModalGosterildi = true;
+                        if(s.isletmeId === isletmeId && s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi' && s.durum !== 'İptal Onaylandı') {
+                            aktifSiparis = s;
+                            aktifSiparisKey = k;
+                        }
+                        if(s.isletmeId === isletmeId && s.durum === 'Teslim Edildi' && !puanModalGosterildi) {
+                            puanModalGosterildi = true;
+                            document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
+                            setTimeout(() => {
+                                document.getElementById('teslimAnimasyonOverlay').style.display = 'none';
                                 document.getElementById('puanlamaModal').style.display = 'flex';
-                                setTimeout(() => {
-                                    document.getElementById('puanlamaModal').style.display = 'none';
-                                }, 15000); // 15 saniye ekranda kalır
-                            }
+                            }, 15000);
                         }
                     });
+
+                    if(aktifSiparis) {
+                        bilgiMetin.innerHTML = `Durum: <span style="color:#f97316;">${aktifSiparis.durum}</span>`;
+                        if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
+                            butonlarDiv.innerHTML = `<span style="font-size:10px; color:#f59e0b;">İptal Talebiniz İnceleniyor</span>`;
+                        } else if(aktifSiparis.durum === 'İptal Edildi' || aktifSiparis.durum === 'İptal Onaylandı') {
+                            bilgiMetin.innerHTML = `<span style="color:#ef4444; font-weight:800;">Siparişiniz işletme tarafından iptal edilmiştir.</span>`;
+                            butonlarDiv.innerHTML = '';
+                        } else {
+                            butonlarDiv.innerHTML = `<button type="button" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; font-weight:700; font-size:10px; cursor:pointer;">İptal Talebi</button>`;
+                        }
+                        altBar.style.display = 'flex';
+                        return;
+                    }
+                }
+
+                // Eğer aktif sipariş yoksa sepet barını göster
+                if(sepet.length > 0) {
+                    altBar.style.display = 'flex';
+                    bilgiMetin.innerHTML = `<span id="sepetUrunSayisi">0</span> Ürün | <span id="sepetToplamFiyat">0</span> ₺`;
+                    butonlarDiv.innerHTML = `<button type="button" onclick="sepetiOnaylaTikla()">Sepeti Onayla</button>`;
+                    sepetiGuncelleBar();
+                } else {
+                    altBar.style.display = 'none';
                 }
             });
         }
 
-        function puanSec(puan) {
-            document.getElementById('secilenPuan').value = puan;
-            const yildizlar = document.querySelectorAll('#yildizContainer i');
+        function iptalTalebiGonder() {
+            const neden = document.getElementById('iptalNedeni').value.trim();
+            if(!neden) { alert("Lütfen iptal sebebi yazın."); return; }
+            if(!aktifSiparisKey) return;
+
+            db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ durum: 'İptal Talebi Bekleniyor', iptalNedeni: neden });
+            db.ref('customer_orders/' + aktifSiparisKey).update({ durum: 'İptal Talebi Bekleniyor', iptalNedeni: neden }).then(() => {
+                alert("İptal talebiniz işletmeye iletildi.");
+                document.getElementById('iptalSebepModal').style.display = 'none';
+            });
+        }
+
+        function puanVer(kategori, puan) {
+            puanlar[kategori] = puan;
+            const yildizlar = document.querySelectorAll(`#yildiz${kategori} i`);
             yildizlar.forEach((y, i) => {
                 if(i < puan) y.classList.add('aktif');
                 else y.classList.remove('aktif');
             });
         }
-        // Varsayılan 5 yıldız aktif
-        puanSec(5);
+        puanVer('Lezzet', 5); puanVer('Paket', 5); puanVer('Kurye', 5);
 
-        function puanVeYorumGonder() {
-            const puan = document.getElementById('secilenPuan').value;
+        function detayliPuanGonder() {
             const yorum = document.getElementById('musteriYorum').value.trim();
-            const musteriAdi = localStorage.getItem('aktifMusteriAdi') || 'Müşteri';
+            const anonim = document.getElementById('anonimCheck').checked;
+            const musteriAdi = anonim ? 'Gizli Müşteri' : (localStorage.getItem('aktifMusteriAdi') || 'Müşteri');
+            
+            const genelPuan = ((puanlar.Lezzet + puanlar.Paket + puanlar.Kurye) / 3).toFixed(1);
 
             db.ref('restaurant_reviews/' + isletmeId + '/' + Date.now()).set({
-                musteriAdi, puan, yorum: yorum || 'Değerlendirme yapıldı.', tarih: new Date().toLocaleDateString('tr-TR')
+                musteriAdi, 
+                genelPuan, 
+                puanLezzet: puanlar.Lezzet, 
+                puanPaket: puanlar.Paket, 
+                puanKurye: puanlar.Kurye, 
+                yorum: yorum || 'Değerlendirme yapıldı.', 
+                tarih: new Date().toLocaleDateString('tr-TR')
             }).then(() => {
-                alert("Teşekkür ederiz! Değerlendirmeniz işletmeye iletildi.");
+                alert("Teşekkür ederiz! Yorumunuz yayınlandı.");
                 document.getElementById('puanlamaModal').style.display = 'none';
             });
         }
@@ -342,9 +459,13 @@
         function sepetiGuncelleBar() {
             let toplamAdet = 0, genelToplam = 0;
             sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
-            document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
-            document.getElementById('sepetToplamFiyat').innerText = genelToplam;
-            document.getElementById('sabitSepetBar').style.display = (toplamAdet > 0) ? 'flex' : 'none';
+            const sSayisi = document.getElementById('sepetUrunSayisi');
+            const sToplam = document.getElementById('sepetToplamFiyat');
+            if(sSayisi) sSayisi.innerText = toplamAdet;
+            if(sToplam) sToplam.innerText = genelToplam;
+            
+            const altBar = document.getElementById('sabitAltBar');
+            if(toplamAdet > 0) altBar.style.display = 'flex';
         }
 
         function sepetiOnaylaTikla() {
@@ -397,7 +518,7 @@
                 urunAdi: urunlerOzet.join(', '), 
                 adet: sepet.reduce((a, b) => a + b.adet, 0), 
                 toplamFiyat: genelToplam, 
-                durum: 'Hazırlanıyor',
+                durum: 'Siparişiniz Alındı',
                 tarih: new Date().toLocaleTimeString('tr-TR')
             };
 
@@ -407,7 +528,6 @@
                 sepet = [];
                 sepetiGuncelleBar();
                 document.getElementById('checkoutModal').style.display = 'none';
-                window.location.href = 'index.html';
             });
         }
     </script>

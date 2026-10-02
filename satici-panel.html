@@ -28,10 +28,11 @@
         td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; background: #eee; }
         
         .durum-btn { padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 9px; border: none; cursor: pointer; margin-right: 3px; color: #fff; }
-        .btn-hazirlaniyor { background: #dc2626; } /* Kırmızı */
-        .btn-yolactikti { background: #2563eb; } /* Mavi */
-        .btn-teslim { background: #16a34a; } /* Yeşil */
-        .btn-iptal { background: #9ca3af; } /* Gri / İptal */
+        .btn-hazirlaniyor { background: #dc2626; }
+        .btn-yolactikti { background: #2563eb; }
+        .btn-teslim { background: #16a34a; }
+        .btn-iptal { background: #9ca3af; }
+        .btn-pasif { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
         .badge-hazirlaniyor { background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
         .badge-yolactikti { background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
@@ -58,16 +59,16 @@
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
 
-        <!-- AKTİF YENİ SİPARİŞLER (YEŞİL / KIRMIZI / MAVİ) -->
+        <!-- AKTİF YENİ SİPARİŞLER -->
         <div class="card" style="border: 2px solid #10b981; background: #f0fdf4;">
             <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Aktif Yeni Siparişler (Sesli Bildirim Aktif)</h3>
             <table>
-                <thead><tr><th>Müşteri</th><th>Seçimli Ürünler / Tutar</th><th>Adres & Tel</th><th>Durum</th><th>İşlemler</th></tr></thead>
+                <thead><tr><th>Müşteri</th><th>Seçimli Ürünler / Tutar</th><th>Adres & Tel</th><th>Durum</th><th>İşlemler (Kilitli / Gri)</th></tr></thead>
                 <tbody id="aktifSiparislerListesi"><tr><td colspan="5" style="color:#64748b;">Yeni sipariş bekleniyor...</td></tr></tbody>
             </table>
         </div>
 
-        <!-- TESLİM EDİLEN VEYA İPTAL EDİLEN GEÇMİŞ SİPARİŞLER (GRİ) -->
+        <!-- GEÇMİŞ SİPARİŞLER -->
         <div class="card" style="background: #f8fafc; border: 1px solid #cbd5e1;">
             <h3 style="color: #475569;"><i class="fa-solid fa-box-archive"></i> Teslim Edilen & İptal Edilen Geçmiş Siparişler</h3>
             <table>
@@ -76,11 +77,11 @@
             </table>
         </div>
 
-        <!-- MÜŞTERİ YORUMLARI VE PUANLARI -->
+        <!-- MÜŞTERİ YORUMLARI -->
         <div class="card">
             <h3><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Müşteri Puanları ve Yorumları</h3>
             <table>
-                <thead><tr><th>Müşteri</th><th>Puan</th><th>Yorum</th><th>Tarih</th></tr></thead>
+                <thead><tr><th>Müşteri</th><th>Puan (Genel)</th><th>Lezzet / Paket / Kurye</th><th>Yorum</th></tr></thead>
                 <tbody id="musteriYorumlariListesi"><tr><td colspan="4" style="color:#64748b;">Henüz yorum yapılmamış.</td></tr></tbody>
             </table>
         </div>
@@ -178,32 +179,47 @@
 
             Object.keys(data).forEach(sKey => {
                 const o = data[sKey];
-                const durum = o.durum || 'Hazırlanıyor';
+                const durum = o.durum || 'Siparişiniz Alındı';
 
-                if(durum === 'Teslim Edildi' || durum === 'İptal Edildi') {
+                if(durum === 'Teslim Edildi' || durum === 'İptal Edildi' || durum === 'İptal Onaylandı') {
                     gecmisSayac++;
-                    const badgeClass = durum === 'İptal Edildi' ? 'badge-iptal' : 'badge-teslim';
+                    const badgeClass = (durum.includes('İptal')) ? 'badge-iptal' : 'badge-teslim';
+                    const yazdirDurum = durum === 'İptal Onaylandı' ? 'İptal Edildi' : durum;
                     gecmisTbody.innerHTML += `
                         <tr style="background:#f1f5f9; color:#475569;">
                             <td><strong>${o.musteriAdi}</strong></td>
                             <td>${o.urunAdi}<br><strong>${o.toplamFiyat} ₺</strong></td>
                             <td>${o.musteriTel}<br><small>${o.musteriAdres || ''}</small></td>
-                            <td><span class="${badgeClass}">${durum}</span></td>
+                            <td><span class="${badgeClass}">${yazdirDurum}</span></td>
                         </tr>
                     `;
                 } else {
                     aktifSayac++;
+                    let hazirlaniyorClass = 'durum-btn btn-hazirlaniyor';
+                    let yolactiktiClass = 'durum-btn btn-yolactikti';
+                    let teslimClass = 'durum-btn btn-teslim';
+                    let iptalClass = 'durum-btn btn-iptal';
+
+                    // Basılan butonları kilitleme (gri yapma)
+                    if(durum === 'Hazırlanıyor') hazirlaniyorClass += ' btn-pasif';
+                    if(durum === 'Yola Çıktı') { hazirlaniyorClass += ' btn-pasif'; yolactiktiClass += ' btn-pasif'; }
+
+                    let iptalButonHtml = `<button class="${iptalClass}" onclick="siparisDurumGuncelle('${sKey}', 'İptal Edildi')">İptal Et</button>`;
+                    if(durum === 'İptal Talebi Bekleniyor') {
+                        iptalButonHtml = `<button class="durum-btn" style="background:#ef4444;" onclick="siparisDurumGuncelle('${sKey}', 'İptal Onaylandı')">İptal Talebini Onayla</button>`;
+                    }
+
                     aktifTbody.innerHTML += `
                         <tr>
                             <td><strong>${o.musteriAdi}</strong></td>
                             <td>${o.urunAdi}<br><strong style="color:#f97316;">${o.toplamFiyat} ₺</strong></td>
-                            <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
+                            <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small> ${o.iptalNedeni ? '<br><span style="color:#ef4444; font-weight:800;">İptal Sebebi: ' + o.iptalNedeni + '</span>' : ''}</td>
                             <td><span style="font-weight:800; color:#0f172a;">${durum}</span></td>
                             <td>
-                                <button class="durum-btn btn-hazirlaniyor" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazırlanıyor</button>
-                                <button class="durum-btn btn-yolactikti" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yola Çıktı</button>
-                                <button class="durum-btn btn-teslim" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
-                                <button class="durum-btn btn-iptal" onclick="siparisDurumGuncelle('${sKey}', 'İptal Edildi')">İptal</button>
+                                <button class="${hazirlaniyorClass}" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazırlanıyor</button>
+                                <button class="${yolactiktiClass}" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yola Çıktı</button>
+                                <button class="${teslimClass}" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
+                                ${iptalButonHtml}
                             </td>
                         </tr>
                     `;
@@ -214,7 +230,6 @@
             if(gecmisSayac === 0) gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
         });
 
-        // Müşteri Yorumlarını Dinle
         db.ref('restaurant_reviews/' + saticiKey).on('value', snapshot => {
             const tbody = document.getElementById('musteriYorumlariListesi');
             tbody.innerHTML = '';
@@ -225,17 +240,18 @@
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${y.musteriAdi}</strong></td>
-                        <td><span style="color:#f59e0b; font-weight:800;"><i class="fa-solid fa-star"></i> ${y.puan} / 5</span></td>
+                        <td><span style="color:#f59e0b; font-weight:800;"><i class="fa-solid fa-star"></i> ${y.genelPuan} / 5</span></td>
+                        <td><small>Lezzet: ${y.puanLezzet} | Paket: ${y.puanPaket} | Kurye: ${y.puanKurye}</small></td>
                         <td>${y.yorum}</td>
-                        <td><small style="color:#64748b;">${y.tarih}</small></td>
                     </tr>
                 `;
             });
         });
 
         function siparisDurumGuncelle(siparisId, yeniDurum) {
-            db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: yeniDurum });
-            db.ref('customer_orders/' + siparisId).update({ durum: yeniDurum });
+            const finalDurum = yeniDurum === 'İptal Onaylandı' ? 'İptal Edildi' : yeniDurum;
+            db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: finalDurum });
+            db.ref('customer_orders/' + siparisId).update({ durum: finalDurum });
         }
 
         function urunEkle() {

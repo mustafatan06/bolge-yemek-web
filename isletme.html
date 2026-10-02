@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 120px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 130px; overflow-x: hidden; }
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
@@ -35,26 +35,33 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
 
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.15); padding-bottom: max(12px, env(safe-area-inset-bottom)); }
-        .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; }
-        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 13px; }
-        .sabit-alt-bar button { background: #f97316; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 800; font-size: 11px; cursor: pointer; }
+        /* PROFESYONEL VE ŞIK MOBİL UYUMLU ALT SEPET ÇUBUĞU */
+        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 14px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+        .sabit-alt-bar .bilgi { color: #fff; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
+        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 15px; font-weight: 900; }
+        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 8px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 20px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; text-align: center; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
-        .modal-header h3 { font-size: 15px; font-weight: 800; color: #0f172a; }
-        .close-modal { background: none; border: none; font-size: 16px; cursor: pointer; color: #64748b; }
+        .modal-content { background: #ffffff; padding: 22px; border-radius: 20px; width: 100%; max-width: 440px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .modal-header h3 { font-size: 16px; font-weight: 900; color: #0f172a; }
+        .close-modal { background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
         
         .malzeme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; text-align: left; }
         .malzeme-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .malzeme-item input { accent-color: #f97316; width: 14px; height: 14px; cursor: pointer; }
 
-        .sepet-urun-satir { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 11px; text-align: left; }
-        .form-group { margin-bottom: 10px; text-align: left; }
-        .form-group label { display: block; font-size: 10px; font-weight: 600; color: #475569; margin-bottom: 3px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
-        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; margin-top: 10px; }
+        .sepet-urun-satir { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; text-align: left; }
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
+        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 13px; border-radius: 10px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+
+        /* KUPON ALANI TASARIMI */
+        .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 12px; border-radius: 10px; margin: 12px 0; text-align: left; }
+        .kupon-input-group { display: flex; gap: 8px; margin-top: 6px; }
+        .kupon-input-group input { flex: 1; padding: 8px; font-size: 11px; border: 1px solid #fdba74; border-radius: 6px; outline: none; background: #fff; }
+        .kupon-input-group button { background: #f97316; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; }
 
         .yildizlar { display: flex; justify-content: center; gap: 6px; font-size: 20px; color: #cbd5e1; cursor: pointer; margin: 5px 0; }
         .yildizlar .aktif { color: #f59e0b; }
@@ -67,7 +74,6 @@
 </head>
 <body>
 
-    <!-- YEŞİLY TİK BİLDİRİMİ (TEK SEFERLİK) -->
     <div id="teslimAnimasyonOverlay">
         <i class="fa-solid fa-circle-check"></i>
         <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">Siparişiniz Teslim Edildi!</h2>
@@ -103,9 +109,13 @@
         </div>
     </div>
 
+    <!-- ŞIK VE PROFESYONEL SABİT ALT BAR -->
     <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
-        <div class="bilgi" id="altBarBilgiMetin"></div>
-        <div id="altBarButonlar"></div>
+        <div class="bilgi">
+            <span style="font-size: 10px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
+            <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
+        </div>
+        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
     <!-- ÜRÜN SEÇENEKLERİ MODALI -->
@@ -129,8 +139,8 @@
                 <label class="malzeme-item"><input type="checkbox" value="DOMATES"> DOMATES</label>
             </div>
             <div style="margin-top: 12px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 12px; font-weight: 800;" id="modalUrunFiyat">0 ₺</span>
-                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:8px 16px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
+                <span style="font-size: 13px; font-weight: 900; color: #f97316;" id="modalUrunFiyat">0 ₺</span>
+                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:10px 20px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
             </div>
         </div>
     </div>
@@ -150,17 +160,28 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODALI -->
+    <!-- CHECKOUT MODALI (KUPON ALANI EKLENMİŞ ŞIK TASARIM) -->
     <div id="checkoutModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Siparişi Tamamla</h3>
                 <button class="close-modal" onclick="document.getElementById('checkoutModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div style="margin-bottom: 12px; text-align: left;">
-                <h4 style="font-size: 12px; font-weight: 800; margin-bottom: 5px; color: #0f172a;">Sepetinizdekiler</h4>
+            <div style="margin-bottom: 10px; text-align: left;">
+                <h4 style="font-size: 11px; font-weight: 800; margin-bottom: 5px; color: #475569;">Sepetinizdekiler</h4>
                 <div id="modalSepetListesi"></div>
             </div>
+
+            <!-- KUPON KODU ALANI -->
+            <div class="kupon-box">
+                <div style="font-size: 11px; font-weight: 800; color: #c2410c;"><i class="fa-solid fa-ticket"></i> İndirim Kuponu Var mı?</div>
+                <div class="kupon-input-group">
+                    <input type="text" id="kuponKoduInput" placeholder="Örn: BÖLGE10 (10 TL İndirim)">
+                    <button type="button" onclick="kuponUygula()">Uygula</button>
+                </div>
+                <div id="kuponMesaj" style="font-size: 10px; margin-top: 4px; font-weight: 700;"></div>
+            </div>
+
             <div class="form-group"><label>Teslimat Adresiniz *</label><textarea id="siparisAdres" rows="2"></textarea></div>
             <div class="form-group">
                 <label>Ödeme Yöntemi *</label>
@@ -169,7 +190,7 @@
                     <option value="Kapıda Kredi Kartı">Kapıda Kredi Kartı</option>
                 </select>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin: 12px 0; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; margin: 12px 0; padding-top: 8px; border-top: 1px solid #e2e8f0;">
                 <span>Toplam Tutar:</span>
                 <span id="modalToplamTutar" style="color: #f97316;">0 ₺</span>
             </div>
@@ -234,9 +255,10 @@
         const isletmeId = urlParams.get('id');
 
         let sepet = [];
-        let aktifSecilenUrun = null;
         let tumUrunlerVeri = {};
+        let aktifSecilenUrun = null;
         let aktifSiparisKey = null;
+        let indirimTutari = 0;
         let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
 
         if(isletmeId) {
@@ -275,7 +297,6 @@
                 container.innerHTML = html;
             });
 
-            // Yorumlar ve Sıfır Yıldız Mantığı (Yeni İşletme Koruması)
             db.ref('restaurant_reviews/' + isletmeId).on('value', snapshot => {
                 const listeDiv = document.getElementById('isletmeYorumlarListesi');
                 const puanDiv = document.getElementById('isletmeOrtalamaPuan');
@@ -326,7 +347,6 @@
                             aktifSiparis = s;
                             aktifSiparisKey = k;
                         }
-                        // Sadece 1 kereye mahsus gösterim kontrolü (puanGosterildi bayrağı)
                         if(s.isletmeId === isletmeId && s.durum === 'Teslim Edildi' && !s.puanGosterildi) {
                             aktifSiparisKey = k;
                             document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
@@ -334,26 +354,40 @@
                     });
 
                     if(aktifSiparis) {
-                        bilgiMetin.innerHTML = `Durum: <span style="color:#f97316;">${aktifSiparis.durum}</span>`;
-                        if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
-                            butonlarDiv.innerHTML = `<span style="font-size:10px; color:#f59e0b;">İptal Talebiniz İnceleniyor</span>`;
-                        } else {
-                            butonlarDiv.innerHTML = `<button type="button" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; font-weight:700; font-size:10px; cursor:pointer;">İptal Talebi</button>`;
-                        }
                         altBar.style.display = 'flex';
+                        bilgiMetin.innerHTML = `<span style="font-size:10px; color:#94a3b8;">Sipariş Durumu</span><div><span style="color:#f97316;">${aktifSiparis.durum}</span></div>`;
+                        if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
+                            document.getElementById('sabitAltBar').querySelector('button').outerHTML = `<span style="font-size:11px; color:#f59e0b; font-weight:700;">İptal İnceleniyor</span>`;
+                        } else {
+                            document.getElementById('sabitAltBar').querySelector('button').outerHTML = `<button type="button" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444;"><i class="fa-solid fa-ban"></i> İptal Talebi</button>`;
+                        }
                         return;
                     }
                 }
 
                 if(sepet.length > 0) {
                     altBar.style.display = 'flex';
-                    bilgiMetin.innerHTML = `<span id="sepetUrunSayisi">0</span> Ürün | <span id="sepetToplamFiyat">0</span> ₺`;
-                    butonlarDiv.innerHTML = `<button type="button" onclick="sepetiOnaylaTikla()">Sepeti Onayla</button>`;
                     sepetiGuncelleBar();
                 } else {
                     altBar.style.display = 'none';
                 }
             });
+        }
+
+        function kuponUygula() {
+            const kod = document.getElementById('kuponKoduInput').value.trim().toUpperCase();
+            const mesaj = document.getElementById('kuponMesaj');
+            if(kod === 'BÖLGE10' || kod === 'BOLGE10') {
+                indirimTutari = 10;
+                mesaj.style.color = '#16a34a';
+                mesaj.innerText = 'Kupon uygulandı: 10 TL İndirim!';
+                sepetiOnaylaTikla(); // Fiyatı güncelle
+            } else {
+                indirimTutari = 0;
+                mesaj.style.color = '#ef4444';
+                mesaj.innerText = 'Geçersiz kupon kodu!';
+                sepetiOnaylaTikla();
+            }
         }
 
         function teslimBildiriminiKapat() {
@@ -467,7 +501,7 @@
             const sSayisi = document.getElementById('sepetUrunSayisi');
             const sToplam = document.getElementById('sepetToplamFiyat');
             if(sSayisi) sSayisi.innerText = toplamAdet;
-            if(sToplam) sToplam.innerText = genelToplam;
+            if(sToplam) sToplam.innerText = Math.max(0, genelToplam - indirimTutari);
             
             const altBar = document.getElementById('sabitAltBar');
             if(toplamAdet > 0) altBar.style.display = 'flex';
@@ -487,7 +521,13 @@
                     </div>
                 `;
             });
-            document.getElementById('modalToplamTutar').innerText = genelToplam + ' ₺';
+
+            let finalFiyat = Math.max(0, genelToplam - indirimTutari);
+            if(indirimTutari > 0) {
+                listeDiv.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:11px; color:#16a34a; font-weight:700; margin-top:4px;"><span>Kupon İndirimi</span><span>-${indirimTutari} ₺</span></div>`;
+            }
+
+            document.getElementById('modalToplamTutar').innerText = finalFiyat + ' ₺';
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
@@ -512,6 +552,7 @@
                 urunlerOzet.push(`${item.adet}x ${item.urunAdi}`);
             });
 
+            let finalFiyat = Math.max(0, genelToplam - indirimTutari);
             const siparisId = 'siparis_' + Date.now();
             const siparisVerisi = {
                 siparisId, 
@@ -522,7 +563,7 @@
                 odemeYontemi: odeme,
                 urunAdi: urunlerOzet.join(', '), 
                 adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                toplamFiyat: genelToplam, 
+                toplamFiyat: finalFiyat, 
                 durum: 'Siparişiniz Alındı',
                 puanGosterildi: false,
                 tarih: new Date().toLocaleTimeString('tr-TR')
@@ -532,6 +573,7 @@
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
                 alert("Siparişiniz başarıyla alındı!");
                 sepet = [];
+                indirimTutari = 0;
                 sepetiGuncelleBar();
                 document.getElementById('checkoutModal').style.display = 'none';
             });

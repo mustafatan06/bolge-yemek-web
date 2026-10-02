@@ -8,101 +8,150 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; padding: 15px; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        .header-bar { background: #fff; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .header-bar h2 { font-size: 18px; font-weight: 900; color: #0f172a; }
-        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; text-decoration: none; }
+        body { background: #f8fafc; color: #1e293b; display: flex; height: 100vh; overflow: hidden; }
 
-        .card { background: #fff; border-radius: 12px; padding: 18px; margin-bottom: 18px; border: 1px solid #e2e8f0; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-bottom: 2px solid #f8fafc; padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        /* SOL MENÜ (SİDEBAR) */
+        .sidebar { width: 260px; background: #0f172a; color: white; display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid #1e293b; }
+        .sidebar-top { padding: 20px; }
+        .sidebar-logo { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 0.5px; }
+        .sidebar-logo span { color: #f97316; }
+        
+        .menu-list { display: flex; flex-direction: column; gap: 6px; }
+        .menu-item { padding: 12px 15px; border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; border: none; background: none; width: 100%; text-align: left; }
+        .menu-item:hover, .menu-item.active { background: #f97316; color: white; }
 
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px; }
-        .form-group label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 3px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
+        .sidebar-bottom { padding: 20px; border-top: 1px solid #1e293b; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        .btn-primary { background: #f97316; color: white; border: none; padding: 9px 15px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
+        /* SAĞ İÇERİK ALANI */
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; background: #f8fafc; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        .card { background: #fff; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 20px; }
+        .card h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 9px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
+        .form-group input:focus { border-color: #f97316; }
+
+        .btn-primary { background: #f97316; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
         table { width: 100%; border-collapse: collapse; margin-top: 8px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 11px; }
         th { font-weight: 700; color: #475569; background: #f8fafc; }
-        td img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; background: #eee; }
+        td img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; background: #eee; }
         
-        .action-btn { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; }
-        .success-btn { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; margin-right: 4px; }
+        .action-btn { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; }
+        .success-btn { background: #10b981; color: white; border: none; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; margin-right: 4px; }
         .badge-guvenlik { background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header-bar">
-            <h2><i class="fa-solid fa-crown" style="color:#f97316;"></i> Süper Admin Kontrol Paneli</h2>
-            <button class="logout-btn" onclick="localStorage.clear(); window.location.href='index.html';">Çıkış Yap</button>
-        </div>
-
-        <!-- 1. KATEGORİ EKLEME YÖNETİMİ -->
-        <div class="card">
-            <h3><i class="fa-solid fa-list" style="color:#f97316;"></i> Yeni Kategori Ekle</h3>
-            <div class="form-grid">
-                <div class="form-group"><label>Kategori Adı *</label><input type="text" id="katAdi" placeholder="Örn: Kebap & Izgara"></div>
-                <div class="form-group"><label>Slug (URL Kodu) *</label><input type="text" id="katSlug" placeholder="orn: kebap"></div>
-                <div class="form-group"><label>Görsel URL *</label><input type="text" id="katGorsel" placeholder="https://..."></div>
-                <div class="form-group"><label>Açıklama / Durum</label><input type="text" id="katDurum" placeholder="En lezzetlisi"></div>
+    <!-- SOL MENÜ -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-logo"><i class="fa-solid fa-crown" style="color:#f97316;"></i> Bölge <span>Yönetim</span></div>
+            <div class="menu-list">
+                <button class="menu-item active" onclick="tabDegistir('kategoriler', this)"><i class="fa-solid fa-list"></i> Kategoriler</button>
+                <button class="menu-item" onclick="tabDegistir('basvurular', this)"><i class="fa-solid fa-store"></i> Satıcı Başvuruları</button>
+                <button class="menu-item" onclick="tabDegistir('urunOnaylari', this)"><i class="fa-solid fa-box-open"></i> Ürün Onayları</button>
+                <button class="menu-item" onclick="tabDegistir('isletmeler', this)"><i class="fa-solid fa-shop"></i> Aktif İşletmeler</button>
+                <button class="menu-item" onclick="tabDegistir('uyeler', this)"><i class="fa-solid fa-users"></i> Kayıtlı Üyeler</button>
+                <button class="menu-item" onclick="tabDegistir('yorumlar', this)"><i class="fa-solid fa-comments"></i> Yorum Denetimi</button>
+                <button class="menu-item" onclick="tabDegistir('ayarlar', this)"><i class="fa-solid fa-gears"></i> Site Düzenleme</button>
             </div>
-            <button type="button" class="btn-primary" onclick="kategoriEkle()">Kategoriyi Ekle</button>
+        </div>
+        <div class="sidebar-bottom">
+            <button class="logout-btn" onclick="localStorage.clear(); window.location.href='index.html';"><i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap</button>
+        </div>
+    </div>
+
+    <!-- SAĞ İÇERİK (SEKMELER) -->
+    <div class="main-content">
+
+        <!-- 1. KATEGORİLER -->
+        <div id="kategoriler" class="content-section active">
+            <div class="card">
+                <h3><i class="fa-solid fa-list" style="color:#f97316;"></i> Yeni Kategori Ekle</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Kategori Adı *</label><input type="text" id="katAdi" placeholder="Örn: Kebap & Dürüm"></div>
+                    <div class="form-group"><label>Slug (URL Kodu) *</label><input type="text" id="katSlug" placeholder="orn: kebap"></div>
+                    <div class="form-group"><label>Kategori Görseli (Bilgisayardan Seç) *</label><input type="file" id="katDosya" accept="image/*"></div>
+                    <div class="form-group"><label>Açıklama / Durum</label><input type="text" id="katDurum" placeholder="En lezzetlisi"></div>
+                </div>
+                <button type="button" class="btn-primary" onclick="kategoriEkle()">Kategoriyi Ekle</button>
+            </div>
         </div>
 
-        <!-- 2. İŞLETME BAŞVURULARI & AKTİF İŞLETMELER -->
-        <div class="card">
-            <h3><i class="fa-solid fa-store" style="color:#3b82f6;"></i> Aktif İşletmeler & Yönetim</h3>
-            <table>
-                <thead>
-                    <tr><th>Logo</th><th>İşletme Adı</th><th>Kategori</th><th>Telefon</th><th>Yönetim</th></tr>
-                </thead>
-                <tbody id="adminIsletmelerListesi">
-                    <tr><td colspan="5" style="color:#64748b;">İşletmeler yükleniyor...</td></tr>
-                </tbody>
-            </table>
+        <!-- 2. SATICI BAŞVURULARI -->
+        <div id="basvurular" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-store" style="color:#3b82f6;"></i> Bekleyen Satıcı Başvuruları</h3>
+                <table>
+                    <thead><tr><th>İşletme Adı</th><th>Yetkili</th><th>Telefon</th><th>Kategori</th><th>Şifre</th><th>İşlem</th></tr></thead>
+                    <tbody id="adminBasvurularListesi"><tr><td colspan="6" style="color:#64748b;">Başvuru yok.</td></tr></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 3. BEKLEYEN ÜRÜNLER (ONAY SİSTEMİ) -->
-        <div class="card" style="border: 2px solid #f97316;">
-            <h3><i class="fa-solid fa-box-open" style="color:#f97316;"></i> İşletmelerin Eklediği Ürünler (Onay Bekleyenler)</h3>
-            <table>
-                <thead>
-                    <tr><th>Görsel</th><th>İşletme</th><th>Ürün Adı</th><th>Fiyat</th><th>İşlemler</th></tr>
-                </thead>
-                <tbody id="adminOnayBekleyenUrunler">
-                    <tr><td colspan="5" style="color:#64748b;">Onay bekleyen ürün yok.</td></tr>
-                </tbody>
-            </table>
+        <!-- 3. ÜRÜN ONAYLARI -->
+        <div id="urunOnaylari" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-box-open" style="color:#f97316;"></i> İşletmelerin Eklediği Ürünler (Onay Bekleyenler)</h3>
+                <table>
+                    <thead><tr><th>Görsel</th><th>İşletme</th><th>Ürün Adı</th><th>Fiyat</th><th>İşlemler</th></tr></thead>
+                    <tbody id="adminOnayBekleyenUrunler"><tr><td colspan="5" style="color:#64748b;">Onay bekleyen ürün yok.</td></tr></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 4. KAYITLI ÜYELER VE MÜŞTERİ GÜVENLİK TAKİBİ -->
-        <div class="card" style="border: 2px solid #3b82f6;">
-            <h3><i class="fa-solid fa-users" style="color:#3b82f6;"></i> Kayıtlı Üyeler ve Müşteri Güvenlik Takibi</h3>
-            <table>
-                <thead>
-                    <tr><th>Müşteri Ad Soyad</th><th>Telefon Numarası</th><th>Kayıtlı Adres</th><th>Güvenlik Durumu</th></tr>
-                </thead>
-                <tbody id="adminMusterilerListesi">
-                    <tr><td colspan="4" style="color:#64748b;">Müşteri verileri yükleniyor...</td></tr>
-                </tbody>
-            </table>
+        <!-- 4. AKTİF İŞLETMELER -->
+        <div id="isletmeler" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-shop" style="color:#10b981;"></i> Sistemdeki Aktif İşletmeler</h3>
+                <table>
+                    <thead><tr><th>Logo</th><th>İşletme Adı</th><th>Kategori</th><th>Telefon</th><th>Yönetim</th></tr></thead>
+                    <tbody id="adminIsletmelerListesi"><tr><td colspan="5" style="color:#64748b;">İşletme yok.</td></tr></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 5. TÜM MÜŞTERİ YORUMLARI VE DENETİM (SİLME) -->
-        <div class="card" style="border: 2px solid #f59e0b;">
-            <h3><i class="fa-solid fa-comments" style="color:#f59e0b;"></i> Müşteri Yorumları Denetim Masası (Yorum Silme)</h3>
-            <table>
-                <thead>
-                    <tr><th>İşletme</th><th>Müşteri</th><th>Puan / Detay</th><th>Yorum Metni</th><th>Yönetim</th></tr>
-                </thead>
-                <tbody id="adminYorumlarListesi">
-                    <tr><td colspan="5" style="color:#64748b;">Yorumlar yükleniyor...</td></tr>
-                </tbody>
-            </table>
+        <!-- 5. KAYITLI ÜYELER -->
+        <div id="uyeler" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-users" style="color:#3b82f6;"></i> Kayıtlı Üyeler ve Müşteri Güvenlik Takibi</h3>
+                <table>
+                    <thead><tr><th>Müşteri Ad Soyad</th><th>Telefon Numarası</th><th>Kayıtlı Adres</th><th>Güvenlik Durumu</th></tr></thead>
+                    <tbody id="adminMusterilerListesi"><tr><td colspan="4" style="color:#64748b;">Müşteri verileri yükleniyor...</td></tr></tbody>
+                </table>
+            </div>
         </div>
+
+        <!-- 6. YORUM DENETİMİ -->
+        <div id="yorumlar" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-comments" style="color:#f59e0b;"></i> Müşteri Yorumları Denetim Masası (Yorum Silme)</h3>
+                <table>
+                    <thead><tr><th>İşletme</th><th>Müşteri</th><th>Puan / Detay</th><th>Yorum Metni</th><th>Yönetim</th></tr></thead>
+                    <tbody id="adminYorumlarListesi"><tr><td colspan="5" style="color:#64748b;">Yorumlar yükleniyor...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 7. SİTE DÜZENLEME (AYARLAR) -->
+        <div id="ayarlar" class="content-section">
+            <div class="card">
+                <h3><i class="fa-solid fa-gears" style="color:#64748b;"></i> Ana Sayfa Metin ve Tasarım Ayarları</h3>
+                <div class="form-grid">
+                    <div class="form-group"><label>Ana Sayfa Başlığı (Hero)</label><input type="text" id="siteHeroBaslik" placeholder="Altındağ'ın En Lezzetli Pazar Yeri"></div>
+                    <div class="form-group"><label>Ana Sayfa Slogan</label><input type="text" id="siteHeroSlogan" placeholder="Yüzlerce lezzet..."></div>
+                </div>
+                <button type="button" class="btn-primary" onclick="siteAyarlariniKaydet()">Ayarları Kaydet</button>
+            </div>
+        </div>
+
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -120,46 +169,67 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        // 1. Kategori Ekle
+        function tabDegistir(tabId, btn) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // 1. Kategori Ekle (Dosya Seçici ile)
         function kategoriEkle() {
             const ad = document.getElementById('katAdi').value.trim();
             const slug = document.getElementById('katSlug').value.trim();
-            const gorsel = document.getElementById('katGorsel').value.trim();
             const durum = document.getElementById('katDurum').value.trim();
+            const fileInput = document.getElementById('katDosya');
 
-            if(!ad || !slug || !gorsel) { alert("Eksik alan bıraktınız."); return; }
-            db.ref('categories/' + slug).set({
-                ad, slug, gorsel, durum: durum || 'Aktif', sira: Date.now()
-            }).then(() => { alert("Kategori eklendi!"); location.reload(); });
+            if(!ad || !slug) { alert("Kategori adı ve slug zorunludur."); return; }
+            if(fileInput.files.length === 0) { alert("Lütfen kategori görseli seçin."); return; }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput.files[0]);
+            reader.onload = function(e) {
+                db.ref('categories/' + slug).set({
+                    ad, slug, gorsel: e.target.result, durum: durum || 'Aktif', sira: Date.now()
+                }).then(() => { alert("Kategori eklendi!"); location.reload(); });
+            };
         }
 
-        // 2. Aktif İşletmeleri Listele ve Sil
-        db.ref('active_restaurants').on('value', snapshot => {
-            const tbody = document.getElementById('adminIsletmelerListesi');
+        // 2. Satıcı Başvuruları
+        db.ref('seller_applications').on('value', snapshot => {
+            const tbody = document.getElementById('adminBasvurularListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">İşletme yok.</td></tr>'; return; }
+            if(!data) { tbody.innerHTML = '<tr><td colspan="6" style="color:#64748b;">Bekleyen başvuru yok.</td></tr>'; return; }
             Object.keys(data).forEach(key => {
-                const r = data[key];
+                const b = data[key];
                 tbody.innerHTML += `
                     <tr>
-                        <td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}"></td>
-                        <td><strong>${r.ad}</strong></td>
-                        <td>${r.kategori || 'Lezzet'}</td>
-                        <td>${r.telefon}</td>
-                        <td><button class="action-btn" onclick="isletmeSil('${key}')"><i class="fa-solid fa-trash"></i> Sil</button></td>
+                        <td><strong>${b.isletmeAdi}</strong></td>
+                        <td>${b.yetkiliAdi}</td>
+                        <td>${b.telefon}</td>
+                        <td>${b.kategori || 'Lezzet'}</td>
+                        <td><code style="background:#f1f5f9; padding:2px 4px; border-radius:4px;">${b.otomatikSifre}</code></td>
+                        <td>
+                            <button class="success-btn" onclick="basvuruOnayla('${key}', '${b.isletmeAdi}', '${b.telefon}', '${b.kategori || 'Lezzet'}', '${b.otomatikSifre}')">Onayla</button>
+                            <button class="action-btn" onclick="db.ref('seller_applications/${key}').remove()">Sil</button>
+                        </td>
                     </tr>
                 `;
             });
         });
 
-        function isletmeSil(key) {
-            if(confirm("Bu işletmeyi silmek istediğinize emin misiniz?")) {
-                db.ref('active_restaurants/' + key).remove().then(() => { alert("İşletme silindi."); });
-            }
+        function basvuruOnayla(key, ad, telefon, kategori, sifre) {
+            const yeniKey = 'isletme_' + Date.now();
+            db.ref('active_restaurants/' + yeniKey).set({
+                ad, telefon, kategori, sifre, gorsel: 'https://i.imgur.com/7y4aCVb.jpg', puan: '5.0'
+            }).then(() => {
+                db.ref('seller_applications/' + key).remove();
+                alert("Başvuru onaylandı ve aktif işletmelere eklendi!");
+            });
         }
 
-        // 3. Bekleyen Ürünleri Onayla / Reddet
+        // 3. Ürün Onayları
         db.ref('pending_products').on('value', snapshot => {
             const tbody = document.getElementById('adminOnayBekleyenUrunler');
             tbody.innerHTML = '';
@@ -186,7 +256,6 @@
                     `;
                 });
             });
-
             if(!toplamVar) tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Onay bekleyen ürün yok.</td></tr>';
         });
 
@@ -195,79 +264,109 @@
                 const uVeri = snap.val();
                 if(uVeri) {
                     db.ref('restaurant_products/' + sKey + '/' + uKey).set(uVeri).then(() => {
-                        db.ref('pending_products/' + sKey + '/' + uKey).remove().then(() => { alert("Ürün onaylandı ve yayına alındı!"); });
+                        db.ref('pending_products/' + sKey + '/' + uKey).remove().then(() => { alert("Ürün yayına alındı!"); });
                     });
                 }
             });
         }
-
         function urunReddet(sKey, uKey) {
-            db.ref('pending_products/' + sKey + '/' + uKey).remove().then(() => { alert("Ürün reddedildi ve silindi."); });
+            db.ref('pending_products/' + sKey + '/' + uKey).remove().then(() => { alert("Ürün reddedildi."); });
         }
 
-        // 4. Kayıtlı Müşteriler / Üyeler
-        db.ref('customer_orders').on('value', snapshot => {
-            const tbody = document.getElementById('adminMusterilerListesi');
+        // 4. Aktif İşletmeler
+        db.ref('active_restaurants').on('value', snapshot => {
+            const tbody = document.getElementById('adminIsletmelerListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Kayıtlı müşteri bulunamadı.</td></tr>'; return; }
-
-            let benzersizMusteriler = {};
-            Object.keys(data).forEach(k => {
-                const s = data[k];
-                if(s.musteriTel && !benzersizMusteriler[s.musteriTel]) {
-                    benzersizMusteriler[s.musteriTel] = { ad: s.musteriAdi || 'Bilinmiyor', tel: s.musteriTel, adres: s.musteriAdres || 'Belirtilmemiş' };
-                }
-            });
-
-            const mKeys = Object.keys(benzersizMusteriler);
-            if(mKeys.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Kayıtlı müşteri bulunamadı.</td></tr>'; return; }
-
-            mKeys.forEach(tel => {
-                const m = benzersizMusteriler[tel];
+            if(!data) { tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">İşletme yok.</td></tr>'; return; }
+            Object.keys(data).forEach(key => {
+                const r = data[key];
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${m.ad}</strong></td>
-                        <td>${m.tel}</td>
-                        <td>${m.adres}</td>
-                        <td><span class="badge-guvenlik">Güvenli / Doğrulanmış</span></td>
+                        <td><img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}"></td>
+                        <td><strong>${r.ad}</strong></td>
+                        <td>${r.kategori || 'Lezzet'}</td>
+                        <td>${r.telefon}</td>
+                        <td><button class="action-btn" onclick="db.ref('active_restaurants/${key}').remove()">Sil</button></td>
                     </tr>
                 `;
             });
         });
 
-        // 5. Yorum Denetimi ve Silme
+        // 5. Kayıtlı Üyeler
+        db.ref('customer_orders').on('value', snapshot => {
+            const tbody = document.getElementById('adminMusterilerListesi');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Kayıtlı müşteri yok.</td></tr>'; return; }
+
+            let benzersiz = {};
+            Object.keys(data).forEach(k => {
+                const s = data[k];
+                if(s.musteriTel && !benzersiz[s.musteriTel]) {
+                    benzersiz[s.musteriTel] = { ad: s.musteriAdi || 'Bilinmiyor', tel: s.musteriTel, adres: s.musteriAdres || 'Belirtilmemiş' };
+                }
+            });
+
+            const mKeys = Object.keys(benzersiz);
+            if(mKeys.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Kayıtlı müşteri yok.</td></tr>'; return; }
+
+            mKeys.forEach(tel => {
+                const m = benzersiz[tel];
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${m.ad}</strong></td>
+                        <td>${m.tel}</td>
+                        <td>${m.adres}</td>
+                        <td><span class="badge-guvenlik">Doğrulanmış</span></td>
+                    </tr>
+                `;
+            });
+        });
+
+        // 6. Yorumlar
         db.ref('restaurant_reviews').on('value', snapshot => {
             const tbody = document.getElementById('adminYorumlarListesi');
             tbody.innerHTML = '';
             const restData = snapshot.val();
-            if(!restData) { tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Sistemde hiç yorum yok.</td></tr>'; return; }
+            if(!restData) { tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yorum yok.</td></tr>'; return; }
 
-            let toplamYorumVar = false;
+            let toplamVar = false;
             Object.keys(restData).forEach(isletmeKey => {
                 const yorumlar = restData[isletmeKey];
                 Object.keys(yorumlar).forEach(yorumKey => {
-                    toplamYorumVar = true;
+                    toplamVar = true;
                     const y = yorumlar[yorumKey];
                     tbody.innerHTML += `
                         <tr>
-                            <td><small style="color:#64748b;">${isletmeKey}</small></td>
+                            <td><small>${isletmeKey}</small></td>
                             <td><strong>${y.musteriAdi}</strong></td>
                             <td><span style="color:#f59e0b; font-weight:800;">${y.genelPuan || '5'} / 5</span></td>
                             <td>${y.yorum}</td>
-                            <td><button class="action-btn" onclick="yorumSil('${isletmeKey}', '${yorumKey}')"><i class="fa-solid fa-trash"></i> Sil</button></td>
+                            <td><button class="action-btn" onclick="db.ref('restaurant_reviews/${isletmeKey}/${yorumKey}').remove()">Sil</button></td>
                         </tr>
                     `;
                 });
             });
-
-            if(!toplamYorumVar) tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Sistemde hiç yorum yok.</td></tr>';
+            if(!toplamVar) tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yorum yok.</td></tr>';
         });
 
-        function yorumSil(isletmeKey, yorumKey) {
-            if(confirm("Bu yorumu silmek istediğinize emin misiniz?")) {
-                db.ref('restaurant_reviews/' + isletmeKey + '/' + yorumKey).remove().then(() => { alert("Yorum kaldırıldı."); });
+        // 7. Site Ayarları
+        db.ref('site_settings').once('value').then(snapshot => {
+            const s = snapshot.val();
+            if(s) {
+                if(s.heroBaslik) document.getElementById('siteHeroBaslik').value = s.heroBaslik;
+                if(s.heroSlogan) document.getElementById('siteHeroSlogan').value = s.heroSlogan;
             }
+        });
+
+        function siteAyarlariniKaydet() {
+            const heroBaslik = document.getElementById('siteHeroBaslik').value.trim();
+            const heroSlogan = document.getElementById('siteHeroSlogan').value.trim();
+
+            db.ref('site_settings').set({ heroBaslik, heroSlogan }).then(() => {
+                alert("Site ayarları güncellendi!");
+            });
         }
     </script>
 </body>

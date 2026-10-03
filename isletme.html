@@ -35,7 +35,7 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* TÜM SAYFALARDA ÜST SIRADA SABİT CANLI TAKİP / SEPET ŞERİDİ */
+        /* GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ */
         .global-ust-serit {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
@@ -197,7 +197,7 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
-    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ (TÜM SAYFALARDA ÜSTTE SABİT) -->
+    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ -->
     <div id="globalUstSerit" class="global-ust-serit">
         <div class="bilgi">
             <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Sepet Özeti</span>
@@ -492,7 +492,6 @@
             document.getElementById('modalUrunAdetSayi').innerText = secilenUrunAdet;
             document.getElementById('modalUrunAdi').innerText = aktifSecilenUrun.ad;
             
-            // SADECE VE SADECE DÜRÜM KATEGORİSİNDE VEYA ADINDA "DÜRÜM" GEÇENLERDE MALZEME SOR
             const katLower = (aktifSecilenUrun.kategori || '').toLowerCase();
             const adLower = (aktifSecilenUrun.ad || '').toLowerCase();
             const malzemeBolumu = document.getElementById('malzemeBolumu');
@@ -754,7 +753,6 @@
                         ustSerit.classList.add('teslim');
                         ikonHtml = '<i class="fa-solid fa-check fa-bounce" style="color: #34d399;"></i>';
                         
-                        // Teslim edilince puanlama modalını aç
                         if(!localStorage.getItem('puanVerildi_' + sipId)) {
                             localStorage.setItem('puanVerildi_' + sipId, 'true');
                             document.getElementById('degerlendirmeModal').style.display = 'flex';
@@ -786,8 +784,9 @@
             db.ref('customer_orders/' + sipId).update({ durum: 'İptal Edildi (Sebep: ' + sebep + ')' }).then(() => {
                 alert("Siparişiniz iptal edilmiştir.");
                 localStorage.removeItem('aktifSiparisId_' + isletmeId);
+                aktifSiparisId = null;
                 document.getElementById('globalUstSerit').style.display = 'none';
-                window.location.reload();
+                sepetiGuncelleBar();
             });
         }
 
@@ -814,9 +813,12 @@
             db.ref('restaurant_reviews/' + isletmeId).push(yorumVerisi).then(() => {
                 alert("Değerlendirmeniz için teşekkür ederiz!");
                 document.getElementById('degerlendirmeModal').style.display = 'none';
+                
+                // SİPARİŞ TAMAMLANDIKTAN SONRA AKTİF SİPARİŞİ TEMİZLİYORUZ Kİ YENİ SEPET AÇILSIN
                 localStorage.removeItem('aktifSiparisId_' + isletmeId);
+                aktifSiparisId = null;
                 document.getElementById('globalUstSerit').style.display = 'none';
-                window.location.reload();
+                sepetiGuncelleBar();
             });
         }
     </script>

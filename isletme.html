@@ -33,6 +33,9 @@
         .rest-header h1 { font-size: 15px; font-weight: 900; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rest-header p { font-size: 10px; color: #64748b; }
 
+        /* CANLI TAKİP BUTONU (ŞIK VE ERİŞİLEBİLİR) */
+        .canli-takip-ust-btn { background: #047857; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 10px rgba(4,120,87,0.3); text-decoration: none; margin-bottom: 12px; width: fit-content; }
+
         .isletme-kategori-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .isletme-kategori-bar::-webkit-scrollbar { display: none; }
         .kat-chip { background: #ffffff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
@@ -56,11 +59,11 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-        /* APK VE WEB UYUMLU SABİT ALT SEPET BARI (Z-INDEX VE BOTTOM GARANTİLİ) */
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 99999; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
+        /* VİGÜRLÜ VE ŞIK YEŞİL SEPETİ ONAYLA BARI */
+        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #10b981; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 99999; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
         .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
-        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 14px; font-weight: 900; }
-        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 6px; }
+        .sabit-alt-bar .bilgi span { color: #10b981; font-size: 14px; font-weight: 900; }
+        .sabit-alt-bar button { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4); display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 100000; padding: 12px; }
         .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
@@ -76,7 +79,9 @@
         .form-group { margin-bottom: 10px; text-align: left; }
         .form-group label { display: block; font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 11px; outline: none; }
-        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+        
+        /* MODAL İÇİNDE SEPETE EKLE BUTONU ÜST KISMA TAŞINDI */
+        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 
         .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 10px; border-radius: 10px; margin: 10px 0; text-align: left; }
         .kupon-input-group { display: flex; gap: 6px; margin-top: 5px; }
@@ -114,6 +119,9 @@
             </div>
         </div>
 
+        <!-- SİPARİŞİ CANLI TAKİP ET BUTONU -->
+        <button type="button" class="canli-takip-ust-btn" onclick="canliTakipModalAc()"><i class="fa-solid fa-person-biking"></i> Siparişi Canlı Takip Et</button>
+
         <div id="isletmeKategoriBarContainer" style="display:none;">
             <div class="isletme-kategori-bar" id="isletmeKategoriBar">
                 <div class="kat-chip aktif" onclick="kategoriFiltrele('Tümü', this)">Tümü</div>
@@ -137,7 +145,7 @@
         </div>
     </div>
 
-    <!-- SEPET BARI -->
+    <!-- VİGÜRLÜ VE VURGULU YEŞİL SEPET ONAY BARI -->
     <div id="sabitAltBar" class="sabit-alt-bar">
         <div class="bilgi">
             <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
@@ -146,13 +154,21 @@
         <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
+    <!-- ÜRÜN SEÇENEK MODALI (SEPETE EKLE BUTONU ÜST KISMA ALINDI) -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalUrunAdi">Ürün Seçenekleri</h3>
                 <button class="close-modal" onclick="document.getElementById('urunSecenekModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p style="font-size: 10px; color: #64748b; margin-bottom: 8px;">Malzemeleri işaretleyin:</p>
+            
+            <!-- ÜST KISMA ALINAN VURGULU SEPETE EKLE BUTONU VE FİYAT -->
+            <div style="background: #f0fdf4; border: 1px solid #10b981; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 13px; font-weight: 900; color: #047857;" id="modalUrunFiyat">0 ₺</span>
+                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:8px 16px; margin-bottom:0;" onclick="secilenUrunuSepeteEkle()"><i class="fa-solid fa-cart-plus"></i> Sepete Ekle</button>
+            </div>
+
+            <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; text-align: left;">Ekstra Malzemeleri İşaretleyin:</p>
             <div class="malzeme-grid">
                 <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
                 <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
@@ -163,9 +179,18 @@
                 <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
                 <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
             </div>
-            <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 12px; font-weight: 900; color: #f97316;" id="modalUrunFiyat">0 ₺</span>
-                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:9px 18px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
+        </div>
+    </div>
+
+    <!-- CANLI SİPARİŞ TAKİP MODALI -->
+    <div id="canliTakipModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Aktif Sipariş Takibi</h3>
+                <button class="close-modal" onclick="document.getElementById('canliTakipModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="canliTakipIcerik" style="font-size: 11px; color: #475569; text-align: left;">
+                Siparişleriniz yükleniyor...
             </div>
         </div>
     </div>
@@ -214,7 +239,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 900; margin: 10px 0; padding-top: 6px; border-top: 1px solid #e2e8f0;">
                 <span>Toplam Tutar:</span>
-                <span id="modalToplamTutar" style="color: #f97316;">0 ₺</span>
+                <span id="modalToplamTutar" style="color: #10b981;">0 ₺</span>
             </div>
             <button type="button" class="btn-tamamla" onclick="siparişiKesinlestir()">Siparişi Onayla & Gönder</button>
         </div>
@@ -415,6 +440,42 @@
             document.getElementById('urunSecenekModal').style.display = 'none';
         }
 
+        function canliTakipModalAc() {
+            const musteriTel = localStorage.getItem('aktifMusteriTel');
+            const icerikDiv = document.getElementById('canliTakipIcerik');
+            document.getElementById('canliTakipModal').style.display = 'flex';
+
+            if(!musteriTel) {
+                icerikDiv.innerHTML = '<p style="color:#ef4444;">Henüz kayıtlı siparişiniz bulunmuyor.</p>';
+                return;
+            }
+
+            db.ref('customer_orders').orderByChild('musteriTel').equalTo(musteriTel).once('value').then(snap => {
+                const data = snap.val();
+                if(!data) {
+                    icerikDiv.innerHTML = '<p style="color:#64748b;">Aktif siparişiniz bulunmuyor.</p>';
+                    return;
+                }
+                let html = '';
+                Object.keys(data).forEach(k => {
+                    const s = data[k];
+                    if(s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi') {
+                        html += `
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:8px; margin-bottom:8px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                    <strong>${s.urunAdi}</strong>
+                                    <span style="color:#10b981; font-weight:900;">${s.toplamFiyat} ₺</span>
+                                </div>
+                                <p style="font-size:10px; color:#64748b;">Adres: ${s.musteriAdres}</p>
+                                <div style="margin-top:6px; font-size:10px; font-weight:800; color:#f97316;"><i class="fa-solid fa-spinner fa-spin"></i> Durum: ${s.durum}</div>
+                            </div>
+                        `;
+                    }
+                });
+                icerikDiv.innerHTML = html || '<p style="color:#64748b;">Devam eden aktif siparişiniz yok.</p>';
+            });
+        }
+
         function musteriHizliKaydet() {
             const ad = document.getElementById('modalAd').value.trim();
             const tel = document.getElementById('modalTel').value.trim();
@@ -437,7 +498,7 @@
             
             const altBar = document.getElementById('sabitAltBar');
             if(toplamAdet > 0) {
-                altBar.style.display = 'flex'; // APK WebView için kesin görünürlük garantisi
+                altBar.style.display = 'flex';
             } else {
                 altBar.style.display = 'none';
             }
@@ -517,7 +578,7 @@
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                alert("Siparişiniz alındı!");
+                alert("Siparişiniz alındı! Canlı takip butonundan durumunu izleyebilirsiniz.");
                 sepet = [];
                 indirimTutari = 0;
                 document.getElementById('checkoutModal').style.display = 'none';

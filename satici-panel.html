@@ -38,6 +38,9 @@
         .badge-yolactikti { background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
         .badge-teslim { background: #f3f4f6; color: #4b5563; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
         .badge-iptal { background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
+
+        .badge-onaybekliyor { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 9px; }
+        .badge-yayinda { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 9px; }
     </style>
 </head>
 <body>
@@ -85,7 +88,7 @@
 
         <div class="card">
             <h3>Yeni Ürün Ekle</h3>
-            <div class="form-grid">
+            <div class="form-grid" id="urunEkleForm">
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Çiğ Köfte Dürüm"></div>
                 <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2" placeholder="Malzeme seçilebilir..."></textarea></div>
@@ -95,8 +98,8 @@
         </div>
 
         <div class="card">
-            <h3>Yayındaki Ürünler</h3>
-            <table><thead><tr><th>Görsel</th><th>Ad</th><th>Fiyat</th><th>İşlem</th></tr></thead><tbody id="menuListesi"></tbody></table>
+            <h3>Ürünlerim & Onay Durumları</h3>
+            <table><thead><tr><th>Görsel</th><th>Ad</th><th>Fiyat</th><th>Durum</th><th>İşlem</th></tr></thead><tbody id="menuListesi"></tbody></table>
         </div>
     </div>
 
@@ -250,7 +253,7 @@
             db.ref('customer_orders/' + siparisId).update({ durum: finalDurum });
         }
 
-        // DÜZELTİLEN ÜRÜN EKLEME FONKSİYONU
+        // ÜRÜN EKLEME FONKSİYONU (FORM TEMİZLEME VE ANINDA TEPKİ EKLENDİ)
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
@@ -274,31 +277,65 @@
                     gorsel: e.target.result, 
                     isletmeAdi: saticiAdi || 'İşletme'
                 }).then(() => { 
-                    alert("Ürününüz başarıyla onaya gönderildi!"); 
-                    location.reload(); 
+                    // Form alanlarını otomatik temizle ve sayfayı yenile
+                    document.getElementById('urunAdi').value = '';
+                    document.getElementById('urunFiyat').value = '';
+                    document.getElementById('urunAciklama').value = '';
+                    document.getElementById('urunDosya').value = '';
+                    alert("Ürününüz başarıyla onaya gönderildi!");
+                    dukkanUrunleriniListele();
                 }).catch(err => {
                     alert("Hata oluştu: " + err.message);
                 });
             };
         }
 
-        db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {
+        // YAYINDAKİ VE ONAY BEKLEYEN ÜRÜNLERİ LİSTELEME
+        function dukkanUrunleriniListele() {
             const tbody = document.getElementById('menuListesi'); 
             tbody.innerHTML = '';
-            const data = snapshot.val(); 
-            if(!data) return;
-            Object.keys(data).forEach(key => {
-                const u = data[key];
-                tbody.innerHTML += `
-                    <tr>
-                        <td><img src="${u.gorsel}"></td>
-                        <td><strong>${u.ad}</strong></td>
-                        <td>${u.fiyat} ₺</td>
-                        <td><button class="logout-btn" style="padding:4px 8px; font-size:9px;" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td>
-                    </tr>
-                `;
+
+            // 1. Önce Onay Bekleyenleri Çek
+            db.ref('pending_products/' + saticiKey).once('value').then(pendingSnap => {
+                const pendingData = pendingSnap.val() || {};
+                Object.keys(pendingData).forEach(pKey => {
+                    const u = pendingData[pKey];
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><img src="${u.gorsel}"></td>
+                            <td><strong>${u.ad}</strong><br><small style="color:#64748b;">${u.aciklama || ''}</small></td>
+                            <td>${u.fiyat} ₺</td>
+                            <td><span class="badge-onaybekliyor">⏳ Onay Bekliyor</span></td>
+                            <td><button class="logout-btn" style="padding:4px 8px; font-size:9px;" onclick="db.ref('pending_products/${saticiKey}/${pKey}').remove(); dukkanUrunleriniListele();">İptal Et</button></td>
+                        </tr>
+                    `;
+                });
+
+                // 2. Sonra Yayındaki Ürünleri Çek
+                db.ref('restaurant_products/' + saticiKey).once('value').then(prodSnap => {
+                    const prodData = prodSnap.val() || {};
+                    Object.keys(prodData).forEach(key => {
+                        const u = prodData[key];
+                        tbody.innerHTML += `
+                            <tr>
+                                യ<td><img src="${u.gorsel}"></td>
+                                <td><strong>${u.ad}</strong><br><small style="color:#64748b;">${u.aciklama || ''}</small></td>
+                                <td>${u.fiyat} ₺</td>
+                                <td><span class="badge-yayinda">✅ Yayında</span></td>
+                                <td><button class="logout-btn" style="padding:4px 8px; font-size:9px;" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); dukkanUrunleriniListele();">Sil</button></td>
+                            </tr>
+                        `;
+                    });
+
+                    if(Object.keys(pendingData).length === 0 && Object.keys(prodData).length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Henüz ürün eklenmemiş.</td></tr>';
+                    }
+                });
             });
-        });
+        }
+
+        // Sayfa açıldığında ürünleri listele
+        dukkanUrunleriniListele();
     </script>
 </body>
 </html>

@@ -35,7 +35,7 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ (RENK DEĞİŞTİREN ANİMASYONLU) */
+        /* TÜM SAYFALARDA ÜST SIRADA SABİT CANLI TAKİP / SEPET ŞERİDİ */
         .global-ust-serit {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
@@ -52,7 +52,7 @@
         }
         .global-ust-serit.hazirlaniyor { background: linear-gradient(135deg, #c2410c, #ea580c); border-bottom-color: #fb923c; }
         .global-ust-serit.yolacikti { background: linear-gradient(135deg, #0284c7, #0369a1); border-bottom-color: #38bdf8; }
-        .global-ust-serit.teslim edildi { background: linear-gradient(135deg, #10b981, #059669); border-bottom-color: #34d399; }
+        .global-ust-serit.teslim { background: linear-gradient(135deg, #10b981, #059669); border-bottom-color: #34d399; }
 
         .global-ust-serit .bilgi { font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
         .global-ust-serit .bilgi span { color: #fff; font-size: 12px; font-weight: 900; }
@@ -197,7 +197,7 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
-    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ (TÜM SAYFALARDA ÜSTTE) -->
+    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ (TÜM SAYFALARDA ÜSTTE SABİT) -->
     <div id="globalUstSerit" class="global-ust-serit">
         <div class="bilgi">
             <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Sepet Özeti</span>
@@ -244,7 +244,7 @@
         </div>
     </div>
 
-    <!-- ÜRÜN SEÇENEK VE MALZEME MODALI -->
+    <!-- ÜRÜN SEÇENEK VE MALZEME MODALI (SADECE DÜRÜM İÇİN) -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -259,7 +259,7 @@
                 <button type="button" class="adet-btn" onclick="adetDegistir(1)">+</button>
             </div>
 
-            <div id="malzemeBolumu">
+            <div id="malzemeBolumu" style="display:none;">
                 <p style="font-size: 10px; color: #64748b; margin: 8px 0 4px 0;">Her ürün için ayrı malzeme tercihlerinizi belirleyin:</p>
                 <div id="dinamikUrunFormlari"></div>
             </div>
@@ -492,16 +492,16 @@
             document.getElementById('modalUrunAdetSayi').innerText = secilenUrunAdet;
             document.getElementById('modalUrunAdi').innerText = aktifSecilenUrun.ad;
             
-            // İÇECEK, TATLI VEYA EXTRA MALZEMELERDE MALZEME SORMA
+            // SADECE VE SADECE DÜRÜM KATEGORİSİNDE VEYA ADINDA "DÜRÜM" GEÇENLERDE MALZEME SOR
             const katLower = (aktifSecilenUrun.kategori || '').toLowerCase();
-            const urunAdLower = (aktifSecilenUrun.ad || '').toLowerCase();
+            const adLower = (aktifSecilenUrun.ad || '').toLowerCase();
             const malzemeBolumu = document.getElementById('malzemeBolumu');
 
-            if(katLower.includes('içecek') || katLower.includes('tatlı') || katLower.includes('extra') || urunAdLower.includes('kola') || urunAdLower.includes('ayran') || urunAdLower.includes('su') || urunAdLower.includes('soda') || urunAdLower.includes('tatlı')) {
-                malzemeBolumu.style.display = 'none';
-            } else {
+            if(katLower.includes('dürüm') || adLower.includes('dürüm')) {
                 malzemeBolumu.style.display = 'block';
                 formAlanlariniOlustur();
+            } else {
+                malzemeBolumu.style.display = 'none';
             }
 
             fiyatGuncelle();
@@ -515,7 +515,8 @@
             fiyatGuncelle();
             
             const katLower = (aktifSecilenUrun.kategori || '').toLowerCase();
-            if(!katLower.includes('içecek') && !katLower.includes('tatlı') && !katLower.includes('extra')) {
+            const adLower = (aktifSecilenUrun.ad || '').toLowerCase();
+            if(katLower.includes('dürüm') || adLower.includes('dürüm')) {
                 formAlanlariniOlustur();
             }
         }
@@ -532,7 +533,7 @@
             for(let i = 1; i <= secilenUrunAdet; i++) {
                 container.innerHTML += `
                     <div class="tekil-urun-kutu" id="urunKutu_${i}">
-                        <h4>${i}. Ürün İçin Malzeme Tercihi</h4>
+                        <h4>${i}. Dürüm İçin Malzeme Tercihi</h4>
                         <div class="malzeme-grid">
                             <label class="malzeme-item"><input type="checkbox" value="MISIR" class="malzeme_cb_${i}"> MISIR</label>
                             <label class="malzeme-item"><input type="checkbox" value="LAHANA" class="malzeme_cb_${i}"> LAHANA</label>
@@ -561,9 +562,10 @@
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
 
             const katLower = (aktifSecilenUrun.kategori || '').toLowerCase();
-            const isIcecekTatli = katLower.includes('içecek') || katLower.includes('tatlı') || katLower.includes('extra');
+            const adLower = (aktifSecilenUrun.ad || '').toLowerCase();
+            const isDurum = katLower.includes('dürüm') || adLower.includes('dürüm');
 
-            if(isIcecekTatli) {
+            if(!isDurum) {
                 const tamUrunAdi = aktifSecilenUrun.ad;
                 const mevcut = sepet.find(item => item.urunAdi === tamUrunAdi);
                 if(mevcut) {
@@ -741,7 +743,6 @@
                 if(s) {
                     ustSerit.className = "global-ust-serit";
                     let ikonHtml = '<i class="fa-solid fa-fire fa-beat" style="color: #ea580c;"></i>';
-                    let durumMetin = s.durum;
 
                     if(s.durum.toLowerCase().includes('hazırlanıyor') || s.durum.toLowerCase().includes('alındı')) {
                         ustSerit.classList.add('hazirlaniyor');
@@ -753,7 +754,7 @@
                         ustSerit.classList.add('teslim');
                         ikonHtml = '<i class="fa-solid fa-check fa-bounce" style="color: #34d399;"></i>';
                         
-                        // Teslim edilince puanlama modalını aç (eğer henüz açılmadıysa)
+                        // Teslim edilince puanlama modalını aç
                         if(!localStorage.getItem('puanVerildi_' + sipId)) {
                             localStorage.setItem('puanVerildi_' + sipId, 'true');
                             document.getElementById('degerlendirmeModal').style.display = 'flex';
@@ -764,7 +765,6 @@
                     document.getElementById('ustSeritUrunSayisi').innerText = `Adres: ${s.musteriAdres}`;
                     document.getElementById('ustSeritToplamFiyat').innerText = `${s.toplamFiyat} ₺ • ${s.durum}`;
 
-                    // 2 DAKİKA İÇİNDE İPTAL BUTONU KONTROLÜ
                     const gecenSureDakika = (Date.now() - (s.olusturmaZamani || Date.now())) / 60000;
                     let iptalBtnHtml = '';
                     if(gecenSureDakika <= 2 && !s.durum.toLowerCase().includes('yola çıktı') && !s.durum.toLowerCase().includes('teslim')) {
@@ -786,6 +786,7 @@
             db.ref('customer_orders/' + sipId).update({ durum: 'İptal Edildi (Sebep: ' + sebep + ')' }).then(() => {
                 alert("Siparişiniz iptal edilmiştir.");
                 localStorage.removeItem('aktifSiparisId_' + isletmeId);
+                document.getElementById('globalUstSerit').style.display = 'none';
                 window.location.reload();
             });
         }
@@ -814,6 +815,7 @@
                 alert("Değerlendirmeniz için teşekkür ederiz!");
                 document.getElementById('degerlendirmeModal').style.display = 'none';
                 localStorage.removeItem('aktifSiparisId_' + isletmeId);
+                document.getElementById('globalUstSerit').style.display = 'none';
                 window.location.reload();
             });
         }

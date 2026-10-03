@@ -179,7 +179,7 @@
                 <h3 id="modalUrunAdi">Ürün Seçenekleri</h3>
                 <button class="close-modal" onclick="document.getElementById('urunSecenekModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <p style="font-size: 10px; color: #64748b; margin-bottom: 8px;">Malzemeleri işaretleyin:</p>
+            <p style="font-size: 10px; color: #64748b; margin-bottom: 8px;">Malzemeleri işaretleyin (Bu kaleme özel uygulanır):</p>
             <div class="malzeme-grid">
                 <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
                 <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
@@ -447,18 +447,18 @@
 
             let secilenMalzemeler = [];
             document.querySelectorAll('.malzeme-item input:checked').forEach(cb => secilenMalzemeler.push(cb.value));
-            const malzemeMetni = secilenMalzemeler.length > 0 ? ` (${secilenMalzemeler.join(', ')})` : '';
+            const malzemeMetni = secilenMalzemeler.length > 0 ? ` (${secilenMalzemeler.join(', ')})` : ' (Sade)';
             const tamUrunAdi = aktifSecilenUrun.ad + malzemeMetni;
             
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
 
-            const mevcut = sepet.find(i => i.urunAdi === tamUrunAdi);
-            if(mevcut) {
-                mevcut.adet += secilenUrunAdet;
-                mevcut.toplamFiyat = mevcut.adet * birimFiyat;
-            } else {
-                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: secilenUrunAdet, toplamFiyat: birimFiyat * secilenUrunAdet });
-            }
+            // AYRI BİR KALEM OLARAK EKLE (Malzemeleri farklı olanlar ayrı satır görünür)
+            sepet.push({ 
+                urunAdi: tamUrunAdi, 
+                birimFiyat: birimFiyat, 
+                adet: secilenUrunAdet, 
+                toplamFiyat: birimFiyat * secilenUrunAdet 
+            });
 
             sepetiGuncelleBar();
             document.getElementById('urunSecenekModal').style.display = 'none';
@@ -495,7 +495,6 @@
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
 
-            // MİNİMUM SEPET TUTARI UYARISI - İŞTE BURASI NET BİLDİRİM VERİYOR
             if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
                 alert(`⚠️ Minimum Sepet Tutarı Uyarı!\n\nBu işletmeden sipariş verebilmek için sepet toplamınız en az ${isletmeMinSepet} ₺ olmalıdır.\nEksik Tutar: ${isletmeMinSepet - finalTutar} ₺`);
                 return;

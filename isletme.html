@@ -33,7 +33,6 @@
         .rest-header h1 { font-size: 15px; font-weight: 900; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rest-header p { font-size: 10px; color: #64748b; }
 
-        /* CANLI TAKİP BUTONU (ŞIK VE ERİŞİLEBİLİR) */
         .canli-takip-ust-btn { background: #047857; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 10px rgba(4,120,87,0.3); text-decoration: none; margin-bottom: 12px; width: fit-content; }
 
         .isletme-kategori-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
@@ -59,7 +58,6 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-        /* VİGÜRLÜ VE ŞIK YEŞİL SEPETİ ONAYLA BARI */
         .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #10b981; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 99999; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
         .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
         .sabit-alt-bar .bilgi span { color: #10b981; font-size: 14px; font-weight: 900; }
@@ -71,6 +69,10 @@
         .modal-header h3 { font-size: 15px; font-weight: 900; color: #0f172a; }
         .close-modal { background: #f1f5f9; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
         
+        .adet-kontrol { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 10px 0; background: #f8fafc; padding: 6px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .adet-btn { background: #f97316; color: white; border: none; width: 26px; height: 26px; border-radius: 6px; font-weight: 900; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .adet-sayi { font-size: 13px; font-weight: 900; color: #0f172a; }
+
         .malzeme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; text-align: left; }
         .malzeme-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 7px; border-radius: 6px; font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .malzeme-item input { accent-color: #f97316; width: 13px; height: 13px; cursor: pointer; }
@@ -80,8 +82,7 @@
         .form-group label { display: block; font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 11px; outline: none; }
         
-        /* MODAL İÇİNDE SEPETE EKLE BUTONU ÜST KISMA TAŞINDI */
-        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 
         .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 10px; border-radius: 10px; margin: 10px 0; text-align: left; }
         .kupon-input-group { display: flex; gap: 6px; margin-top: 5px; }
@@ -119,7 +120,6 @@
             </div>
         </div>
 
-        <!-- SİPARİŞİ CANLI TAKİP ET BUTONU -->
         <button type="button" class="canli-takip-ust-btn" onclick="canliTakipModalAc()"><i class="fa-solid fa-person-biking"></i> Siparişi Canlı Takip Et</button>
 
         <div id="isletmeKategoriBarContainer" style="display:none;">
@@ -145,7 +145,7 @@
         </div>
     </div>
 
-    <!-- VİGÜRLÜ VE VURGULU YEŞİL SEPET ONAY BARI -->
+    <!-- SEPET BARI -->
     <div id="sabitAltBar" class="sabit-alt-bar">
         <div class="bilgi">
             <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
@@ -154,7 +154,7 @@
         <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
-    <!-- ÜRÜN SEÇENEK MODALI (SEPETE EKLE BUTONU ÜST KISMA ALINDI) -->
+    <!-- ÜRÜN SEÇENEK MODALI (ÜSTTE SEPETE EKLE VE ADET SEÇİMİ) -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -162,22 +162,31 @@
                 <button class="close-modal" onclick="document.getElementById('urunSecenekModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <!-- ÜST KISMA ALINAN VURGULU SEPETE EKLE BUTONU VE FİYAT -->
             <div style="background: #f0fdf4; border: 1px solid #10b981; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 13px; font-weight: 900; color: #047857;" id="modalUrunFiyat">0 ₺</span>
                 <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:8px 16px; margin-bottom:0;" onclick="secilenUrunuSepeteEkle()"><i class="fa-solid fa-cart-plus"></i> Sepete Ekle</button>
             </div>
 
-            <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; text-align: left;">Ekstra Malzemeleri İşaretleyin:</p>
-            <div class="malzeme-grid">
-                <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
-                <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
-                <label class="malzeme-item"><input type="checkbox" value="TURŞU"> TURŞU</label>
-                <label class="malzeme-item"><input type="checkbox" value="ACI SOS"> ACI SOS</label>
-                <label class="malzeme-item"><input type="checkbox" value="BURGER SOS"> BURGER SOS</label>
-                <label class="malzeme-item"><input type="checkbox" value="LİMON"> LİMON</label>
-                <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
-                <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
+            <!-- ADET SEÇME KISMI -->
+            <div class="adet-kontrol">
+                <button class="adet-btn" onclick="adetDegistir(-1)">-</button>
+                <span class="adet-sayi" id="urunAdetSayisi">1</span>
+                <button class="adet-btn" onclick="adetDegistir(1)">+</button>
+            </div>
+
+            <!-- MALZEME SEÇİMİ SADECE DÜRÜMLERDE GÖRÜNÜR -->
+            <div id="malzemeBolumu" style="display:none;">
+                <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; text-align: left;">Dürüm Malzemelerini Seçin:</p>
+                <div class="malzeme-grid">
+                    <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
+                    <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
+                    <label class="malzeme-item"><input type="checkbox" value="TURŞU"> TURŞU</label>
+                    <label class="malzeme-item"><input type="checkbox" value="ACI SOS"> ACI SOS</label>
+                    <label class="malzeme-item"><input type="checkbox" value="BURGER SOS"> BURGER SOS</label>
+                    <label class="malzeme-item"><input type="checkbox" value="LİMON"> LİMON</label>
+                    <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
+                    <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
+                </div>
             </div>
         </div>
     </div>
@@ -266,6 +275,7 @@
         let sepet = [];
         let tumUrunlerVeri = {};
         let aktifSecilenUrun = null;
+        let secilenUrunAdet = 1;
         let indirimTutari = 0;
         let aktifSecilenKategori = 'Tümü';
         let isletmeMinSepet = 0;
@@ -403,12 +413,33 @@
         function urunSecenekModalAc(key) {
             aktifSecilenUrun = tumUrunlerVeri[key];
             if(!aktifSecilenUrun) return;
+            secilenUrunAdet = 1;
+            document.getElementById('urunAdetSayisi').innerText = secilenUrunAdet;
             document.getElementById('modalUrunAdi').innerText = aktifSecilenUrun.ad;
             
             const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
-            document.getElementById('modalUrunFiyat').innerText = gecerliFiyat + ' ₺';
-            document.querySelectorAll('.malzeme-item input').forEach(cb => cb.checked = false);
+            document.getElementById('modalUrunFiyat').innerText = (gecerliFiyat * secilenUrunAdet) + ' ₺';
+            
+            // SADECE DÜRÜMLERDE MALZEME SEÇİMİNİ GÖSTER
+            const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
+            const malzemeDiv = document.getElementById('malzemeBolumu');
+            if(kategoriStr.includes('dürüm')) {
+                malzemeDiv.style.display = 'block';
+                document.querySelectorAll('.malzeme-item input').forEach(cb => cb.checked = false);
+            } else {
+                malzemeDiv.style.display = 'none';
+            }
+
             document.getElementById('urunSecenekModal').style.display = 'flex';
+        }
+
+        function adetDegistir(miktar) {
+            secilenUrunAdet += miktar;
+            if(secilenUrunAdet < 1) secilenUrunAdet = 1;
+            document.getElementById('urunAdetSayisi').innerText = secilenUrunAdet;
+
+            const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
+            document.getElementById('modalUrunFiyat').innerText = (gecerliFiyat * secilenUrunAdet) + ' ₺';
         }
 
         function secilenUrunuSepeteEkle() {
@@ -422,18 +453,23 @@
             }
 
             let secilenMalzemeler = [];
-            document.querySelectorAll('.malzeme-item input:checked').forEach(cb => secilenMalzemeler.push(cb.value));
+            const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
+            if(kategoriStr.includes('dürüm')) {
+                document.querySelectorAll('.malzeme-item input:checked').forEach(cb => secilenMalzemeler.push(cb.value));
+            }
+
             const malzemeMetni = secilenMalzemeler.length > 0 ? ` (${secilenMalzemeler.join(', ')})` : '';
             const tamUrunAdi = aktifSecilenUrun.ad + malzemeMetni;
             
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
+            const toplamUrunFiyati = birimFiyat * secilenUrunAdet;
 
             const mevcut = sepet.find(i => i.urunAdi === tamUrunAdi);
             if(mevcut) {
-                mevcut.adet += 1;
+                mevcut.adet += secilenUrunAdet;
                 mevcut.toplamFiyat = mevcut.adet * birimFiyat;
             } else {
-                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: 1, toplamFiyat: birimFiyat });
+                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: secilenUrunAdet, toplamFiyat: toplamUrunFiyati });
             }
 
             sepetiGuncelleBar();

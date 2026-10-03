@@ -2,15 +2,38 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>İşletme Menüsü | Bölge Yemek</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 130px; overflow-x: hidden; width: 100%; }
+        
+        /* MOBİL VE APK UYUMLU GÜVENLİ ALAN (SAFE AREA) DÜZENLEMELERİ */
+        body { 
+            background: #f8fafc; 
+            color: #1e293b; 
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(110px + env(safe-area-inset-bottom)); 
+            overflow-x: hidden; 
+            width: 100%; 
+        }
 
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
+        header { 
+            background: #ffffff; 
+            border-bottom: 2px solid #f97316; 
+            padding: 12px 4%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            /* Bildirim çubuğunun altında kalması için akıllı padding */
+            padding-top: max(12px, env(safe-area-inset-top)); 
+        }
+
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
@@ -44,13 +67,28 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(14px, env(safe-area-inset-top)); }
+        /* SEPET ONAYLA BARI - EKRANDA ÇOK AŞAĞIDA KALMAYACAK ŞEKİLDE YUKARI KONUMLANDIRILDI */
+        .sabit-alt-bar { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: #0f172a; 
+            border-top: 2px solid #f97316; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 9999; 
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.25); 
+            padding-bottom: max(12px, env(safe-area-inset-bottom)); 
+        }
         .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
         .sabit-alt-bar .bilgi span { color: #f97316; font-size: 14px; font-weight: 900; }
-        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 6px; }
+        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 9px 18px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 6px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 12px; }
-        .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
+        .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; text-align: center; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
         .modal-header h3 { font-size: 15px; font-weight: 900; color: #0f172a; }
         .close-modal { background: #f1f5f9; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
@@ -101,7 +139,6 @@
             </div>
         </div>
 
-        <!-- GÜNCELLENMİŞ ALT KATEGORİLER (EXTRA MALZEMELER DAHİL) -->
         <div id="isletmeKategoriBarContainer" style="display:none;">
             <div class="isletme-kategori-bar" id="isletmeKategoriBar">
                 <div class="kat-chip aktif" onclick="kategoriFiltrele('Tümü', this)">Tümü</div>

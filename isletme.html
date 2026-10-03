@@ -175,7 +175,6 @@
                 <button class="adet-btn" onclick="adetDegistir(1)">+</button>
             </div>
 
-            <!-- BİRDEN FAZLA ÜRÜN İÇİN AYRI AYRI İÇERİK / MALZEME SEÇİM ALANI -->
             <div id="cokluMalzemeBolumu" style="display:none; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: left;">
                 <p style="font-size: 10px; font-weight: 800; color: #1e293b; margin-bottom: 6px;"><i class="fa-solid fa-utensils"></i> Her Ürün İçin Ayrı İçerik / Malzeme Seçimi:</p>
                 <div id="urunMalzemeKapsayicilari"></div>
@@ -183,7 +182,7 @@
         </div>
     </div>
 
-    <!-- CANLI SİPARİŞ TAKİP MODALI -->
+    <!-- ANLIK CANLI SİPARİŞ TAKİP MODALI (2 DAKİKA GERİ SAYIMLI İPTAL BUTONLU) -->
     <div id="canliTakipModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -219,7 +218,6 @@
             <div style="margin-bottom: 8px; text-align: left;">
                 <h4 style="font-size: 10px; font-weight: 800; margin-bottom: 4px; color: #475569;">Sepetinizdekiler</h4>
                 <div id="modalSepetListesi"></div>
-                <!-- MİNİMUM TUTAR VE +100 TL GETİRME ÜCRETİ KIRMIZI UYARI YAZISI -->
                 <div id="minTutarKirmiziUyari" style="font-size: 10px; font-weight: 800; color: #ef4444; margin-top: 6px; display:none;"></div>
             </div>
 
@@ -279,6 +277,16 @@
                 const loader = document.getElementById('kuryeYukleniyor');
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
             }, 400);
+
+            // ANLIK CANLI TAKİP DİNLEYİCİSİ (SAYFA YENİLEMEDEN OTOMATİK AKIŞ)
+            const musteriTel = localStorage.getItem('aktifMusteriTel');
+            if(musteriTel) {
+                db.ref('customer_orders').orderByChild('musteriTel').equalTo(musteriTel).on('value', snap => {
+                    if(document.getElementById('canliTakipModal').style.display === 'flex') {
+                        canliTakipEkraniniGuncelle(snap.val());
+                    }
+                });
+            }
         });
 
         if(isletmeId) {
@@ -474,7 +482,6 @@
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
 
             if(kategoriStr.includes('dürüm')) {
-                // Her ürün için ayrı ayrı seçilen malzemeleri gruplayıp sepete ekle
                 for(let i = 1; i <= secilenUrunAdet; i++) {
                     let secilenler = [];
                     const checkboxlar = document.querySelectorAll(`#urunMalzemeListe_${i} input:checked`);
@@ -509,38 +516,69 @@
 
         function canliTakipModalAc() {
             const musteriTel = localStorage.getItem('aktifMusteriTel');
-            const icerikDiv = document.getElementById('canliTakipIcerik');
             document.getElementById('canliTakipModal').style.display = 'flex';
 
             if(!musteriTel) {
-                icerikDiv.innerHTML = '<p style="color:#ef4444;">Henüz kayıtlı siparişiniz bulunmuyor.</p>';
+                document.getElementById('canliTakipIcerik').innerHTML = '<p style="color:#ef4444;">Henüz kayıtlı siparişiniz bulunmuyor.</p>';
                 return;
             }
 
             db.ref('customer_orders').orderByChild('musteriTel').equalTo(musteriTel).once('value').then(snap => {
-                const data = snap.val();
-                if(!data) {
-                    icerikDiv.innerHTML = '<p style="color:#64748b;">Aktif siparişiniz bulunmuyor.</p>';
-                    return;
-                }
-                let html = '';
-                Object.keys(data).forEach(k => {
-                    const s = data[k];
-                    if(s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi') {
-                        html += `
-                            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:8px; margin-bottom:8px;">
-                                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                                    <strong>${s.urunAdi}</strong>
-                                    <span style="color:#10b981; font-weight:900;">${s.toplamFiyat} ₺</span>
-                                </div>
-                                <p style="font-size:10px; color:#64748b;">Adres: ${s.musteriAdres}</p>
-                                <div style="margin-top:6px; font-size:10px; font-weight:800; color:#f97316;"><i class="fa-solid fa-spinner fa-spin"></i> Durum: ${s.durum}</div>
-                            </div>
-                        `;
-                    }
-                });
-                icerikDiv.innerHTML = html || '<p style="color:#64748b;">Devam eden aktif siparişiniz yok.</p>';
+                canliTakipEkraniniGuncelle(snap.val());
             });
+        }
+
+        // ANLIK CANLI TAKİP EKRANI VE 2 DAKİKA GERİ SAYIMLI İPTAL BUTONU MANTIĞI
+        function canliTakipEkraniniGuncelle(data) {
+            const icerikDiv = document.getElementById('canliTakipIcerik');
+            if(!data) {
+                icerikDiv.innerHTML = '<p style="color:#64748b;">Aktif siparişiniz bulunmuyor.</p>';
+                return;
+            }
+
+            let html = '';
+            const simdi = Date.now();
+
+            Object.keys(data).forEach(k => {
+                const s = data[k];
+                if(s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi') {
+                    // 2 dakika (120,000 milisaniye) kontrolü
+                    const siparisZamani = s.zamanDamgasi || simdi;
+                    const gecenSure = simdi - siparisZamani;
+                    const kalanSureMs = 120000 - gecenSure;
+                    const kalanSaniye = Math.floor(kalanSureMs / 1000);
+
+                    let iptalButonHtml = '';
+                    if(kalanSaniye > 0) {
+                        iptalButonHtml = `<button id="iptalBtn_${s.siparisId}" onclick="siparişiIptalEt('${s.siparisId}', '${s.isletmeId}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:pointer; margin-top:6px;"><i class="fa-solid fa-ban"></i> Siparişi İptal Et (${kalanSaniye}s)</button>`;
+                    } else {
+                        iptalButonHtml = `<button disabled style="background:#e2e8f0; color:#94a3b8; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:not-allowed; margin-top:6px;">İptal Süresi Doldu</button>`;
+                    }
+
+                    html += `
+                        <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:10px; border-radius:8px; margin-bottom:8px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <strong>${s.urunAdi}</strong>
+                                <span style="color:#10b981; font-weight:900;">${s.toplamFiyat} ₺</span>
+                            </div>
+                            <p style="font-size:10px; color:#64748b;">Adres: ${s.musteriAdres}</p>
+                            <div style="margin-top:6px; font-size:10px; font-weight:800; color:#f97316;"><i class="fa-solid fa-spinner fa-spin"></i> Durum: ${s.durum}</div>
+                            ${iptalButonHtml}
+                        </div>
+                    `;
+                }
+            });
+
+            icerikDiv.innerHTML = html || '<p style="color:#64748b;">Devam eden aktif siparişiniz yok.</p>';
+        }
+
+        function siparişiIptalEt(siparisId, isletmeId) {
+            if(confirm("Siparişinizi iptal etmek istediğinize emin misiniz?")) {
+                db.ref('orders/' + isletmeId + '/' + siparisId).update({ durum: 'İptal Edildi' });
+                db.ref('customer_orders/' + siparisId).update({ durum: 'İptal Edildi' });
+                alert("Siparişiniz iptal edildi.");
+                canliTakipModalAc();
+            }
         }
 
         function musteriHizliKaydet() {
@@ -591,12 +629,11 @@
                 `;
             });
 
-            // MİNİMUM TUTAR KONTROLÜ VE KIRMIZI UYARI YAZISI
             const kirmiziUyariDiv = document.getElementById('minTutarKirmiziUyari');
             if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
                 kirmiziUyariDiv.style.display = 'block';
                 kirmiziUyariDiv.innerHTML = `⚠️ Sepet tutarınız minimum ${isletmeMinSepet} ₺'nin altında! Siparişiniz onaylandığı takdirde sepete +100 TL getirme ücreti eklenecektir.`;
-                finalTutar += 100; // Getirme ücreti yansıtılır
+                finalTutar += 100;
             } else {
                 kirmiziUyariDiv.style.display = 'none';
             }
@@ -644,23 +681,24 @@
 
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
             if(isletmeMinSepet > 0 && finalFiyat < isletmeMinSepet) {
-                finalFiyat += 100; // Getirme ücreti dahil edilir
+                finalFiyat += 100;
             }
 
             const siparisId = 'siparis_' + Date.now();
             const siparisVerisi = {
                 siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
                 urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR')
+                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', zamanDamgasi: Date.now(), tarih: new Date().toLocaleTimeString('tr-TR')
             };
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                alert("Siparişiniz alındı! Canlı takip butonundan durumunu izleyebilirsiniz.");
+                alert("Siparişiniz alındı! Canlı takip butonundan durumunu anlık izleyebilirsiniz.");
                 sepet = [];
                 indirimTutari = 0;
                 document.getElementById('checkoutModal').style.display = 'none';
                 sepetiGuncelleBar();
+                canliTakipModalAc();
             });
         }
     </script>

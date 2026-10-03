@@ -739,6 +739,14 @@
                 const ustSerit = document.getElementById('globalUstSerit');
                 const btnKapsayici = document.getElementById('seritButonlarKapsayici');
                 
+                // TESLİM EDİLDİ VEYA İPTAL OLDUYSA CANLI TAKİP BARINI ANINDA KAPAT VE HAFIZAYI TEMİZLE
+                if (s && s.durum && (s.durum.toLowerCase().includes('teslim edildi') || s.durum.toLowerCase().includes('iptal'))) {
+                    localStorage.removeItem('aktifSiparisId_' + isletmeId);
+                    aktifSiparisId = null;
+                    ustSerit.style.display = 'none';
+                    return;
+                }
+
                 if(s) {
                     ustSerit.className = "global-ust-serit";
                     let ikonHtml = '<i class="fa-solid fa-fire fa-beat" style="color: #ea580c;"></i>';
@@ -814,7 +822,6 @@
                 alert("Değerlendirmeniz için teşekkür ederiz!");
                 document.getElementById('degerlendirmeModal').style.display = 'none';
                 
-                // SİPARİŞ TAMAMLANDIKTAN SONRA AKTİF SİPARİŞİ TEMİZLİYORUZ Kİ YENİ SEPET AÇILSIN
                 localStorage.removeItem('aktifSiparisId_' + isletmeId);
                 aktifSiparisId = null;
                 document.getElementById('globalUstSerit').style.display = 'none';

@@ -3,73 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bölge Yemek | Online Yemek Pazar Yeri</title>
+    <title>Bölge Yemek | Altındağ'ın En Lezzetli Pazar Yeri</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 90px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 40px; overflow-x: hidden; width: 100%; }
 
-        header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .logo { font-size: 17px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+        header { 
+            background: #ffffff; 
+            border-bottom: 2px solid #f97316; 
+            padding: 15px 4% 10px 4%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            padding-top: 40px; /* Bildirim çubuğu ile çakışmayı önleyen net boşluk */
+        }
+        .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
+
+        .container { max-width: 950px; margin: 0 auto; padding: 15px; width: 100%; }
+        .hero { text-align: center; margin: 15px 0 20px 0; }
+        .hero h1 { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
+        .hero p { font-size: 11px; color: #64748b; }
+
+        .banner-bayilik { background: linear-gradient(135deg, #047857, #065f46); border-radius: 14px; padding: 16px; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(4,120,87,0.2); }
+        .banner-bayilik h3 { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+        .banner-bayilik p { font-size: 9px; opacity: 0.9; margin-bottom: 8px; }
+        .btn-bayilik { background: #ffffff; color: #047857; border: none; padding: 7px 14px; border-radius: 8px; font-weight: 800; font-size: 10px; cursor: pointer; text-decoration: none; display: inline-block; }
+
+        .section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
         
-        .header-right { display: flex; gap: 5px; align-items: center; }
-        .btn-small { padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; border: none; white-space: nowrap; }
-        .satici-menu-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
-        .profil-btn { background: #10b981; color: #fff; }
+        .kategori-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .kategori-slider::-webkit-scrollbar { display: none; }
+        .kategori-kart { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; min-width: 75px; text-align: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.2s; }
+        .kategori-kart.aktif { border-color: #f97316; background: #fff7ed; }
+        .kategori-kart img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; margin-bottom: 4px; background: #eee; }
+        .kategori-kart span { font-size: 9px; font-weight: 700; color: #1e293b; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 140px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; margin-top: 5px; }
-        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 8px 10px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
-        .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f5f9; color: #f97316; }
-        .dropdown.active .dropdown-content { display: block; }
+        .restoran-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media(min-width: 600px) { .restoran-grid { grid-template-columns: repeat(2, 1fr); } }
 
-        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 20px 15px; text-align: center; }
-        .hero-section h1 { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
-        .hero-section p { font-size: 11px; color: #64748b; }
+        .restoran-kart { background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; padding: 12px; display: flex; gap: 12px; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: 0.2s; }
+        .restoran-kart img { width: 65px; height: 65px; object-fit: cover; border-radius: 10px; background: #f1f5f9; flex-shrink: 0; }
+        .restoran-bilgi { flex: 1; min-width: 0; }
+        .restoran-bilgi h3 { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .restoran-bilgi p { font-size: 10px; color: #64748b; margin-bottom: 4px; }
+        .puan { font-size: 10px; font-weight: 800; color: #f59e0b; display: flex; align-items: center; gap: 3px; }
 
-        .bayilik-banner { background: linear-gradient(135deg, #065f46, #047857); border: 2px solid #059669; border-radius: 12px; padding: 14px 18px; margin: 12px 0; color: #000; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(4, 120, 87, 0.2); }
-        .bayilik-sol { display: flex; align-items: center; gap: 12px; }
-        .bayilik-ikon { width: 40px; height: 40px; background: rgba(0,0,0,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #000; flex-shrink: 0; }
-        .bayilik-metin h3 { font-size: 12px; font-weight: 900; color: #000; margin-bottom: 2px; }
-        .bayilik-metin p { font-size: 10px; font-weight: 700; color: #111; }
-        .bayilik-buton { background: #000; color: #34d399; padding: 7px 12px; border-radius: 6px; font-size: 10px; font-weight: 800; white-space: nowrap; }
-
-        .container { max-width: 1100px; margin: 0 auto; padding: 10px; }
-        .section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin: 15px 0 8px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
-        
-        .categories-slider { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
-        .categories-slider::-webkit-scrollbar { display: none; }
-
-        .category-card { min-width: 90px; width: 90px; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; display: flex; flex-direction: column; flex-shrink: 0; }
-        .cat-img { width: 100%; height: 60px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
-        .cat-body { padding: 5px; text-align: center; }
-        .cat-body h3 { font-size: 10px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-        @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-        .restaurant-card { background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; }
-        .rest-logo { width: 75px; height: 75px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
-        .rest-info { padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; }
-        .rest-info h4 { font-size: 11px; color: #0f172a; font-weight: 800; margin-bottom: 2px; }
-        .rest-info p { font-size: 10px; color: #64748b; margin-bottom: 3px; }
-        .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 10px; }
-
-        /* ANİMASYON YOK EDİLDİ - ANINDA AÇILIR */
-        #kuryeYukleniyor { display: none !important; }
-
-        .sabit-takip-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #10b981; padding: 10px 5%; display: none; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -5px 25px rgba(0,0,0,0.2); }
-        .sabit-takip-bar .takip-bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .sabit-takip-bar .durum-badge { background: #f59e0b; color: #0f172a; padding: 3px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 18px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #e2e8f0; }
-        .form-group { margin-bottom: 8px; text-align: left; }
-        .form-group label { display: block; font-size: 10px; color: #475569; margin-bottom: 2px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 7px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
-
-        .footer { text-align: center; margin-top: 20px; padding: 12px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
+        .footer { text-align: center; margin-top: 35px; padding: 20px 0; border-top: 1px solid #cbd5e1; font-size: 10px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
     </style>
 </head>
@@ -77,85 +63,42 @@
 
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <div class="header-right">
-            <div id="musteriProfilAlani">
-                <button class="btn-small profil-btn" onclick="openMusteriModal()"><i class="fa-solid fa-user"></i> Giriş / Kayıt</button>
-            </div>
-            <div class="dropdown" id="saticiDropdown">
-                <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı <i class="fa-solid fa-chevron-down" style="font-size:7px;"></i></button>
-                <div class="dropdown-content">
-                    <a href="satici-giris.html"><i class="fa-solid fa-right-to-bracket" style="color:#f97316;"></i> Satıcı Girişi</a>
-                    <button type="button" onclick="openSaticiModal()"><i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Satıcı Ol</button>
-                </div>
-            </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a href="satici-giris.html" style="background:#f97316; color:#fff; padding:6px 12px; border-radius:6px; font-size:10px; font-weight:700; text-decoration:none;"><i class="fa-solid fa-store"></i> Satıcı</a>
         </div>
     </header>
 
-    <div class="hero-section">
-        <h1 id="heroBaslikYuklenen">Altındağ'ın En Lezzetli Pazar Yeri</h1>
-        <p id="heroSloganYuklenen">Yüzlerce lezzet, binlerce restoran kapında!</p>
-    </div>
-
     <div class="container">
-        <div class="bayilik-banner" onclick="openSaticiModal()">
-            <div class="bayilik-sol">
-                <div class="bayilik-ikon"><i class="fa-solid fa-store"></i></div>
-                <div class="bayilik-metin">
-                    <h3>Yüksek Komisyonlara Son!</h3>
-                    <p>Kendi bölgenin lideri ol, hemen bayimiz ol.</p>
-                </div>
+        <div class="hero">
+            <h1>Altındağ'ın En Lezzetli Pazar Yeri</h1>
+            <p>Yüzlerce lezzet, binlerce restoran kapında!</p>
+        </div>
+
+        <div class="banner-bayilik">
+            <div>
+                <h3>Yüksek Komisyonlara Son!</h3>
+                <p>Kendi bölgenin lideri ol, hemen bayimiz ol.</p>
+                <a href="bayilik-basvuru.html" class="btn-bayilik">Hemen Başvur</a>
             </div>
-            <div class="bayilik-buton">Hemen Başvur</div>
+            <i class="fa-solid fa-handshake-angle" style="font-size: 32px; opacity: 0.8;"></i>
         </div>
 
         <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Yemek Kategorileri</h3>
-        <div class="categories-slider" id="dynamicCategories">
-            <div style="font-size: 11px; color: #64748b; padding: 5px;">Yükleniyor...</div>
+        <div class="kategori-slider" id="anaKategorilerSlider">
+            <div class="kategori-kart aktif" onclick="kategoriSec('Tümü', this)">
+                <img src="https://i.imgur.com/7y4aCVb.jpg" alt="Tümü">
+                <span>Tümü</span>
+            </div>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
-        <div class="restaurants-grid" id="dynamicRestaurants">
-            <div style="font-size: 11px; color: #64748b; padding: 5px;">Yükleniyor...</div>
+        <h3 class="section-title" style="margin-top: 18px;"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
+        <div class="restoran-grid" id="isletmelerListesi">
+            <div style="font-size: 11px; color: #64748b;">İşletmeler yükleniyor...</div>
         </div>
 
         <div class="footer">
             <p>&copy; 2026 Bölge Yemek. Tüm hakları saklıdır.</p>
             <span>TAN MEDYA TASARIM Tarafından Kurulmuştur.</span>
-        </div>
-    </div>
-
-    <div id="sabitTakipBar" class="sabit-takip-bar">
-        <div class="takip-bilgi">
-            <i class="fa-solid fa-motorcycle" style="color:#10b981; font-size:16px;"></i>
-            <div>
-                <div style="font-size: 9px; color:#94a3b8;">Aktif Sipariş Durumu</div>
-                <span id="takipDurumMetin" class="durum-badge">Hazırlanıyor</span>
-            </div>
-        </div>
-        <div style="color: #fff; font-size: 11px; font-weight: 700;" id="takipTutarMetin">0 ₺</div>
-    </div>
-
-    <div id="musteriModal" class="modal">
-        <div class="modal-content">
-            <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Müşteri Giriş / Kayıt Ol</h3>
-            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="musteriAd" placeholder="Ad Soyad"></div>
-            <div class="form-group"><label>Telefon *</label><input type="tel" id="musteriTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>E-posta *</label><input type="email" id="musteriMail" placeholder="mail@ornek.com"></div>
-            <div class="form-group"><label>Adres *</label><textarea id="musteriAdres" rows="2" placeholder="Teslimat adresi..."></textarea></div>
-            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:8px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer; margin-top:4px;">Kaydet</button>
-            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:4px; cursor:pointer; margin-top:2px; font-size:10px;">İptal</button>
-        </div>
-    </div>
-
-    <div id="saticiModal" class="modal">
-        <div class="modal-content">
-            <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Satıcı Başvurusu</h3>
-            <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="İşletme adı"></div>
-            <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
-            <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Dürüm"></div>
-            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:8px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer; margin-top:4px;">Başvur</button>
-            <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:4px; cursor:pointer; margin-top:2px; font-size:10px;">Vazgeç</button>
         </div>
     </div>
 
@@ -174,95 +117,70 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        const aktifMusteri = localStorage.getItem('aktifMusteriAdi');
-        const aktifTel = localStorage.getItem('aktifMusteriTel');
+        let tumIsletmeler = {};
+        let secilenKategoriFiltre = 'Tümü';
 
-        if(aktifMusteri) {
-            document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:10px; font-weight:700; color:#0f172a; background:#f1f5f9; padding:4px 7px; border-radius:6px; display:inline-block;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
-            if(aktifTel) {
-                db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTel).on('value', snapshot => {
-                    const data = snapshot.val();
-                    const takipBar = document.getElementById('sabitTakipBar');
-                    if(data) {
-                        let sonSiparis = null;
-                        Object.keys(data).forEach(k => { sonSiparis = data[k]; });
-                        if(sonSiparis && sonSiparis.durum !== 'Teslim Edildi' && sonSiparis.durum !== 'İptal Edildi') {
-                            document.getElementById('takipDurumMetin').innerText = sonSiparis.durum || 'Hazırlanıyor';
-                            document.getElementById('takipTutarMetin').innerText = sonSiparis.toplamFiyat + ' ₺';
-                            takipBar.style.display = 'flex';
-                        } else { takipBar.style.display = 'none'; }
-                    } else { takipBar.style.display = 'none'; }
-                });
-            }
-        }
-
-        function openMusteriModal() { document.getElementById('musteriModal').style.display = 'flex'; }
-        function musteriKaydet() {
-            const ad = document.getElementById('musteriAd').value.trim();
-            const tel = document.getElementById('musteriTel').value.trim();
-            const mail = document.getElementById('musteriMail').value.trim();
-            const adres = document.getElementById('musteriAdres').value.trim();
-            if(!ad || !tel || !mail || !adres) { alert("Alanları doldurun."); return; }
-            localStorage.setItem('aktifMusteriAdi', ad);
-            localStorage.setItem('aktifMusteriTel', tel);
-            localStorage.setItem('aktifMusteriMail', mail);
-            localStorage.setItem('aktifMusteriAdres', adres);
-            document.getElementById('musteriModal').style.display = 'none';
-            location.reload();
-        }
-
-        function toggleDropdown(event) { event.stopPropagation(); document.getElementById('saticiDropdown').classList.toggle('active'); }
-        window.onclick = function() { document.getElementById('saticiDropdown').classList.remove('active'); }
-        function openSaticiModal() { document.getElementById('saticiDropdown').classList.remove('active'); document.getElementById('saticiModal').style.display='flex'; }
-
-        // KATEGORİLERİ ANINDA TEK SEFERDE ÇEK (HIZLI LAZY RENDER)
-        db.ref('categories').once('value').then((snapshot) => {
-            const slider = document.getElementById('dynamicCategories');
-            const data = snapshot.val();
-            if(!data) { slider.innerHTML = '<div style="font-size:10px; color:#64748b;">Kategori yok.</div>'; return; }
-            
-            let html = '';
-            Object.keys(data).forEach(key => {
-                const kat = data[key];
-                const gorsel = kat.gorsel || 'https://i.imgur.com/7y4aCVb.jpg';
-                html += `<a href="kategori.html?kat=${kat.slug}" class="category-card"><img src="${gorsel}" class="cat-img" loading="lazy"><div class="cat-body"><h3>${kat.ad}</h3></div></a>`;
+        db.ref('categories').on('value', snapshot => {
+            const slider = document.getElementById('anaKategorilerSlider');
+            let html = `
+                <div class="kategori-kart ${secilenKategoriFiltre === 'Tümü' ? 'aktif' : ''}" onclick="kategoriSec('Tümü', this)">
+                    <img src="https://i.imgur.com/7y4aCVb.jpg" alt="Tümü">
+                    <span>Tümü</span>
+                </div>
+            `;
+            const data = snapshot.val() || {};
+            Object.keys(data).forEach(k => {
+                const kat = data[k];
+                const aktifClass = secilenKategoriFiltre === kat.ad ? 'aktif' : '';
+                html += `
+                    <div class="kategori-kart ${aktifClass}" onclick="kategoriSec('${kat.ad}', this)">
+                        <img src="${kat.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${kat.ad}">
+                        <span>${kat.ad}</span>
+                    </div>
+                `;
             });
             slider.innerHTML = html;
         });
 
-        db.ref('site_settings').once('value').then((snapshot) => {
-            const s = snapshot.val();
-            if(s) {
-                if(s.heroBaslik) document.getElementById('heroBaslikYuklenen').innerText = s.heroBaslik;
-                if(s.heroSlogan) document.getElementById('heroSloganYuklenen').innerText = s.heroSlogan;
-            }
+        db.ref('active_restaurants').on('value', snapshot => {
+            const liste = document.getElementById('isletmelerListesi');
+            liste.innerHTML = '';
+            tumIsletmeler = snapshot.val() || {};
+            isletmeleriEkranaBas();
         });
 
-        // İŞLETMELERİ ANINDA ÇEK
-        db.ref('active_restaurants').once('value').then((snapshot) => {
-            const container = document.getElementById('dynamicRestaurants');
-            const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="font-size:10px; color:#64748b;">Aktif işletme bulunmuyor.</div>'; return; }
-            
-            let html = '';
-            Object.keys(data).forEach(key => {
-                const r = data[key];
-                const logo = r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg';
-                html += `<a href="isletme.html?id=${key}" class="restaurant-card"><img src="${logo}" class="rest-logo" loading="lazy"><div class="rest-info"><h4>${r.ad}</h4><p>${r.kategori || 'Lezzet'}</p><div class="rest-puanlar"><span><i class="fa-solid fa-star"></i> ${r.puan || 'Yeni'}</span></div></div></a>`;
+        function kategoriSec(katAdi, element) {
+            secilenKategoriFiltre = katAdi;
+            document.querySelectorAll('.kategori-kart').forEach(el => el.classList.remove('aktif'));
+            if(element) element.classList.add('aktif');
+            isletmeleriEkranaBas();
+        }
+
+        function isletmeleriEkranaBas() {
+            const liste = document.getElementById('isletmelerListesi');
+            liste.innerHTML = '';
+            let sayac = 0;
+
+            Object.keys(tumIsletmeler).forEach(key => {
+                const r = tumIsletmeler[key];
+                if(secilenKategoriFiltre === 'Tümü' || (r.kategori && r.kategori.toLowerCase() === secilenKategoriFiltre.toLowerCase())) {
+                    sayac++;
+                    liste.innerHTML += `
+                        <div class="restoran-kart" onclick="window.location.href='isletme.html?id=${key}'">
+                            <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}">
+                            <div class="restoran-bilgi">
+                                <h3>${r.ad}</h3>
+                                <p>${r.kategori || 'Lezzet Noktası'}</p>
+                                <div class="puan"><i class="fa-solid fa-star"></i> 5.0 (Aktif)</div>
+                            </div>
+                        </div>
+                    `;
+                }
             });
-            container.innerHTML = html;
-        });
 
-        function saticiBasvuruGonder() {
-            const isletme = document.getElementById('basvuruIsletme').value.trim();
-            const yetkili = document.getElementById('basvuruYetkili').value.trim();
-            const tel = document.getElementById('basvuruTel').value.trim();
-            const kat = document.getElementById('basvuruKategori').value.trim();
-            if(!isletme || !yetkili || !tel) { alert("Alanları doldurun."); return; }
-            const sifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
-            db.ref('seller_applications/' + ('BASVURU-' + Date.now())).set({
-                isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => { alert("Başvurunuz alındı! Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
+            if(sayac === 0) {
+                liste.innerHTML = '<div style="font-size:11px; color:#64748b; padding:10px;">Bu kategoride henüz işletme bulunmuyor.</div>';
+            }
         }
     </script>
 </body>

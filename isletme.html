@@ -21,7 +21,6 @@
         .rest-header h1 { font-size: 15px; font-weight: 900; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rest-header p { font-size: 10px; color: #64748b; }
 
-        /* MOBİLDEN TAŞMAYAN YATAY KATEGORİ ŞERİDİ */
         .isletme-kategori-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .isletme-kategori-bar::-webkit-scrollbar { display: none; }
         .kat-chip { background: #ffffff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
@@ -32,16 +31,16 @@
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
         
         .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); cursor: pointer; position: relative; overflow: hidden; }
-        
-        /* KAMPANYA / HEDİYE / İNDİRİM KURDELE BANT */
-        .kurdele-bant { position: absolute; top: 0; right: 0; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 8px; font-weight: 900; padding: 3px 8px; border-bottom-left-radius: 8px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 2; }
+        .kurdele-bant { position: absolute; top: 0; right: 0; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 8px; font-weight: 900; padding: 3px 8px; border-bottom-left-radius: 8px; text-transform: uppercase; z-index: 2; }
 
         .menu-item-left { display: flex; gap: 10px; align-items: center; flex: 1; min-width: 0; }
         .menu-item-card img { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; background: #f1f5f9; flex-shrink: 0; }
         .menu-info { flex: 1; min-width: 0; }
         .menu-info h4 { font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .menu-info p { font-size: 9px; color: #64748b; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .menu-info span { font-size: 11px; font-weight: 800; color: #f97316; display: block; margin-top: 2px; }
+        .fiyat-kapsayici { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+        .eski-fiyat { font-size: 9px; color: #94a3b8; text-decoration: line-through; font-weight: 700; }
+        .indirimli-fiyat { font-size: 11px; font-weight: 900; color: #f97316; }
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
@@ -70,9 +69,6 @@
         .kupon-input-group { display: flex; gap: 6px; margin-top: 5px; }
         .kupon-input-group input { flex: 1; padding: 7px; font-size: 10px; border: 1px solid #fdba74; border-radius: 6px; outline: none; background: #fff; }
         .kupon-input-group button { background: #f97316; color: white; border: none; padding: 7px 12px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; }
-
-        .yildizlar { display: flex; justify-content: center; gap: 6px; font-size: 18px; color: #cbd5e1; cursor: pointer; margin: 4px 0; }
-        .yildizlar .aktif { color: #f59e0b; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 9px; border-radius: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
 
         #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
@@ -100,11 +96,12 @@
                     <h1 id="restAdi">Yükleniyor...</h1>
                     <p id="restKategoriTel">Yükleniyor...</p>
                     <div id="isletmeOrtalamaPuan" style="font-size: 10px; font-weight: 800; color: #f59e0b; margin-top: 2px;"></div>
+                    <div id="minSepetYazi" style="font-size: 9px; font-weight: 700; color: #ef4444; margin-top: 2px;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- GÜNCELLENMİŞ ALT KATEGORİ ŞERİDİ (TÜMÜ, DÜRÜM, PORSIYON, KAMPANYALAR, İÇECEKLER, TATLILAR) -->
+        <!-- GÜNCELLENMİŞ ALT KATEGORİLER (EXTRA MALZEMELER DAHİL) -->
         <div id="isletmeKategoriBarContainer" style="display:none;">
             <div class="isletme-kategori-bar" id="isletmeKategoriBar">
                 <div class="kat-chip aktif" onclick="kategoriFiltrele('Tümü', this)">Tümü</div>
@@ -113,6 +110,7 @@
                 <div class="kat-chip" onclick="kategoriFiltrele('Kampanyalar', this)">Kampanyalar</div>
                 <div class="kat-chip" onclick="kategoriFiltrele('İçecekler', this)">İçecekler</div>
                 <div class="kat-chip" onclick="kategoriFiltrele('Tatlılar', this)">Tatlılar</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Extra Malzemeler', this)">Extra Malzemeler</div>
             </div>
         </div>
 
@@ -232,6 +230,7 @@
         let aktifSecilenUrun = null;
         let indirimTutari = 0;
         let aktifSecilenKategori = 'Tümü';
+        let isletmeMinSepet = 0;
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -247,8 +246,12 @@
                     document.getElementById('restAdi').innerText = r.ad;
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
+                    
+                    isletmeMinSepet = parseFloat(r.minSepet || 0);
+                    if(isletmeMinSepet > 0) {
+                        document.getElementById('minSepetYazi').innerText = `Minimum Sepet Tutarı: ${isletmeMinSepet} ₺`;
+                    }
 
-                    // TATLI VE MARKET HARİÇ DİĞERLERİNE ALT KATEGORİ BARINI AÇ
                     const katLower = (r.kategori || '').toLowerCase();
                     if(!katLower.includes('market') && !katLower.includes('tatlı') && !katLower.includes('pastane')) {
                         document.getElementById('isletmeKategoriBarContainer').style.display = 'block';
@@ -319,6 +322,22 @@
                 if(kategori === 'Tümü' || urunKat.toLowerCase() === kategori.toLowerCase()) {
                     sayac++;
                     let kurdeleHtml = u.kurdele ? `<div class="kurdele-bant">${u.kurdele}</div>` : '';
+                    
+                    let fiyatHtml = '';
+                    const indirimli = parseFloat(u.indirimliFiyat || 0);
+                    const normal = parseFloat(u.fiyat || 0);
+                    
+                    if(indirimli > 0 && indirimli < normal) {
+                        fiyatHtml = `
+                            <div class="fiyat-kapsayici">
+                                <span class="eski-fiyat">${normal} ₺</span>
+                                <span class="indirimli-fiyat">${indirimli} ₺</span>
+                            </div>
+                        `;
+                    } else {
+                        fiyatHtml = `<span class="indirimli-fiyat">${normal} ₺</span>`;
+                    }
+
                     html += `
                         <div class="menu-item-card" onclick="urunSecenekModalAc('${k}')">
                             ${kurdeleHtml}
@@ -327,7 +346,7 @@
                                 <div class="menu-info">
                                     <h4>${u.ad}</h4>
                                     <p>${u.aciklama || ''}</p>
-                                    <span>${u.fiyat} ₺</span>
+                                    ${fiyatHtml}
                                 </div>
                             </div>
                             <button type="button" class="sec-ekle-btn">Seç & Ekle</button>
@@ -347,7 +366,9 @@
             aktifSecilenUrun = tumUrunlerVeri[key];
             if(!aktifSecilenUrun) return;
             document.getElementById('modalUrunAdi').innerText = aktifSecilenUrun.ad;
-            document.getElementById('modalUrunFiyat').innerText = aktifSecilenUrun.fiyat + ' ₺';
+            
+            const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
+            document.getElementById('modalUrunFiyat').innerText = gecerliFiyat + ' ₺';
             document.querySelectorAll('.malzeme-item input').forEach(cb => cb.checked = false);
             document.getElementById('urunSecenekModal').style.display = 'flex';
         }
@@ -366,7 +387,8 @@
             document.querySelectorAll('.malzeme-item input:checked').forEach(cb => secilenMalzemeler.push(cb.value));
             const malzemeMetni = secilenMalzemeler.length > 0 ? ` (${secilenMalzemeler.join(', ')})` : '';
             const tamUrunAdi = aktifSecilenUrun.ad + malzemeMetni;
-            const birimFiyat = parseFloat(aktifSecilenUrun.fiyat);
+            
+            const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
 
             const mevcut = sepet.find(i => i.urunAdi === tamUrunAdi);
             if(mevcut) {
@@ -405,12 +427,20 @@
         }
 
         function sepetiOnaylaTikla() {
+            let genelToplam = 0;
+            sepet.forEach(i => genelToplam += i.toplamFiyat);
+            let finalTutar = Math.max(0, genelToplam - indirimTutari);
+
+            if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
+                alert(`Bu işletme için minimum sepet tutarı ${isletmeMinSepet} ₺'dir. Sepetinize ${isletmeMinSepet - finalTutar} ₺ tutarında daha ürün eklemelisiniz.`);
+                return;
+            }
+
             document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
             const listeDiv = document.getElementById('modalSepetListesi');
             listeDiv.innerHTML = '';
-            let genelToplam = 0;
+            
             sepet.forEach((item, index) => {
-                genelToplam += item.toplamFiyat;
                 listeDiv.innerHTML += `
                     <div class="sepet-urun-satir">
                         <span><strong>${item.adet}x</strong> ${item.urunAdi}</span>
@@ -419,8 +449,7 @@
                 `;
             });
 
-            let finalFiyat = Math.max(0, genelToplam - indirimTutari);
-            document.getElementById('modalToplamTutar').innerText = finalFiyat + ' ₺';
+            document.getElementById('modalToplamTutar').innerText = finalTutar + ' ₺';
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 

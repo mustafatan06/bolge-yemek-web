@@ -37,11 +37,8 @@
         .btn-iptal { background: #9ca3af; }
         .btn-pasif { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
-        .badge-yayinda { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-        .badge-onaybekliyor { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 380px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+        .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 380px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
 
         .footer { text-align: center; margin-top: 25px; padding: 15px 0; border-top: 1px solid #cbd5e1; font-size: 10px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
@@ -55,13 +52,15 @@
             <button class="logout-btn" onclick="localStorage.clear(); window.location.href='satici-giris.html';">Çıkış</button>
         </div>
 
+        <!-- İŞLETME BİLGİLERİ & MİNİMUM SEPET TUTARI -->
         <div class="card">
-            <h3>İşletme Bilgileri & Logo Güncelle (Maks. 250 KB)</h3>
+            <h3>İşletme Bilgileri, Min. Sepet & Logo Güncelle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>İşletme Adı</label><input type="text" id="dukkanAdi"></div>
                 <div class="form-group"><label>Telefon</label><input type="text" id="dukkanTel"></div>
+                <div class="form-group"><label>Minimum Sepet Tutarı (TL)</label><input type="number" id="dukkanMinSepet" placeholder="Örn: 150"></div>
                 <div class="form-group"><label>Yeni Şifre</label><input type="password" id="dukkanSifre" placeholder="Boş bırakırsanız değişmez"></div>
-                <div class="form-group"><label>Logo Seç (Maks 250 KB)</label><input type="file" id="dukkanLogo" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Logo Seç (Maks 250 KB)</label><input type="file" id="dukkanLogo" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
@@ -74,12 +73,13 @@
             </table>
         </div>
 
-        <!-- YENİ ÜRÜN EKLEME (MANUEL ALT KATEGORİ VE KURDELE SEÇİMLİ) -->
+        <!-- YENİ ÜRÜN EKLEME (FİYAT VE İNDİRİMLİ FİYAT ALANLI) -->
         <div class="card">
             <h3>Yeni Ürün Ekle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Örn: Et Dürüm"></div>
-                <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
+                <div class="form-group"><label>Normal Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
+                <div class="form-group"><label>İndirimli Fiyat (TL - İsteğe Bağlı)</label><input type="number" id="urunIndirimliFiyat" placeholder="120"></div>
                 <div class="form-group"><label>Alt Kategori Seç *</label>
                     <select id="urunAltKategori">
                         <option value="Dürüm">Dürüm</option>
@@ -87,9 +87,10 @@
                         <option value="Kampanyalar">Kampanyalar</option>
                         <option value="İçecekler">İçecekler</option>
                         <option value="Tatlılar">Tatlılar</option>
+                        <option value="Extra Malzemeler">Extra Malzemeler</option>
                     </select>
                 </div>
-                <div class="form-group"><label>Kurdele / Bant Etiketi</label><input type="text" id="urunKurdele" placeholder="Örn: %20 İndirim / Hediye Ayran"></div>
+                <div class="form-group"><label>Kurdele / Bant Etiketi</label><input type="text" id="urunKurdele" placeholder="Örn: %20 İndirim / Hediye"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2" placeholder="Malzemeler..."></textarea></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Görsel * (Maks 250 KB)</label><input type="file" id="urunDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
@@ -111,13 +112,14 @@
         </div>
     </div>
 
-    <!-- ÜRÜN DÜZENLEME MODALI -->
+    <!-- ÜRÜN DÜZENLEME MODALI (GÖRSEL DEĞİŞTİRME ÖZELLİKLİ) -->
     <div id="urunDuzenleModal" class="modal">
         <div class="modal-content">
             <h3 style="margin-bottom:10px;">Ürünü Düzenle</h3>
             <input type="hidden" id="duzenleUrunKey">
             <div class="form-group"><label>Ürün Adı</label><input type="text" id="duzenleAd"></div>
-            <div class="form-group"><label>Fiyat (TL)</label><input type="number" id="duzenleFiyat"></div>
+            <div class="form-group"><label>Normal Fiyat (TL)</label><input type="number" id="duzenleFiyat"></div>
+            <div class="form-group"><label>İndirimli Fiyat (TL)</label><input type="number" id="duzenleIndirimliFiyat"></div>
             <div class="form-group"><label>Alt Kategori</label>
                 <select id="duzenleKategori">
                     <option value="Dürüm">Dürüm</option>
@@ -125,10 +127,12 @@
                     <option value="Kampanyalar">Kampanyalar</option>
                     <option value="İçecekler">İçecekler</option>
                     <option value="Tatlılar">Tatlılar</option>
+                    <option value="Extra Malzemeler">Extra Malzemeler</option>
                 </select>
             </div>
             <div class="form-group"><label>Kurdele / Bant Etiketi</label><input type="text" id="duzenleKurdele" placeholder="Örn: %20 İndirim"></div>
             <div class="form-group"><label>Açıklama</label><textarea id="duzenleAciklama" rows="2"></textarea></div>
+            <div class="form-group"><label>Yeni Görsel Değiştir (İsteğe bağlı - Maks 250 KB)</label><input type="file" id="duzenleDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             <button type="button" class="btn-primary" style="width:100%; margin-top:8px;" onclick="urunGuncelleKaydet()">Değişiklikleri Kaydet</button>
             <button type="button" onclick="document.getElementById('urunDuzenleModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:5px; cursor:pointer;">İptal</button>
         </div>
@@ -185,14 +189,16 @@
                 document.getElementById('isletmeAdiBaslik').innerText = r.ad;
                 document.getElementById('dukkanAdi').value = r.ad;
                 document.getElementById('dukkanTel').value = r.telefon;
+                document.getElementById('dukkanMinSepet').value = r.minSepet || '';
             }
         });
 
         function bilgileriGuncelle() {
             const yeniAd = document.getElementById('dukkanAdi').value.trim();
             const yeniTel = document.getElementById('dukkanTel').value.trim();
+            const minSepet = document.getElementById('dukkanMinSepet').value.trim();
             const logoInput = document.getElementById('dukkanLogo');
-            const data = { ad: yeniAd, telefon: yeniTel };
+            const data = { ad: yeniAd, telefon: yeniTel, minSepet: parseFloat(minSepet) || 0 };
 
             if(logoInput.files.length > 0) {
                 gorseliSikistir(logoInput.files[0], function(compressedLogo) {
@@ -207,6 +213,7 @@
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
+            const indirimliFiyat = document.getElementById('urunIndirimliFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
             const kategori = document.getElementById('urunAltKategori').value;
             const kurdele = document.getElementById('urunKurdele').value.trim();
@@ -217,10 +224,11 @@
             gorseliSikistir(fileInput.files[0], function(compressedImage) {
                 const uId = 'urun_' + Date.now();
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, ad, fiyat, aciklama, kategori, kurdele, gorsel: compressedImage, isletmeAdi: saticiAdi || 'İşletme'
+                    id: uId, ad, fiyat, indirimliFiyat, aciklama, kategori, kurdele, gorsel: compressedImage, isletmeAdi: saticiAdi || 'İşletme'
                 }).then(() => { 
                     document.getElementById('urunAdi').value = '';
                     document.getElementById('urunFiyat').value = '';
+                    document.getElementById('urunIndirimliFiyat').value = '';
                     document.getElementById('urunAciklama').value = '';
                     document.getElementById('urunKurdele').value = '';
                     document.getElementById('urunDosya').value = '';
@@ -241,11 +249,11 @@
                     <tr>
                         <td><img src="${u.gorsel}"></td>
                         <td><strong>${u.ad}</strong></td>
-                        <td><strong>${u.fiyat} ₺</strong></td>
+                        <td><strong>${u.fiyat} ₺</strong> ${u.indirimliFiyat ? '<br><small style="color:#f97316;">İndirimli: ' + u.indirimliFiyat + ' ₺</small>' : ''}</td>
                         <td><span style="font-size:10px; font-weight:700; color:#f97316;">${u.kategori || 'Dürüm'}</span></td>
                         <td><span style="font-size:9px; background:#fee2e2; color:#ef4444; padding:2px 5px; border-radius:4px; font-weight:800;">${u.kurdele || '-'}</span></td>
                         <td>
-                            <button class="btn-duzenle" onclick="urunDuzenleAc('${key}', '${u.ad}', '${u.fiyat}', '${u.aciklama || ''}', '${u.kategori || 'Dürüm'}', '${u.kurdele || ''}')">Düzenle</button>
+                            <button class="btn-duzenle" onclick="urunDuzenleAc('${key}', '${u.ad}', '${u.fiyat}', '${u.indirimliFiyat || ''}', '${u.aciklama || ''}', '${u.kategori || 'Dürüm'}', '${u.kurdele || ''}')">Düzenle</button>
                             <button class="btn-sil" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove()">Sil</button>
                         </td>
                     </tr>
@@ -254,13 +262,15 @@
             if(sayac === 0) tbody.innerHTML = '<tr><td colspan="6" style="color:#64748b;">Yayında ürün yok.</td></tr>';
         });
 
-        function urunDuzenleAc(key, ad, fiyat, aciklama, kategori, kurdele) {
+        function urunDuzenleAc(key, ad, fiyat, indirimliFiyat, aciklama, kategori, kurdele) {
             document.getElementById('duzenleUrunKey').value = key;
             document.getElementById('duzenleAd').value = ad;
             document.getElementById('duzenleFiyat').value = fiyat;
+            document.getElementById('duzenleIndirimliFiyat').value = indirimliFiyat;
             document.getElementById('duzenleAciklama').value = aciklama;
             document.getElementById('duzenleKategori').value = kategori;
             document.getElementById('duzenleKurdele').value = kurdele;
+            document.getElementById('duzenleDosya').value = '';
             document.getElementById('urunDuzenleModal').style.display = 'flex';
         }
 
@@ -268,16 +278,30 @@
             const key = document.getElementById('duzenleUrunKey').value;
             const ad = document.getElementById('duzenleAd').value.trim();
             const fiyat = document.getElementById('duzenleFiyat').value.trim();
+            const indirimliFiyat = document.getElementById('duzenleIndirimliFiyat').value.trim();
             const aciklama = document.getElementById('duzenleAciklama').value.trim();
             const kategori = document.getElementById('duzenleKategori').value;
             const kurdele = document.getElementById('duzenleKurdele').value.trim();
+            const fileInput = document.getElementById('duzenleDosya');
 
             if(!ad || !fiyat) { alert("Ad ve fiyat boş olamaz."); return; }
 
-            db.ref('restaurant_products/' + saticiKey + '/' + key).update({ ad, fiyat, aciklama, kategori, kurdele }).then(() => {
-                alert("Güncellendi!");
-                document.getElementById('urunDuzenleModal').style.display = 'none';
-            });
+            const updateData = { ad, fiyat, indirimliFiyat, aciklama, kategori, kurdele };
+
+            if(fileInput.files.length > 0) {
+                gorseliSikistir(fileInput.files[0], function(compressedImage) {
+                    updateData.gorsel = compressedImage;
+                    db.ref('restaurant_products/' + saticiKey + '/' + key).update(updateData).then(() => {
+                        alert("Ürün görseliyle birlikte güncellendi!");
+                        document.getElementById('urunDuzenleModal').style.display = 'none';
+                    });
+                });
+            } else {
+                db.ref('restaurant_products/' + saticiKey + '/' + key).update(updateData).then(() => {
+                    alert("Ürün güncellendi!");
+                    document.getElementById('urunDuzenleModal').style.display = 'none';
+                });
+            }
         }
     </script>
 </body>

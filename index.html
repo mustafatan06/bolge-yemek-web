@@ -45,7 +45,6 @@
         .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f5f9; color: #f97316; }
         .dropdown.active .dropdown-content { display: block; }
 
-        /* PROFESYONEL ARAMA KUTUSU ALANI */
         .search-section {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             padding: 16px 4%;
@@ -92,7 +91,6 @@
         .container { max-width: 1100px; margin: 0 auto; padding: 10px 4%; width: 100%; overflow: hidden; }
         .section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin: 15px 0 10px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
         
-        /* DAHA BÜYÜK VE ŞIK KATEGORİLER */
         .categories-slider { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .categories-slider::-webkit-scrollbar { display: none; }
 
@@ -102,7 +100,6 @@
         .cat-body { padding: 8px 6px; text-align: center; }
         .cat-body h3 { font-size: 11px; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* DAHA GENİŞ VE FERAH AKTİF İŞLETMELER KARTI */
         .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
         @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
         
@@ -115,15 +112,14 @@
         .rest-ust-satir { display: flex; justify-content: space-between; align-items: flex-start; gap: 5px; }
         .rest-info h4 { font-size: 13px; color: #0f172a; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* CANLI AÇIK ETİKETİ */
         .badge-acik { background: #dcfce7; color: #15803d; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
+        .badge-kapali { background: #fee2e2; color: #b91c1c; font-size: 9px; font-weight: 800; padding: 3px 7px; border-radius: 6px; border: 1px solid #fecaca; display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
         
         .rest-kategori { font-size: 11px; color: #64748b; font-weight: 600; }
         
         .rest-alt-satir { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 6px; margin-top: 4px; }
         .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 11px; }
         
-        /* BÜYÜK VURGULU MİNİMUM SEPET TUTARI */
         .min-sepet-vurgu { font-size: 11px; font-weight: 900; color: #0f172a; background: #fff7ed; padding: 3px 8px; border-radius: 6px; border: 1px solid #fed7aa; }
         .min-sepet-vurgu span { color: #f97316; }
 
@@ -155,7 +151,6 @@
         </div>
     </header>
 
-    <!-- PROFESYONEL ÜRÜN VE İŞLETME ARAMA BÖLÜMÜ -->
     <div class="search-section">
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -288,13 +283,21 @@
                 const logo = r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg';
                 const minSepet = r.minSepet || 0;
                 
+                // İşletme açık mı kontrolü (Varsayılan açık: true)
+                const acikMi = (r.durum === undefined || r.durum === true || r.durum === 'acik');
+                const badgeHtml = acikMi 
+                    ? `<span class="badge-acik"><i class="fa-solid fa-circle" style="font-size:6px;"></i> Açık</span>` 
+                    : `<span class="badge-kapali"><i class="fa-solid fa-circle" style="font-size:6px;"></i> Kapalı</span>`;
+                
+                const kartOpacity = acikMi ? '1' : '0.65';
+                
                 html += `
-                    <a href="isletme.html?id=${key}" class="restaurant-card">
+                    <a href="isletme.html?id=${key}" class="restaurant-card" style="opacity: ${kartOpacity};">
                         <img src="${logo}" class="rest-logo" loading="lazy">
                         <div class="rest-info">
                             <div class="rest-ust-satir">
                                 <h4>${r.ad}</h4>
-                                <span class="badge-acik"><i class="fa-solid fa-circle" style="font-size:6px;"></i> Açık</span>
+                                ${badgeHtml}
                             </div>
                             <p class="rest-kategori">${r.kategori || 'Lezzet Noktası'}</p>
                             <div class="rest-alt-satir">

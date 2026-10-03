@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 130px; overflow-x: hidden; width: 100%; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; overflow-x: hidden; width: 100%; }
 
         header { 
             background: #ffffff; 
@@ -25,6 +25,12 @@
         }
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
+
+        /* ÜSTTE SABİT, TIKLANABİLİR VE GÖRÜNÜR SEPET ONAY BARI */
+        .ust-sepet-bar { background: #0f172a; border-bottom: 2px solid #10b981; padding: 10px 4%; display: none; justify-content: space-between; align-items: center; position: sticky; top: 75px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .ust-sepet-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
+        .ust-sepet-bar .bilgi span { color: #10b981; font-size: 13px; font-weight: 900; }
+        .ust-sepet-bar button { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 900; font-size: 11px; cursor: pointer; box-shadow: 0 3px 10px rgba(16,185,129,0.4); display: flex; align-items: center; gap: 5px; text-transform: uppercase; }
 
         .container { max-width: 900px; margin: 0 auto; padding: 12px; width: 100%; overflow: hidden; }
         .rest-header { background: #fff; padding: 16px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
@@ -57,11 +63,6 @@
         .indirimli-fiyat { font-size: 11px; font-weight: 900; color: #f97316; }
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #10b981; padding: 12px 5%; display: none; justify-content: space-between; align-items: center; z-index: 99999; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
-        .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
-        .sabit-alt-bar .bilgi span { color: #10b981; font-size: 14px; font-weight: 900; }
-        .sabit-alt-bar button { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 11px 22px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4); display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 100000; padding: 12px; }
         .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
@@ -107,6 +108,15 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
+    <!-- ÜSTTE SABİT SEPET BARI -->
+    <div id="ustSepetBar" class="ust-sepet-bar">
+        <div class="bilgi">
+            <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
+            <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
+        </div>
+        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
+    </div>
+
     <div class="container">
         <div class="rest-header">
             <div class="rest-left">
@@ -145,16 +155,7 @@
         </div>
     </div>
 
-    <!-- SEPET BARI -->
-    <div id="sabitAltBar" class="sabit-alt-bar">
-        <div class="bilgi">
-            <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
-            <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
-        </div>
-        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
-    </div>
-
-    <!-- ÜRÜN SEÇENEK MODALI (ÜSTTE SEPETE EKLE VE ADET SEÇİMİ) -->
+    <!-- ÜRÜN ÖZELLEŞTİRME VE ADET SEÇİM MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -167,16 +168,17 @@
                 <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:8px 16px; margin-bottom:0;" onclick="secilenUrunuSepeteEkle()"><i class="fa-solid fa-cart-plus"></i> Sepete Ekle</button>
             </div>
 
-            <!-- ADET SEÇME KISMI -->
+            <!-- ADET SEÇİMİ -->
             <div class="adet-kontrol">
+                <span style="font-size: 11px; font-weight: 700; color: #475569;">Adet:</span>
                 <button class="adet-btn" onclick="adetDegistir(-1)">-</button>
                 <span class="adet-sayi" id="urunAdetSayisi">1</span>
                 <button class="adet-btn" onclick="adetDegistir(1)">+</button>
             </div>
 
-            <!-- MALZEME SEÇİMİ SADECE DÜRÜMLERDE GÖRÜNÜR -->
-            <div id="malzemeBolumu" style="display:none;">
-                <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; text-align: left;">Dürüm Malzemelerini Seçin:</p>
+            <!-- SADECE DÜRÜMLERDE AYRI MALZEME İÇERİK EKRANI -->
+            <div id="malzemeBolumu" style="display:none; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+                <p style="font-size: 10px; font-weight: 800; color: #1e293b; margin-bottom: 6px; text-align: left;"><i class="fa-solid fa-utensils"></i> Ürün İçeriği / Malzeme Seçimi:</p>
                 <div class="malzeme-grid">
                     <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
                     <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
@@ -420,7 +422,7 @@
             const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
             document.getElementById('modalUrunFiyat').innerText = (gecerliFiyat * secilenUrunAdet) + ' ₺';
             
-            // SADECE DÜRÜMLERDE MALZEME SEÇİMİNİ GÖSTER
+            // SADECE DÜRÜMLERDE AYRI MALZEME SEÇİMİ GÖSTER
             const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
             const malzemeDiv = document.getElementById('malzemeBolumu');
             if(kategoriStr.includes('dürüm')) {
@@ -532,11 +534,11 @@
             document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
             document.getElementById('sepetToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
             
-            const altBar = document.getElementById('sabitAltBar');
+            const ustBar = document.getElementById('ustSepetBar');
             if(toplamAdet > 0) {
-                altBar.style.display = 'flex';
+                ustBar.style.display = 'flex'; // Üst kısımda net görünürlük
             } else {
-                altBar.style.display = 'none';
+                ustBar.style.display = 'none';
             }
         }
 

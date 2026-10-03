@@ -8,118 +8,111 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 130px; overflow-x: hidden; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 130px; overflow-x: hidden; width: 100%; }
 
         header { background: #ffffff; border-bottom: 2px solid #f97316; padding: 15px 4% 10px 4%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding-top: max(15px, env(safe-area-inset-top)); }
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        .container { max-width: 900px; margin: 0 auto; padding: 15px; }
-        .rest-header { background: #fff; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
-        .rest-left { display: flex; gap: 12px; align-items: center; }
-        .rest-header img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
-        .rest-header h1 { font-size: 16px; font-weight: 900; color: #0f172a; margin-bottom: 2px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 12px; width: 100%; overflow: hidden; }
+        .rest-header { background: #fff; padding: 16px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
+        .rest-left { display: flex; gap: 12px; align-items: center; min-width: 0; }
+        .rest-header img { width: 65px; height: 65px; object-fit: cover; border-radius: 10px; background: #f1f5f9; flex-shrink: 0; }
+        .rest-header h1 { font-size: 15px; font-weight: 900; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rest-header p { font-size: 10px; color: #64748b; }
 
-        /* YATAY KAYDIRILABİLİR KATEGORİ ŞERİDİ */
-        .isletme-kategori-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; scrollbar-width: none; }
+        /* MOBİLDEN TAŞMAYAN YATAY KATEGORİ ŞERİDİ */
+        .isletme-kategori-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
         .isletme-kategori-bar::-webkit-scrollbar { display: none; }
-        .kat-chip { background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
+        .kat-chip { background: #ffffff; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
         .kat-chip.aktif { background: #f97316; color: #ffffff; border-color: #f97316; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
 
-        .section-title { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-left: 4px solid #f97316; padding-left: 8px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-left: 4px solid #f97316; padding-left: 8px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
         @media(min-width: 600px) { .menu-grid { grid-template-columns: repeat(2, 1fr); } }
         
-        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); cursor: pointer; }
-        .menu-item-left { display: flex; gap: 10px; align-items: center; flex: 1; }
-        .menu-item-card img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; background: #f1f5f9; flex-shrink: 0; }
+        .menu-item-card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02); cursor: pointer; position: relative; overflow: hidden; }
+        
+        /* KAMPANYA / HEDİYE / İNDİRİM KURDELE BANT */
+        .kurdele-bant { position: absolute; top: 0; right: 0; background: linear-gradient(135deg, #ef4444, #dc2626); color: white; font-size: 8px; font-weight: 900; padding: 3px 8px; border-bottom-left-radius: 8px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 2; }
+
+        .menu-item-left { display: flex; gap: 10px; align-items: center; flex: 1; min-width: 0; }
+        .menu-item-card img { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; background: #f1f5f9; flex-shrink: 0; }
         .menu-info { flex: 1; min-width: 0; }
-        .menu-info h4 { font-size: 12px; font-weight: 800; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .menu-info p { font-size: 10px; color: #64748b; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .menu-info h4 { font-size: 11px; font-weight: 800; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-info p { font-size: 9px; color: #64748b; margin-bottom: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .menu-info span { font-size: 11px; font-weight: 800; color: #f97316; display: block; margin-top: 2px; }
 
-        .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 6px 10px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; white-space: nowrap; }
+        .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 14px 6%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(16px, env(safe-area-inset-top)); }
-        .sabit-alt-bar .bilgi { color: #fff; font-size: 12px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
-        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 15px; font-weight: 900; }
-        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 8px; }
+        .sabit-alt-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #f97316; padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); padding-bottom: max(14px, env(safe-area-inset-top)); }
+        .sabit-alt-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
+        .sabit-alt-bar .bilgi span { color: #f97316; font-size: 14px; font-weight: 900; }
+        .sabit-alt-bar button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 6px; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 22px; border-radius: 20px; width: 100%; max-width: 440px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
-        .modal-header h3 { font-size: 16px; font-weight: 900; color: #0f172a; }
-        .close-modal { background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 12px; }
+        .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; text-align: center; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+        .modal-header h3 { font-size: 15px; font-weight: 900; color: #0f172a; }
+        .close-modal { background: #f1f5f9; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 13px; cursor: pointer; color: #475569; display: flex; align-items: center; justify-content: center; }
         
-        .malzeme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; text-align: left; }
-        .malzeme-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        .malzeme-item input { accent-color: #f97316; width: 14px; height: 14px; cursor: pointer; }
+        .malzeme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 8px 0; text-align: left; }
+        .malzeme-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 7px; border-radius: 6px; font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+        .malzeme-item input { accent-color: #f97316; width: 13px; height: 13px; cursor: pointer; }
 
-        .sepet-urun-satir { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; text-align: left; }
-        .form-group { margin-bottom: 12px; text-align: left; }
-        .form-group label { display: block; font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 4px; }
-        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }
-        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 13px; border-radius: 10px; font-weight: 900; font-size: 14px; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
+        .sepet-urun-satir { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 11px; text-align: left; }
+        .form-group { margin-bottom: 10px; text-align: left; }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 11px; outline: none; }
+        .btn-tamamla { width: 100%; background: #10b981; color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 900; font-size: 13px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(16,185,129,0.3); }
 
-        .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 12px; border-radius: 10px; margin: 12px 0; text-align: left; }
-        .kupon-input-group { display: flex; gap: 8px; margin-top: 6px; }
-        .kupon-input-group input { flex: 1; padding: 8px; font-size: 11px; border: 1px solid #fdba74; border-radius: 6px; outline: none; background: #fff; }
-        .kupon-input-group button { background: #f97316; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 11px; cursor: pointer; }
+        .kupon-box { background: #fff7ed; border: 1px dashed #f97316; padding: 10px; border-radius: 10px; margin: 10px 0; text-align: left; }
+        .kupon-input-group { display: flex; gap: 6px; margin-top: 5px; }
+        .kupon-input-group input { flex: 1; padding: 7px; font-size: 10px; border: 1px solid #fdba74; border-radius: 6px; outline: none; background: #fff; }
+        .kupon-input-group button { background: #f97316; color: white; border: none; padding: 7px 12px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; }
 
-        .yildizlar { display: flex; justify-content: center; gap: 6px; font-size: 20px; color: #cbd5e1; cursor: pointer; margin: 5px 0; }
+        .yildizlar { display: flex; justify-content: center; gap: 6px; font-size: 18px; color: #cbd5e1; cursor: pointer; margin: 4px 0; }
         .yildizlar .aktif { color: #f59e0b; }
-        .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; font-size: 11px; }
+        .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 9px; border-radius: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
 
-        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.4s ease; }
-        .kurye-ikon { font-size: 55px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
+        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
+        .kurye-ikon { font-size: 50px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
         @keyframes kuryeSurus { 0%, 100% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
-
-        #teslimAnimasyonOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px; }
-        #teslimAnimasyonOverlay i { font-size: 70px; margin-bottom: 15px; animation: bounce 1s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
 
     <div id="kuryeYukleniyor">
         <div class="kurye-ikon"><i class="fa-solid fa-motorcycle fa-bounce"></i></div>
-        <div style="font-size: 13px; font-weight: 800; color: #0f172a;">Menü Hazırlanıyor...</div>
-    </div>
-
-    <div id="teslimAnimasyonOverlay">
-        <i class="fa-solid fa-circle-check"></i>
-        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">Siparişiniz Teslim Edildi!</h2>
-        <p style="font-size: 13px; opacity: 0.9; margin-bottom: 20px;">Afiyet olsun, bizi tercih ettiğiniz için teşekkür ederiz.</p>
-        <button type="button" onclick="teslimBildiriminiKapat()" style="background: white; color: #047857; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 800; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">Kapat & Değerlendir</button>
+        <div style="font-size: 12px; font-weight: 800; color: #0f172a;">Menü Hazırlanıyor...</div>
     </div>
 
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <a href="index.html" style="font-size:11px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
+        <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
     <div class="container">
         <div class="rest-header">
             <div class="rest-left">
                 <img id="restLogo" src="https://i.imgur.com/7y4aCVb.jpg">
-                <div>
+                <div style="min-width:0;">
                     <h1 id="restAdi">Yükleniyor...</h1>
                     <p id="restKategoriTel">Yükleniyor...</p>
-                    <div id="isletmeOrtalamaPuan" style="font-size: 11px; font-weight: 800; color: #f59e0b; margin-top: 3px;"></div>
+                    <div id="isletmeOrtalamaPuan" style="font-size: 10px; font-weight: 800; color: #f59e0b; margin-top: 2px;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- YATAY KAYDIRILABİLİR KATEGORİ ŞERİDİ (MARKET VE TATLI HARİÇ TÜM İŞLETMELERDE AKTİF) -->
+        <!-- GÜNCELLENMİŞ ALT KATEGORİ ŞERİDİ (TÜMÜ, DÜRÜM, PORSIYON, KAMPANYALAR, İÇECEKLER, TATLILAR) -->
         <div id="isletmeKategoriBarContainer" style="display:none;">
             <div class="isletme-kategori-bar" id="isletmeKategoriBar">
                 <div class="kat-chip aktif" onclick="kategoriFiltrele('Tümü', this)">Tümü</div>
-                <div class="kat-chip" onclick="kategoriFiltrele('Dürümler', this)">Dürümler</div>
-                <div class="kat-chip" onclick="kategoriFiltrele('Ana Yemekler', this)">Ana Yemekler</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Dürüm', this)">Dürüm</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Porsiyon', this)">Porsiyon</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Kampanyalar', this)">Kampanyalar</div>
                 <div class="kat-chip" onclick="kategoriFiltrele('İçecekler', this)">İçecekler</div>
                 <div class="kat-chip" onclick="kategoriFiltrele('Tatlılar', this)">Tatlılar</div>
-                <div class="kat-chip" onclick="kategoriFiltrele('Yan Ürünler', this)">Yan Ürünler</div>
             </div>
         </div>
 
@@ -128,15 +121,15 @@
             <div style="font-size: 11px; color: #64748b;">Menü yükleniyor...</div>
         </div>
 
-        <h3 class="section-title" style="margin-top: 25px;">Herkese Açık Müşteri Yorumları</h3>
+        <h3 class="section-title" style="margin-top: 22px;">Müşteri Yorumları</h3>
         <div id="isletmeYorumlarListesi">
-            <div style="font-size: 11px; color: #64748b;">Henüz yorum yapılmamış.</div>
+            <div style="font-size: 10px; color: #64748b;">Henüz yorum yapılmamış.</div>
         </div>
     </div>
 
     <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
         <div class="bilgi">
-            <span style="font-size: 10px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
+            <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
             <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
         </div>
         <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
@@ -158,12 +151,10 @@
                 <label class="malzeme-item"><input type="checkbox" value="LİMON"> LİMON</label>
                 <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
                 <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
-                <label class="malzeme-item"><input type="checkbox" value="NANE"> NANE</label>
-                <label class="malzeme-item"><input type="checkbox" value="DOMATES"> DOMATES</label>
             </div>
-            <div style="margin-top: 12px; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size: 13px; font-weight: 900; color: #f97316;" id="modalUrunFiyat">0 ₺</span>
-                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:10px 20px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
+            <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size: 12px; font-weight: 900; color: #f97316;" id="modalUrunFiyat">0 ₺</span>
+                <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:9px 18px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
             </div>
         </div>
     </div>
@@ -188,18 +179,18 @@
                 <h3>Siparişi Tamamla</h3>
                 <button class="close-modal" onclick="document.getElementById('checkoutModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div style="margin-bottom: 10px; text-align: left;">
-                <h4 style="font-size: 11px; font-weight: 800; margin-bottom: 5px; color: #475569;">Sepetinizdekiler</h4>
+            <div style="margin-bottom: 8px; text-align: left;">
+                <h4 style="font-size: 10px; font-weight: 800; margin-bottom: 4px; color: #475569;">Sepetinizdekiler</h4>
                 <div id="modalSepetListesi"></div>
             </div>
 
             <div class="kupon-box">
-                <div style="font-size: 11px; font-weight: 800; color: #c2410c;"><i class="fa-solid fa-ticket"></i> İndirim Kuponu Var mı?</div>
+                <div style="font-size: 10px; font-weight: 800; color: #c2410c;"><i class="fa-solid fa-ticket"></i> İndirim Kuponu Var mı?</div>
                 <div class="kupon-input-group">
-                    <input type="text" id="kuponKoduInput" placeholder="Örn: BÖLGE10 (10 TL)">
+                    <input type="text" id="kuponKoduInput" placeholder="Örn: BÖLGE10">
                     <button type="button" onclick="kuponUygula()">Uygula</button>
                 </div>
-                <div id="kuponMesaj" style="font-size: 10px; margin-top: 4px; font-weight: 700;"></div>
+                <div id="kuponMesaj" style="font-size: 9px; margin-top: 3px; font-weight: 700;"></div>
             </div>
 
             <div class="form-group"><label>Teslimat Adresiniz *</label><textarea id="siparisAdres" rows="2"></textarea></div>
@@ -210,47 +201,11 @@
                     <option value="Kapıda Kredi Kartı">Kapıda Kredi Kartı</option>
                 </select>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; margin: 12px 0; padding-top: 8px; border-top: 1px solid #e2e8f0;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 900; margin: 10px 0; padding-top: 6px; border-top: 1px solid #e2e8f0;">
                 <span>Toplam Tutar:</span>
                 <span id="modalToplamTutar" style="color: #f97316;">0 ₺</span>
             </div>
             <button type="button" class="btn-tamamla" onclick="siparişiKesinlestir()">Siparişi Onayla & Gönder</button>
-        </div>
-    </div>
-
-    <div id="iptalSebepModal" class="modal">
-        <div class="modal-content">
-            <h3>Sipariş İptal Talebi</h3>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Lütfen iptal sebebinizi belirtin:</p>
-            <div class="form-group"><textarea id="iptalNedeni" rows="3" placeholder="Örn: Yanlış ürün ekledim..."></textarea></div>
-            <button type="button" class="btn-tamamla" style="background:#ef4444;" onclick="iptalTalebiGonder()">İptal Talebi Oluştur</button>
-        </div>
-    </div>
-
-    <div id="puanlamaModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>İşletmeyi Değerlendir</h3>
-                <button class="close-modal" onclick="puanModaliniKapat()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Lütfen detaylı değerlendirmenizi yapın:</p>
-            
-            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 8px;">Lezzet Puanı</div>
-            <div class="yildizlar" id="yildizLezzet"><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Lezzet', 5)"></i></div>
-            
-            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 5px;">Paketleme Puanı</div>
-            <div class="yildizlar" id="yildizPaket"><i class="fa-solid fa-star" onclick="puanVer('Paket', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Paket', 5)"></i></div>
-
-            <div style="text-align: left; font-size: 11px; font-weight: 700; margin-top: 5px;">Kurye Puanı</div>
-            <div class="yildizlar" id="yildizKurye"><i class="fa-solid fa-star" onclick="puanVer('Kurye', 1)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 2)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 3)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 4)"></i><i class="fa-solid fa-star" onclick="puanVer('Kurye', 5)"></i></div>
-
-            <div class="form-group" style="margin-top: 10px;"><label>Yorumunuz</label><textarea id="musteriYorum" rows="2" placeholder="Düşünceleriniz..."></textarea></div>
-            <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
-                <input type="checkbox" id="anonimCheck" style="width: 14px; height: 14px; accent-color: #f97316;">
-                <label for="anonimCheck" style="margin-bottom: 0; font-size: 11px; cursor: pointer;">İsim ve Soyisimi Gizli Tut (Anonim)</label>
-            </div>
-            <button type="button" class="btn-tamamla" onclick="detayliPuanGonder()">Değerlendirmeyi Gönder</button>
-            <button type="button" onclick="puanModaliniKapat()" style="width:100%; background:transparent; color:#64748b; border:none; padding:8px; cursor:pointer; margin-top:6px; font-size:11px; font-weight:600;">Şimdi Değil / Kapat</button>
         </div>
     </div>
 
@@ -275,33 +230,15 @@
         let sepet = [];
         let tumUrunlerVeri = {};
         let aktifSecilenUrun = null;
-        let aktifSiparisKey = null;
         let indirimTutari = 0;
         let aktifSecilenKategori = 'Tümü';
-        let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('kuryeYukleniyor');
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
-            }, 500);
+            }, 400);
         });
-
-        const aktifTelGlobal = localStorage.getItem('aktifMusteriTel');
-        if(aktifTelGlobal) {
-            db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
-                const data = snapshot.val();
-                if(data) {
-                    Object.keys(data).forEach(k => {
-                        const s = data[k];
-                        if(s.durum === 'Teslim Edildi' && !s.puanGosterildi) {
-                            aktifSiparisKey = k;
-                            document.getElementById('teslimAnimasyonOverlay').style.display = 'flex';
-                        }
-                    });
-                }
-            });
-        }
 
         if(isletmeId) {
             db.ref('active_restaurants/' + isletmeId).once('value').then(snapshot => {
@@ -311,7 +248,7 @@
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
 
-                    // MARKET VE TATLI KATEGORİSİ HARİÇ DİĞERLERİNE YATAY KATEGORİ BARINI AÇ
+                    // TATLI VE MARKET HARİÇ DİĞERLERİNE ALT KATEGORİ BARINI AÇ
                     const katLower = (r.kategori || '').toLowerCase();
                     if(!katLower.includes('market') && !katLower.includes('tatlı') && !katLower.includes('pastane')) {
                         document.getElementById('isletmeKategoriBarContainer').style.display = 'block';
@@ -330,8 +267,8 @@
                 listeDiv.innerHTML = '';
                 const data = snapshot.val();
                 if(!data) { 
-                    listeDiv.innerHTML = '<div style="font-size: 11px; color: #64748b;">Henüz yorum yapılmamış.</div>'; 
-                    puanDiv.innerHTML = '<i class="fa-solid fa-star" style="color:#94a3b8;"></i> Yeni İşletme (Puan Yok)';
+                    listeDiv.innerHTML = '<div style="font-size: 10px; color: #64748b;">Henüz yorum yapılmamış.</div>'; 
+                    puanDiv.innerHTML = '<i class="fa-solid fa-star"></i> Yeni İşletme';
                     return; 
                 }
 
@@ -342,23 +279,22 @@
                     adet++;
                     yorumHtml += `
                         <div class="yorum-karti">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
                                 <strong>${y.musteriAdi}</strong>
                                 <span style="color:#f59e0b;"><i class="fa-solid fa-star"></i> ${y.genelPuan} / 5</span>
                             </div>
-                            <p style="color:#475569; margin-bottom:4px;">${y.yorum}</p>
-                            <div style="font-size:9px; color:#94a3b8;">Lezzet: ${y.puanLezzet} | Paket: ${y.puanPaket} | Kurye: ${y.puanKurye} (${y.tarih})</div>
+                            <p style="color:#475569; margin-bottom:2px;">${y.yorum}</p>
+                            <div style="font-size:8px; color:#94a3b8;">(${y.tarih})</div>
                         </div>
                     `;
                 });
 
                 const ortalama = (toplamGenel / adet).toFixed(1);
-                puanDiv.innerHTML = `<i class="fa-solid fa-star"></i> ${ortalama} / 5 (${adet} Değerlendirme)`;
+                puanDiv.innerHTML = `<i class="fa-solid fa-star"></i> ${ortalama} / 5 (${adet} Yorum)`;
                 listeDiv.innerHTML = yorumHtml;
             });
         }
 
-        // KATEGORİ FİLTRELEME FONKSİYONU
         function kategoriFiltrele(kategoriAdi, element) {
              aktifSecilenKategori = kategoriAdi;
              document.querySelectorAll('.kat-chip').forEach(el => el.classList.remove('aktif'));
@@ -378,12 +314,14 @@
             let sayac = 0;
             Object.keys(tumUrunlerVeri).forEach(k => {
                 const u = tumUrunlerVeri[k];
-                // Eğer filtre 'Tümü' ise veya ürünün kategorisi seçilen kategoriye uyuyorsa (veya ürün açıklamasında/adında geçiyorsa) göster
-                const urunKat = u.kategori || 'Genel';
-                if(kategori === 'Tümü' || urunKat.toLowerCase() === kategori.toLowerCase() || (u.ad && u.ad.toLowerCase().includes(kategori.toLowerCase()))) {
+                const urunKat = u.kategori || 'Dürüm';
+                
+                if(kategori === 'Tümü' || urunKat.toLowerCase() === kategori.toLowerCase()) {
                     sayac++;
+                    let kurdeleHtml = u.kurdele ? `<div class="kurdele-bant">${u.kurdele}</div>` : '';
                     html += `
                         <div class="menu-item-card" onclick="urunSecenekModalAc('${k}')">
+                            ${kurdeleHtml}
                             <div class="menu-item-left">
                                 <img src="${u.gorsel}" alt="${u.ad}">
                                 <div class="menu-info">
@@ -403,114 +341,6 @@
             } else {
                 container.innerHTML = html;
             }
-        }
-
-        if(aktifTelGlobal && isletmeId) {
-            db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
-                const data = snapshot.val();
-                const altBar = document.getElementById('sabitAltBar');
-                const bilgiAlan = altBar.querySelector('.bilgi');
-                const butonAlan = altBar.querySelector('button');
-
-                if(data) {
-                    let aktifSiparis = null;
-                    Object.keys(data).forEach(k => {
-                        const s = data[k];
-                        if(s.isletmeId === isletmeId && s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi' && s.durum !== 'İptal Onaylandı') {
-                            aktifSiparis = s;
-                            aktifSiparisKey = k;
-                        }
-                    });
-
-                    if(aktifSiparis) {
-                        altBar.style.display = 'flex';
-                        bilgiAlan.innerHTML = `<span style="font-size: 10px; color: #94a3b8;">Sipariş Durumu</span><div><span style="color:#f97316;">${aktifSiparis.durum}</span></div>`;
-                        if(aktifSiparis.durum === 'İptal Talebi Bekleniyor') {
-                            butonAlan.outerHTML = `<span id="altBarButon" style="font-size:11px; color:#f59e0b; font-weight:700;">İptal İnceleniyor</span>`;
-                        } else {
-                            butonAlan.outerHTML = `<button type="button" id="altBarButon" onclick="document.getElementById('iptalSebepModal').style.display='flex'" style="background:#ef4444;"><i class="fa-solid fa-ban"></i> İptal Talebi</button>`;
-                        }
-                        return;
-                    }
-                }
-
-                if(sepet.length > 0) {
-                    altBar.style.display = 'flex';
-                    sepetiGuncelleBar();
-                } else {
-                    altBar.style.display = 'none';
-                }
-            });
-        }
-
-        function kuponUygula() {
-            const kod = document.getElementById('kuponKoduInput').value.trim().toUpperCase();
-            const mesaj = document.getElementById('kuponMesaj');
-            if(kod === 'BÖLGE10' || kod === 'BOLGE10') {
-                indirimTutari = 10;
-                mesaj.style.color = '#16a34a';
-                mesaj.innerText = 'Kupon uygulandı: 10 TL İndirim!';
-                sepetiOnaylaTikla();
-            } else {
-                indirimTutari = 0;
-                mesaj.style.color = '#ef4444';
-                mesaj.innerText = 'Geçersiz kupon kodu!';
-                sepetiOnaylaTikla();
-            }
-        }
-
-        function teslimBildiriminiKapat() {
-            document.getElementById('teslimAnimasyonOverlay').style.display = 'none';
-            document.getElementById('puanlamaModal').style.display = 'flex';
-            if(aktifSiparisKey) {
-                db.ref('customer_orders/' + aktifSiparisKey).update({ puanGosterildi: true });
-                db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ puanGosterildi: true });
-            }
-        }
-
-        function puanModaliniKapat() {
-            document.getElementById('puanlamaModal').style.display = 'none';
-            if(aktifSiparisKey) {
-                db.ref('customer_orders/' + aktifSiparisKey).update({ puanGosterildi: true });
-                db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ puanGosterildi: true });
-            }
-        }
-
-        function iptalTalebiGonder() {
-            const neden = document.getElementById('iptalNedeni').value.trim();
-            if(!neden) { alert("Lütfen iptal sebebi yazın."); return; }
-            if(!aktifSiparisKey) return;
-
-            db.ref('orders/' + isletmeId + '/' + aktifSiparisKey).update({ durum: 'İptal Talebi Bekleniyor', iptalNedeni: neden });
-            db.ref('customer_orders/' + aktifSiparisKey).update({ durum: 'İptal Talebi Bekleniyor', iptalNedeni: neden }).then(() => {
-                alert("İptal talebiniz işletmeye iletildi.");
-                document.getElementById('iptalSebepModal').style.display = 'none';
-            });
-        }
-
-        function puanVer(kategori, puan) {
-            puanlar[kategori] = puan;
-            const yildizlar = document.querySelectorAll(`#yildiz${kategori} i`);
-            yildizlar.forEach((y, i) => {
-                if(i < puan) y.classList.add('aktif');
-                else y.classList.remove('aktif');
-            });
-        }
-        puanVer('Lezzet', 5); puanVer('Paket', 5); puanVer('Kurye', 5);
-
-        function detayliPuanGonder() {
-            const yorum = document.getElementById('musteriYorum').value.trim();
-            const anonim = document.getElementById('anonimCheck').checked;
-            const musteriAdi = anonim ? 'Gizli Müşteri' : (localStorage.getItem('aktifMusteriAdi') || 'Müşteri');
-            const genelPuan = ((puanlar.Lezzet + puanlar.Paket + puanlar.Kurye) / 3).toFixed(1);
-
-            db.ref('restaurant_reviews/' + isletmeId + '/' + Date.now()).set({
-                musteriAdi, genelPuan, puanLezzet: puanlar.Lezzet, puanPaket: puanlar.Paket, puanKurye: puanlar.Kurye, 
-                yorum: yorum || 'Değerlendirme yapıldı.', tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => {
-                alert("Teşekkür ederiz! Yorumunuz yayınlandı.");
-                puanModaliniKapat();
-            });
         }
 
         function urunSecenekModalAc(key) {
@@ -567,10 +397,8 @@
         function sepetiGuncelleBar() {
             let toplamAdet = 0, genelToplam = 0;
             sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
-            const sSayisi = document.getElementById('sepetUrunSayisi');
-            const sToplam = document.getElementById('sepetToplamFiyat');
-            if(sSayisi) sSayisi.innerText = toplamAdet;
-            if(sToplam) sToplam.innerText = Math.max(0, genelToplam - indirimTutari);
+            document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
+            document.getElementById('sepetToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
             
             const altBar = document.getElementById('sabitAltBar');
             if(toplamAdet > 0) altBar.style.display = 'flex';
@@ -592,10 +420,6 @@
             });
 
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
-            if(indirimTutari > 0) {
-                listeDiv.innerHTML += `<div style="display:flex; justify-content:space-between; font-size:11px; color:#16a34a; font-weight:700; margin-top:4px;"><span>Kupon İndirimi</span><span>-${indirimTutari} ₺</span></div>`;
-            }
-
             document.getElementById('modalToplamTutar').innerText = finalFiyat + ' ₺';
             document.getElementById('checkoutModal').style.display = 'flex';
         }
@@ -605,6 +429,22 @@
             sepetiGuncelleBar();
             if(sepet.length === 0) document.getElementById('checkoutModal').style.display = 'none';
             else sepetiOnaylaTikla();
+        }
+
+        function kuponUygula() {
+            const kod = document.getElementById('kuponKoduInput').value.trim().toUpperCase();
+            const mesaj = document.getElementById('kuponMesaj');
+            if(kod === 'BÖLGE10' || kod === 'BOLGE10') {
+                indirimTutari = 10;
+                mesaj.style.color = '#16a34a';
+                mesaj.innerText = 'Kupon uygulandı: 10 TL İndirim!';
+                sepetiOnaylaTikla();
+            } else {
+                indirimTutari = 0;
+                mesaj.style.color = '#ef4444';
+                mesaj.innerText = 'Geçersiz kupon!';
+                sepetiOnaylaTikla();
+            }
         }
 
         function siparişiKesinlestir() {
@@ -624,23 +464,14 @@
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
             const siparisId = 'siparis_' + Date.now();
             const siparisVerisi = {
-                siparisId, 
-                isletmeId,
-                musteriAdi, 
-                musteriTel, 
-                musteriAdres: adres, 
-                odemeYontemi: odeme,
-                urunAdi: urunlerOzet.join(', '), 
-                adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                toplamFiyat: finalFiyat, 
-                durum: 'Siparişiniz Alındı',
-                puanGosterildi: false,
-                tarih: new Date().toLocaleTimeString('tr-TR')
+                siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
+                urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
+                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR')
             };
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                alert("Siparişiniz başarıyla alındı!");
+                alert("Siparişiniz alındı!");
                 sepet = [];
                 indirimTutari = 0;
                 document.getElementById('checkoutModal').style.display = 'none';

@@ -37,12 +37,8 @@
         .btn-iptal { background: #9ca3af; }
         .btn-pasif { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
-        .badge-hazirlaniyor { background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-        .badge-yolactikti { background: #dbeafe; color: #2563eb; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-        .badge-teslim { background: #f3f4f6; color: #4b5563; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-        .badge-iptal { background: #fee2e2; color: #b91c1c; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
-        .badge-onaybekliyor { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 9px; }
-        .badge-yayinda { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 9px; }
+        .badge-yayinda { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
+        .badge-onaybekliyor { background: #fef3c7; color: #d97706; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
         .modal-content { background: #ffffff; padding: 20px; border-radius: 14px; width: 100%; max-width: 380px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
@@ -78,38 +74,22 @@
             </table>
         </div>
 
-        <div class="card" style="background: #f8fafc; border: 1px solid #cbd5e1;">
-            <h3 style="color: #475569;"><i class="fa-solid fa-box-archive"></i> Geçmiş / İptal Edilen Siparişler</h3>
-            <table>
-                <thead><tr><th>Müşteri</th><th>Ürünler / Tutar</th><th>Adres & Tel</th><th>Son Durum & İptal Nedeni</th></tr></thead>
-                <tbody id="gecmisSiparislerListesi"><tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr></tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <h3><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Müşteri Puanları ve Yorumları</h3>
-            <table>
-                <thead><tr><th>Müşteri</th><th>Puan</th><th>Detay</th><th>Yorum</th></tr></thead>
-                <tbody id="musteriYorumlariListesi"><tr><td colspan="4" style="color:#64748b;">Henüz yorum yapılmamış.</td></tr></tbody>
-            </table>
-        </div>
-
-        <!-- YENİ ÜRÜN EKLEME -->
+        <!-- YENİ ÜRÜN EKLEME (MANUEL ALT KATEGORİ VE KURDELE SEÇİMLİ) -->
         <div class="card">
             <h3>Yeni Ürün Ekle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Örn: Et Dürüm"></div>
                 <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
-                <div class="form-group"><label>Kategori *</label>
-                    <select id="urunKategoriSecim">
-                        <option value="Otomatik">🤖 Otomatik Algıla</option>
-                        <option value="Dürümler">Dürümler</option>
-                        <option value="Ana Yemekler">Ana Yemekler</option>
+                <div class="form-group"><label>Alt Kategori Seç *</label>
+                    <select id="urunAltKategori">
+                        <option value="Dürüm">Dürüm</option>
+                        <option value="Porsiyon">Porsiyon</option>
+                        <option value="Kampanyalar">Kampanyalar</option>
                         <option value="İçecekler">İçecekler</option>
                         <option value="Tatlılar">Tatlılar</option>
-                        <option value="Yan Ürünler">Yan Ürünler</option>
                     </select>
                 </div>
+                <div class="form-group"><label>Kurdele / Bant Etiketi</label><input type="text" id="urunKurdele" placeholder="Örn: %20 İndirim / Hediye Ayran"></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2" placeholder="Malzemeler..."></textarea></div>
                 <div class="form-group" style="grid-column: span 2;"><label>Görsel * (Maks 250 KB)</label><input type="file" id="urunDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
@@ -120,17 +100,8 @@
         <div class="card" style="border: 2px solid #065f46;">
             <h3 style="color: #065f46;"><i class="fa-solid fa-circle-check"></i> Yayındaki Aktif Ürünler</h3>
             <table>
-                <thead><tr><th>Görsel</th><th>Ad & Açıklama</th><th>Fiyat</th><th>Kategori</th><th>İşlem</th></tr></thead>
-                <tbody id="yayindakiUrunlerListesi"><tr><td colspan="5" style="color:#64748b;">Yayında ürün yok.</td></tr></tbody>
-            </table>
-        </div>
-
-        <!-- ONAY BEKLEYEN ÜRÜNLER -->
-        <div class="card" style="border: 2px solid #d97706;">
-            <h3 style="color: #d97706;"><i class="fa-solid fa-clock"></i> Onay Bekleyen Ürünler</h3>
-            <table>
-                <thead><tr><th>Görsel</th><th>Ad & Açıklama</th><th>Fiyat</th><th>Durum</th><th>İşlem</th></tr></thead>
-                <tbody id="onayBekleyenUrunlerListesi"><tr><td colspan="5" style="color:#64748b;">Onay bekleyen ürün yok.</td></tr></tbody>
+                <thead><tr><th>Görsel</th><th>Ad</th><th>Fiyat</th><th>Alt Kategori</th><th>Etiket</th><th>İşlem</th></tr></thead>
+                <tbody id="yayindakiUrunlerListesi"><tr><td colspan="6" style="color:#64748b;">Yayında ürün yok.</td></tr></tbody>
             </table>
         </div>
 
@@ -147,33 +118,21 @@
             <input type="hidden" id="duzenleUrunKey">
             <div class="form-group"><label>Ürün Adı</label><input type="text" id="duzenleAd"></div>
             <div class="form-group"><label>Fiyat (TL)</label><input type="number" id="duzenleFiyat"></div>
-            <div class="form-group"><label>Açıklama</label><textarea id="duzenleAciklama" rows="2"></textarea></div>
-            <div class="form-group"><label>Kategori</label>
+            <div class="form-group"><label>Alt Kategori</label>
                 <select id="duzenleKategori">
-                    <option value="Dürümler">Dürümler</option>
-                    <option value="Ana Yemekler">Ana Yemekler</option>
+                    <option value="Dürüm">Dürüm</option>
+                    <option value="Porsiyon">Porsiyon</option>
+                    <option value="Kampanyalar">Kampanyalar</option>
                     <option value="İçecekler">İçecekler</option>
                     <option value="Tatlılar">Tatlılar</option>
-                    <option value="Yan Ürünler">Yan Ürünler</option>
                 </select>
             </div>
+            <div class="form-group"><label>Kurdele / Bant Etiketi</label><input type="text" id="duzenleKurdele" placeholder="Örn: %20 İndirim"></div>
+            <div class="form-group"><label>Açıklama</label><textarea id="duzenleAciklama" rows="2"></textarea></div>
             <button type="button" class="btn-primary" style="width:100%; margin-top:8px;" onclick="urunGuncelleKaydet()">Değişiklikleri Kaydet</button>
             <button type="button" onclick="document.getElementById('urunDuzenleModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:5px; cursor:pointer;">İptal</button>
         </div>
     </div>
-
-    <!-- İPTAL SEBEBİ MODALI -->
-    <div id="iptalSebepModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#ef4444;">Sipariş İptal Nedeni</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:8px;">Lütfen bu siparişin neden iptal edildiğini belirtin:</p>
-            <div class="form-group"><textarea id="iptalNedeniInput" rows="3" placeholder="Örn: Restoran kapalı / Malzeme tükendi..."></textarea></div>
-            <button type="button" class="btn-primary" style="width:100%; background:#ef4444;" onclick="iptalNedeniniOnayla()">İptal Et ve Nedeni Kaydet</button>
-            <button type="button" onclick="document.getElementById('iptalSebepModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:5px; cursor:pointer;">Vazgeç</button>
-        </div>
-    </div>
-
-    <audio id="bildirimSesi" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -194,12 +153,11 @@
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
 
-        // MAKSIMUM 250 KB DOSYA BOYUTU KONTROLÜ
         function dosyaBoyutuKontrol(input) {
             if (input.files && input.files[0]) {
                 const dosyaBoyutuKB = input.files[0].size / 1024;
                 if (dosyaBoyutuKB > 250) {
-                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Lütfen maksimum 250 KB boyutunda bir görsel seçin!");
+                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Maksimum 250 KB seçin!");
                     input.value = "";
                 }
             }
@@ -213,24 +171,10 @@
                 img.src = event.target.result;
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 150;
-                    const MAX_HEIGHT = 150;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    } else {
-                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
+                    canvas.width = 150; canvas.height = 150;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.60);
-                    callback(compressedDataUrl);
+                    ctx.drawImage(img, 0, 0, 150, 150);
+                    callback(canvas.toDataURL('image/jpeg', 0.60));
                 }
             }
         }
@@ -247,220 +191,76 @@
         function bilgileriGuncelle() {
             const yeniAd = document.getElementById('dukkanAdi').value.trim();
             const yeniTel = document.getElementById('dukkanTel').value.trim();
-            const yeniSifre = document.getElementById('dukkanSifre').value.trim();
             const logoInput = document.getElementById('dukkanLogo');
             const data = { ad: yeniAd, telefon: yeniTel };
-            if(yeniSifre) data.sifre = yeniSifre;
 
             if(logoInput.files.length > 0) {
                 gorseliSikistir(logoInput.files[0], function(compressedLogo) {
                     data.gorsel = compressedLogo;
-                    db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Bilgiler güncellendi!"); location.reload(); });
+                    db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
                 });
             } else {
-                db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Bilgiler güncellendi!"); location.reload(); });
+                db.ref('active_restaurants/' + saticiKey).update(data).then(() => { alert("Güncellendi!"); location.reload(); });
             }
-        }
-
-        let ilkYukleme = true;
-        db.ref('orders/' + saticiKey).on('value', snapshot => {
-            const aktifTbody = document.getElementById('aktifSiparislerListesi');
-            const gecmisTbody = document.getElementById('gecmisSiparislerListesi');
-            aktifTbody.innerHTML = '';
-            gecmisTbody.innerHTML = '';
-            
-            const data = snapshot.val();
-            if(!data) { 
-                aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; 
-                gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>'; 
-                ilkYukleme = false;
-                return; 
-            }
-            
-            if(!ilkYukleme) {
-                const ses = document.getElementById('bildirimSesi');
-                ses.play().catch(e => {});
-            }
-            ilkYukleme = false;
-
-            let aktifSayac = 0, gecmisSayac = 0;
-
-            Object.keys(data).forEach(sKey => {
-                const o = data[sKey];
-                const durum = o.durum || 'Siparişiniz Alındı';
-
-                if(durum === 'Teslim Edildi' || durum === 'İptal Edildi' || durum === 'İptal Onaylandı') {
-                    gecmisSayac++;
-                    const badgeClass = (durum.includes('İptal')) ? 'badge-iptal' : 'badge-teslim';
-                    const yazdirDurum = durum === 'İptal Onaylandı' ? 'İptal Edildi' : durum;
-                    gecmisTbody.innerHTML += `
-                        <tr style="background:#f1f5f9; color:#475569;">
-                            <td><strong>${o.musteriAdi}</strong></td>
-                            <td>${o.urunAdi}<br><strong>${o.toplamFiyat} ₺</strong></td>
-                            <td>${o.musteriTel}<br><small>${o.musteriAdres || ''}</small></td>
-                            <td><span class="${badgeClass}">${yazdirDurum}</span> ${o.iptalNedeni ? '<br><small style="color:#ef4444; font-weight:700;">Sebep: ' + o.iptalNedeni + '</small>' : ''}</td>
-                        </tr>
-                    `;
-                } else {
-                    aktifSayac++;
-                    let hazirlaniyorClass = 'durum-btn btn-hazirlaniyor';
-                    let yolactiktiClass = 'durum-btn btn-yolactikti';
-                    let teslimClass = 'durum-btn btn-teslim';
-
-                    if(durum === 'Hazırlanıyor') hazirlaniyorClass += ' btn-pasif';
-                    if(durum === 'Yola Çıktı') { hazirlaniyorClass += ' btn-pasif'; yolactiktiClass += ' btn-pasif'; }
-
-                    aktifTbody.innerHTML += `
-                        <tr>
-                            <td><strong>${o.musteriAdi}</strong></td>
-                            <td>${o.urunAdi}<br><strong style="color:#f97316;">${o.toplamFiyat} ₺</strong></td>
-                            <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
-                            <td><span style="font-weight:800; color:#0f172a;">${durum}</span></td>
-                            <td>
-                                <button class="${hazirlaniyorClass}" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazır</button>
-                                <button class="${yolactiktiClass}" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yolda</button>
-                                <button class="${teslimClass}" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
-                                <button class="durum-btn btn-iptal" onclick="iptalModaliniAc('${sKey}')">İptal</button>
-                            </td>
-                        </tr>
-                    `;
-                }
-            });
-
-            if(aktifSayac === 0) aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>';
-            if(gecmisSayac === 0) gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
-        });
-
-        let secilenIptalSiparisKey = null;
-        function iptalModaliniAc(sKey) {
-            secilenIptalSiparisKey = sKey;
-            document.getElementById('iptalNedeniInput').value = '';
-            document.getElementById('iptalSebepModal').style.display = 'flex';
-        }
-
-        function iptalNedeniniOnayla() {
-            const neden = document.getElementById('iptalNedeniInput').value.trim();
-            if(!neden) { alert("Lütfen iptal sebebi yazın."); return; }
-            if(!secilenIptalSiparisKey) return;
-
-            db.ref('orders/' + saticiKey + '/' + secilenIptalSiparisKey).update({ durum: 'İptal Edildi', iptalNedeni: neden });
-            db.ref('customer_orders/' + secilenIptalSiparisKey).update({ durum: 'İptal Edildi', iptalNedeni: neden }).then(() => {
-                document.getElementById('iptalSebepModal').style.display = 'none';
-                alert("Sipariş iptal edildi ve neden kaydedildi.");
-            });
-        }
-
-        db.ref('restaurant_reviews/' + saticiKey).on('value', snapshot => {
-            const tbody = document.getElementById('musteriYorumlariListesi');
-            tbody.innerHTML = '';
-            const data = snapshot.val();
-            if(!data) { tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Henüz yorum yapılmamış.</td></tr>'; return; }
-            Object.keys(data).forEach(k => {
-                const y = data[k];
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${y.musteriAdi}</strong></td>
-                        <td><span style="color:#f59e0b; font-weight:800;"><i class="fa-solid fa-star"></i> ${y.genelPuan}</span></td>
-                        <td><small>L: ${y.puanLezzet} | P: ${y.puanPaket} | K: ${y.puanKurye}</small></td>
-                        <td>${y.yorum}</td>
-                    </tr>
-                `;
-            });
-        });
-
-        function siparisDurumGuncelle(siparisId, yeniDurum) {
-            db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: yeniDurum });
-            db.ref('customer_orders/' + siparisId).update({ durum: yeniDurum });
-        }
-
-        function kategoriTuruBelirle(ad, aciklama, secilen) {
-            if(secilen && secilen !== 'Otomatik') return secilen;
-            const text = (ad + ' ' + aciklama).toLowerCase();
-            if(text.includes('dürüm') || text.includes('wrap')) return 'Dürümler';
-            if(text.includes('kola') || text.includes('ayran') || text.includes('su') || text.includes('şalgam')) return 'İçecekler';
-            if(text.includes('tatlı') || text.includes('künefe') || text.includes('baklava')) return 'Tatlılar';
-            if(text.includes('patates') || text.includes('sos')) return 'Yan Ürünler';
-            return 'Ana Yemekler';
         }
 
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
-            const secilenKat = document.getElementById('urunKategoriSecim').value;
+            const kategori = document.getElementById('urunAltKategori').value;
+            const kurdele = document.getElementById('urunKurdele').value.trim();
             const fileInput = document.getElementById('urunDosya');
 
-            if(!ad || !fiyat || fileInput.files.length === 0) { alert("Lütfen eksiksiz doldurun."); return; }
-            const kategori = kategoriTuruBelirle(ad, aciklama, secilenKat);
+            if(!ad || !fiyat || fileInput.files.length === 0) { alert("Eksik alanları doldurun."); return; }
 
             gorseliSikistir(fileInput.files[0], function(compressedImage) {
                 const uId = 'urun_' + Date.now();
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, ad, fiyat, aciklama, kategori, gorsel: compressedImage, isletmeAdi: saticiAdi || 'İşletme'
+                    id: uId, ad, fiyat, aciklama, kategori, kurdele, gorsel: compressedImage, isletmeAdi: saticiAdi || 'İşletme'
                 }).then(() => { 
                     document.getElementById('urunAdi').value = '';
                     document.getElementById('urunFiyat').value = '';
                     document.getElementById('urunAciklama').value = '';
+                    document.getElementById('urunKurdele').value = '';
                     document.getElementById('urunDosya').value = '';
                     alert("Ürününüz onaya gönderildi!");
                 });
             });
         }
 
-        function urunleriListele() {
-            const yayindaTbody = document.getElementById('yayindakiUrunlerListesi');
-            const onayTbody = document.getElementById('onayBekleyenUrunlerListesi');
-
-            db.ref('restaurant_products/' + saticiKey).on('value', prodSnap => {
-                yayindaTbody.innerHTML = '';
-                const prodData = prodSnap.val() || {};
-                let sayac = 0;
-                Object.keys(prodData).forEach(key => {
-                    sayac++;
-                    const u = prodData[key];
-                    yayindaTbody.innerHTML += `
-                        <tr>
-                            <td><img src="${u.gorsel}"></td>
-                            <td><strong>${u.ad}</strong><br><small style="color:#64748b;">${u.aciklama || ''}</small></td>
-                            <td><strong>${u.fiyat} ₺</strong></td>
-                            <td><span style="font-size:10px; font-weight:700; color:#065f46;">${u.kategori || 'Genel'}</span></td>
-                            <td>
-                                <button class="btn-duzenle" onclick="urunDuzenleAc('${key}', '${u.ad}', '${u.fiyat}', '${u.aciklama || ''}', '${u.kategori || 'Ana Yemekler'}')">Düzenle</button>
-                                <button class="btn-sil" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove()">Sil</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                if(sayac === 0) yayindaTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yayında ürün bulunmuyor.</td></tr>';
+        db.ref('restaurant_products/' + saticiKey).on('value', prodSnap => {
+            const tbody = document.getElementById('yayindakiUrunlerListesi');
+            tbody.innerHTML = '';
+            const prodData = prodSnap.val() || {};
+            let sayac = 0;
+            Object.keys(prodData).forEach(key => {
+                sayac++;
+                const u = prodData[key];
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${u.gorsel}"></td>
+                        <td><strong>${u.ad}</strong></td>
+                        <td><strong>${u.fiyat} ₺</strong></td>
+                        <td><span style="font-size:10px; font-weight:700; color:#f97316;">${u.kategori || 'Dürüm'}</span></td>
+                        <td><span style="font-size:9px; background:#fee2e2; color:#ef4444; padding:2px 5px; border-radius:4px; font-weight:800;">${u.kurdele || '-'}</span></td>
+                        <td>
+                            <button class="btn-duzenle" onclick="urunDuzenleAc('${key}', '${u.ad}', '${u.fiyat}', '${u.aciklama || ''}', '${u.kategori || 'Dürüm'}', '${u.kurdele || ''}')">Düzenle</button>
+                            <button class="btn-sil" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove()">Sil</button>
+                        </td>
+                    </tr>
+                `;
             });
+            if(sayac === 0) tbody.innerHTML = '<tr><td colspan="6" style="color:#64748b;">Yayında ürün yok.</td></tr>';
+        });
 
-            db.ref('pending_products/' + saticiKey).on('value', pendingSnap => {
-                onayTbody.innerHTML = '';
-                const pendingData = pendingSnap.val() || {};
-                let sayac = 0;
-                Object.keys(pendingData).forEach(pKey => {
-                    sayac++;
-                    const u = pendingData[pKey];
-                    onayTbody.innerHTML += `
-                        <tr>
-                            <td><img src="${u.gorsel}"></td>
-                            <td><strong>${u.ad}</strong><br><small style="color:#64748b;">${u.aciklama || ''}</small></td>
-                            <td><strong>${u.fiyat} ₺</strong></td>
-                            <td><span class="badge-onaybekliyor">⏳ Onay Bekliyor</span></td>
-                            <td><button class="btn-sil" onclick="db.ref('pending_products/${saticiKey}/${pKey}').remove()">İptal Et</button></td>
-                        </tr>
-                    `;
-                });
-                if(sayac === 0) onayTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Onay bekleyen ürün bulunmuyor.</td></tr>';
-            });
-        }
-
-        function urunDuzenleAc(key, ad, fiyat, aciklama, kategori) {
+        function urunDuzenleAc(key, ad, fiyat, aciklama, kategori, kurdele) {
             document.getElementById('duzenleUrunKey').value = key;
             document.getElementById('duzenleAd').value = ad;
             document.getElementById('duzenleFiyat').value = fiyat;
             document.getElementById('duzenleAciklama').value = aciklama;
             document.getElementById('duzenleKategori').value = kategori;
+            document.getElementById('duzenleKurdele').value = kurdele;
             document.getElementById('urunDuzenleModal').style.display = 'flex';
         }
 
@@ -470,16 +270,15 @@
             const fiyat = document.getElementById('duzenleFiyat').value.trim();
             const aciklama = document.getElementById('duzenleAciklama').value.trim();
             const kategori = document.getElementById('duzenleKategori').value;
+            const kurdele = document.getElementById('duzenleKurdele').value.trim();
 
-            if(!ad || !fiyat) { alert("Ürün adı ve fiyat boş olamaz."); return; }
+            if(!ad || !fiyat) { alert("Ad ve fiyat boş olamaz."); return; }
 
-            db.ref('restaurant_products/' + saticiKey + '/' + key).update({ ad, fiyat, aciklama, kategori }).then(() => {
-                alert("Ürün başarıyla güncellendi!");
+            db.ref('restaurant_products/' + saticiKey + '/' + key).update({ ad, fiyat, aciklama, kategori, kurdele }).then(() => {
+                alert("Güncellendi!");
                 document.getElementById('urunDuzenleModal').style.display = 'none';
             });
         }
-
-        urunleriListele();
     </script>
 </body>
 </html>

@@ -35,8 +35,8 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* ÜST KISIMDA ŞIK CANLI SEPET VE BİLGİ ŞERİDİ */
-        .ust-sepet-serit {
+        /* TÜM SAYFALARDA ÜST SIRADA YER ALAN ŞIK CANLI TAKİP / SEPET ŞERİDİ */
+        .global-ust-serit {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
             padding: 10px 16px;
@@ -49,9 +49,9 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             border-bottom: 2px solid #f97316;
         }
-        .ust-sepet-serit .bilgi { font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
-        .ust-sepet-serit .bilgi span { color: #f97316; font-size: 13px; font-weight: 900; }
-        .ust-sepet-serit button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; box-shadow: 0 4px 12px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 5px; }
+        .global-ust-serit .bilgi { font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
+        .global-ust-serit .bilgi span { color: #f97316; font-size: 13px; font-weight: 900; }
+        .global-ust-serit button { background: linear-gradient(135deg, #f97316, #ea580c); color: white; border: none; padding: 7px 15px; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; box-shadow: 0 4px 12px rgba(249,115,22,0.4); display: flex; align-items: center; gap: 5px; }
 
         .container { max-width: 900px; margin: 0 auto; padding: 12px; width: 100%; overflow: hidden; }
         .rest-header { background: #fff; padding: 16px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
@@ -143,13 +143,13 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
-    <!-- ÜST KISIMDAKİ ŞIK CANLI SEPET ŞERİDİ -->
-    <div id="ustSepetSerit" class="ust-sepet-serit">
+    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ -->
+    <div id="globalUstSerit" class="global-ust-serit">
         <div class="bilgi">
-            <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Özeti</span>
-            <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
+            <span id="ustSeritBaslik" style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Özeti</span>
+            <div><span id="ustSeritUrunSayisi">0</span> Ürün • <span id="ustSeritToplamFiyat">0</span> ₺</div>
         </div>
-        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
+        <button type="button" id="ustSeritBtn" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
     <div class="container">
@@ -290,12 +290,17 @@
         let indirimTutari = 0;
         let aktifSecilenKategori = 'Tümü';
         let isletmeMinSepet = 0;
+        let aktifSiparisId = localStorage.getItem('aktifSiparisId_' + isletmeId);
 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('kuryeYukleniyor');
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
             }, 400);
+
+            if(aktifSiparisId) {
+                canliTakibiBaslat(aktifSiparisId);
+            }
         });
 
         if(isletmeId) {
@@ -521,12 +526,17 @@
         }
 
         function sepetiGuncelleBar() {
+            if(aktifSiparisId) return; // Eğer aktif sipariş varsa üst şeridi canlı takip için kilitli tutuyoruz
+
             let toplamAdet = 0, genelToplam = 0;
             sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
-            document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
-            document.getElementById('sepetToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
+            document.getElementById('ustSeritUrunSayisi').innerText = toplamAdet;
+            document.getElementById('ustSeritToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
+            document.getElementById('ustSeritBaslik').innerText = "Sepet Özeti";
+            document.getElementById('ustSeritBtn').innerHTML = '<i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla';
+            document.getElementById('ustSeritBtn').onclick = sepetiOnaylaTikla;
             
-            const ustSerit = document.getElementById('ustSepetSerit');
+            const ustSerit = document.getElementById('globalUstSerit');
             if(toplamAdet > 0) ustSerit.style.display = 'flex';
             else ustSerit.style.display = 'none';
         }
@@ -536,12 +546,14 @@
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
 
-            // ANLIK VE KESİN MİNİMUM SEPET TUTARI KONTROLÜ
+            // MİNİMUM TUTAR KONTROLÜ + 100 TL GETİRME ÜCRETİ EKLEME
             db.ref('active_restaurants/' + isletmeId + '/minSepet').once('value').then(snapshot => {
                 const guncelMin = parseFloat(snapshot.val() || 0);
+                
                 if(guncelMin > 0 && finalTutar < guncelMin) {
-                    alert(`⚠ Minimum Sepet Tutarı Uyarı!\n\nBu işletmeden sipariş verebilmek için sepet toplamınız en az ${guncelMin} ₺ olmalıdır.\nMevcut Tutar: ${finalTutar} ₺\nEksik Tutar: ${guncelMin - finalTutar} ₺`);
-                    return;
+                    const ekUcret = 100;
+                    finalTutar += ekUcret;
+                    alert(`ℹ️ Minimum Sepet Bilgilendirmesi:\n\nSepet tutarınız (${finalTutar - ekUcret} ₺) işletmenin belirlediği minimum ${guncelMin} ₺ tutarının altında olduğu için sepete +${ekUcret} TL Getirme Ücreti eklenmiştir.\n\nYeni Toplam: ${finalTutar} ₺`);
                 }
 
                 document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
@@ -556,6 +568,15 @@
                         </div>
                     `;
                 });
+
+                if(guncelMin > 0 && (finalTutar - 100) < guncelMin) {
+                    listeDiv.innerHTML += `
+                        <div class="sepet-urun-satir" style="color:#f97316; font-weight:800;">
+                            <span>Getirme Ücreti (Min. Tutar Altı)</span>
+                            <span>+100 ₺</span>
+                        </div>
+                    `;
+                }
 
                 document.getElementById('modalToplamTutar').innerText = finalTutar + ' ₺';
                 document.getElementById('checkoutModal').style.display = 'flex';
@@ -603,20 +624,46 @@
             });
 
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
-            const siparisId = 'siparis_' + Date.now();
-            const siparisVerisi = {
-                siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
-                urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR')
-            };
+            db.ref('active_restaurants/' + isletmeId + '/minSepet').once('value').then(snapshot => {
+                const guncelMin = parseFloat(snapshot.val() || 0);
+                if(guncelMin > 0 && finalFiyat < guncelMin) {
+                    finalFiyat += 100; // Getirme ücreti
+                }
 
-            db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
-            db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                document.getElementById('checkoutModal').style.display = 'none';
-                document.getElementById('basariEkranModal').style.display = 'flex';
-                sepet = [];
-                indirimTutari = 0;
-                sepetiGuncelleBar();
+                const siparisId = 'siparis_' + Date.now();
+                const siparisVerisi = {
+                    siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
+                    urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
+                    toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR')
+                };
+
+                db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
+                db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
+                    localStorage.setItem('aktifSiparisId_' + isletmeId, siparisId);
+                    aktifSiparisId = siparisId;
+
+                    document.getElementById('checkoutModal').style.display = 'none';
+                    document.getElementById('basariEkranModal').style.display = 'flex';
+                    sepet = [];
+                    indirimTutari = 0;
+                });
+            });
+        }
+
+        function canliTakibiBaslat(sipId) {
+            db.ref('customer_orders/' + sipId).on('value', snapshot => {
+                const s = snapshot.val();
+                const ustSerit = document.getElementById('globalUstSerit');
+                if(s) {
+                    document.getElementById('ustSeritBaslik').innerText = "Canlı Sipariş Takibi";
+                    document.getElementById('ustSeritUrunSayisi').innerText = s.durum;
+                    document.getElementById('ustSeritToplamFiyat').innerText = s.toplamFiyat + " ₺";
+                    document.getElementById('ustSeritBtn').innerHTML = '<i class="fa-solid fa-motorcycle"></i> Takipte';
+                    document.getElementById('ustSeritBtn').onclick = null;
+                    ustSerit.style.display = 'flex';
+                } else {
+                    ustSerit.style.display = 'none';
+                }
             });
         }
     </script>

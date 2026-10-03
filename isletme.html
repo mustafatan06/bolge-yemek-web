@@ -94,6 +94,10 @@
         .malzeme-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 7px; border-radius: 6px; font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .malzeme-item input { accent-color: #f97316; width: 13px; height: 13px; cursor: pointer; }
 
+        .adet-kapsayici { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0; background: #f1f5f9; padding: 6px; border-radius: 8px; }
+        .adet-btn { width: 28px; height: 28px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 800; cursor: pointer; color: #0f172a; display: flex; align-items: center; justify-content: center; }
+        #modalUrunAdetSayi { font-size: 13px; font-weight: 900; color: #0f172a; min-width: 20px; text-align: center; }
+
         .sepet-urun-satir { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 11px; text-align: left; }
         .form-group { margin-bottom: 10px; text-align: left; }
         .form-group label { display: block; font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 3px; }
@@ -168,7 +172,7 @@
         <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
-    <!-- ÜRÜN SEÇENEK MODALI -->
+    <!-- ÜRÜN SEÇENEK VE ADET MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -186,6 +190,14 @@
                 <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
                 <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
             </div>
+
+            <!-- ADET SEÇİMİ -->
+            <div class="adet-kapsayici">
+                <button type="button" class="adet-btn" onclick="adetDegistir(-1)">-</button>
+                <span id="modalUrunAdetSayi">1</span>
+                <button type="button" class="adet-btn" onclick="adetDegistir(1)">+</button>
+            </div>
+
             <div style="margin-top: 10px; display:flex; justify-content:space-between; align-items:center;">
                 <span style="font-size: 12px; font-weight: 900; color: #f97316;" id="modalUrunFiyat">0 ₺</span>
                 <button type="button" class="btn-tamamla" style="margin-top:0; width:auto; padding:9px 18px;" onclick="secilenUrunuSepeteEkle()">Sepete Ekle</button>
@@ -266,6 +278,7 @@
         let sepet = [];
         let tumUrunlerVeri = {};
         let aktifSecilenUrun = null;
+        let secilenUrunAdet = 1;
         let indirimTutari = 0;
         let aktifSecilenKategori = 'Tümü';
         let isletmeMinSepet = 0;
@@ -403,12 +416,23 @@
         function urunSecenekModalAc(key) {
             aktifSecilenUrun = tumUrunlerVeri[key];
             if(!aktifSecilenUrun) return;
+            secilenUrunAdet = 1;
+            document.getElementById('modalUrunAdetSayi').innerText = secilenUrunAdet;
             document.getElementById('modalUrunAdi').innerText = aktifSecilenUrun.ad;
             
             const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
             document.getElementById('modalUrunFiyat').innerText = gecerliFiyat + ' ₺';
             document.querySelectorAll('.malzeme-item input').forEach(cb => cb.checked = false);
             document.getElementById('urunSecenekModal').style.display = 'flex';
+        }
+
+        function adetDegistir(miktar) {
+            secilenUrunAdet += miktar;
+            if(secilenUrunAdet < 1) secilenUrunAdet = 1;
+            document.getElementById('modalUrunAdetSayi').innerText = secilenUrunAdet;
+
+            const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
+            document.getElementById('modalUrunFiyat').innerText = (birimFiyat * secilenUrunAdet) + ' ₺';
         }
 
         function secilenUrunuSepeteEkle() {
@@ -430,10 +454,10 @@
 
             const mevcut = sepet.find(i => i.urunAdi === tamUrunAdi);
             if(mevcut) {
-                mevcut.adet += 1;
+                mevcut.adet += secilenUrunAdet;
                 mevcut.toplamFiyat = mevcut.adet * birimFiyat;
             } else {
-                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: 1, toplamFiyat: birimFiyat });
+                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: secilenUrunAdet, toplamFiyat: birimFiyat * secilenUrunAdet });
             }
 
             sepetiGuncelleBar();
@@ -471,8 +495,9 @@
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
 
+            // MİNİMUM SEPET TUTARI UYARISI - İŞTE BURASI NET BİLDİRİM VERİYOR
             if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
-                alert(`Bu işletme için minimum sepet tutarı ${isletmeMinSepet} ₺'dir. Sepetinize ${isletmeMinSepet - finalTutar} ₺ tutarında daha ürün eklemelisiniz.`);
+                alert(`⚠️ Minimum Sepet Tutarı Uyarı!\n\nBu işletmeden sipariş verebilmek için sepet toplamınız en az ${isletmeMinSepet} ₺ olmalıdır.\nEksik Tutar: ${isletmeMinSepet - finalTutar} ₺`);
                 return;
             }
 

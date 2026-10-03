@@ -59,7 +59,6 @@
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
 
-        <!-- AKTİF YENİ SİPARİŞLER -->
         <div class="card" style="border: 2px solid #10b981; background: #f0fdf4;">
             <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Aktif Yeni Siparişler (Sesli Bildirim Aktif)</h3>
             <table>
@@ -68,7 +67,6 @@
             </table>
         </div>
 
-        <!-- GEÇMİŞ SİPARİŞLER -->
         <div class="card" style="background: #f8fafc; border: 1px solid #cbd5e1;">
             <h3 style="color: #475569;"><i class="fa-solid fa-box-archive"></i> Teslim Edilen & İptal Edilen Geçmiş Siparişler</h3>
             <table>
@@ -77,7 +75,6 @@
             </table>
         </div>
 
-        <!-- MÜŞTERİ YORUMLARI -->
         <div class="card">
             <h3><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Müşteri Puanları ve Yorumları</h3>
             <table>
@@ -200,7 +197,6 @@
                     let teslimClass = 'durum-btn btn-teslim';
                     let iptalClass = 'durum-btn btn-iptal';
 
-                    // Basılan butonları kilitleme (gri yapma)
                     if(durum === 'Hazırlanıyor') hazirlaniyorClass += ' btn-pasif';
                     if(durum === 'Yola Çıktı') { hazirlaniyorClass += ' btn-pasif'; yolactiktiClass += ' btn-pasif'; }
 
@@ -254,28 +250,53 @@
             db.ref('customer_orders/' + siparisId).update({ durum: finalDurum });
         }
 
+        // DÜZELTİLEN ÜRÜN EKLEME FONKSİYONU
         function urunEkle() {
             const ad = document.getElementById('urunAdi').value.trim();
             const fiyat = document.getElementById('urunFiyat').value.trim();
             const aciklama = document.getElementById('urunAciklama').value.trim();
             const fileInput = document.getElementById('urunDosya');
-            if(!ad || !fiyat || fileInput.files.length === 0) { alert("Eksik alan."); return; }
+
+            if(!ad || !fiyat || fileInput.files.length === 0) { 
+                alert("Lütfen ürün adı, fiyat ve görsel alanlarını doldurun."); 
+                return; 
+            }
+
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
             reader.onload = function (e) {
                 const uId = 'urun_' + Date.now();
                 db.ref('pending_products/' + saticiKey + '/' + uId).set({
-                    id: uId, ad, fiyat, aciklama, gorsel: e.target.result, isletmeAdi: saticiAdi
-                }).then(() => { alert("Onaya gönderildi!"); location.reload(); });
+                    id: uId, 
+                    ad: ad, 
+                    fiyat: fiyat, 
+                    aciklama: aciklama, 
+                    gorsel: e.target.result, 
+                    isletmeAdi: saticiAdi || 'İşletme'
+                }).then(() => { 
+                    alert("Ürününüz başarıyla onaya gönderildi!"); 
+                    location.reload(); 
+                }).catch(err => {
+                    alert("Hata oluştu: " + err.message);
+                });
             };
         }
 
         db.ref('restaurant_products/' + saticiKey).once('value').then(snapshot => {
-            const tbody = document.getElementById('menuListesi'); tbody.innerHTML = '';
-            const data = snapshot.val(); if(!data) return;
+            const tbody = document.getElementById('menuListesi'); 
+            tbody.innerHTML = '';
+            const data = snapshot.val(); 
+            if(!data) return;
             Object.keys(data).forEach(key => {
                 const u = data[key];
-                tbody.innerHTML += `<tr><td><img src="${u.gorsel}"></td><td><strong>${u.ad}</strong></td><td>${u.fiyat} ₺</td><td><button class="action-btn" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td></tr>`;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${u.gorsel}"></td>
+                        <td><strong>${u.ad}</strong></td>
+                        <td>${u.fiyat} ₺</td>
+                        <td><button class="logout-btn" style="padding:4px 8px; font-size:9px;" onclick="db.ref('restaurant_products/${saticiKey}/${key}').remove(); location.reload();">Sil</button></td>
+                    </tr>
+                `;
             });
         });
     </script>

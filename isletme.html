@@ -15,11 +15,17 @@
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
         .container { max-width: 900px; margin: 0 auto; padding: 15px; }
-        .rest-header { background: #fff; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
+        .rest-header { background: #fff; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.02); }
         .rest-left { display: flex; gap: 12px; align-items: center; }
         .rest-header img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; background: #f1f5f9; }
         .rest-header h1 { font-size: 16px; font-weight: 900; color: #0f172a; margin-bottom: 2px; }
         .rest-header p { font-size: 10px; color: #64748b; }
+
+        /* YATAY KAYDIRILABİLİR KATEGORİ ŞERİDİ */
+        .isletme-kategori-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; scrollbar-width: none; }
+        .isletme-kategori-bar::-webkit-scrollbar { display: none; }
+        .kat-chip { background: #ffffff; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); flex-shrink: 0; }
+        .kat-chip.aktif { background: #f97316; color: #ffffff; border-color: #f97316; box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
 
         .section-title { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 10px; border-left: 4px solid #f97316; padding-left: 8px; }
         .menu-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
@@ -65,9 +71,8 @@
         .yildizlar .aktif { color: #f59e0b; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; font-size: 11px; }
 
-        /* KURYE YÜKLENME ANİMASYONU */
-        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
-        .kurye-ikon { font-size: 50px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
+        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.4s ease; }
+        .kurye-ikon { font-size: 55px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
         @keyframes kuryeSurus { 0%, 100% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
 
         #teslimAnimasyonOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); z-index: 99999; justify-content: center; align-items: center; flex-direction: column; color: white; text-align: center; padding: 20px; }
@@ -77,10 +82,9 @@
 </head>
 <body>
 
-    <!-- MOTOR KURYE YÜKLENME EKRANI -->
     <div id="kuryeYukleniyor">
         <div class="kurye-ikon"><i class="fa-solid fa-motorcycle fa-bounce"></i></div>
-        <div style="font-size: 14px; font-weight: 800; color: #0f172a;">Lezzetler Yükleniyor, Kurye Yola Çıkıyor...</div>
+        <div style="font-size: 13px; font-weight: 800; color: #0f172a;">Menü Hazırlanıyor...</div>
     </div>
 
     <div id="teslimAnimasyonOverlay">
@@ -107,6 +111,18 @@
             </div>
         </div>
 
+        <!-- YATAY KAYDIRILABİLİR KATEGORİ ŞERİDİ (MARKET VE TATLI HARİÇ TÜM İŞLETMELERDE AKTİF) -->
+        <div id="isletmeKategoriBarContainer" style="display:none;">
+            <div class="isletme-kategori-bar" id="isletmeKategoriBar">
+                <div class="kat-chip aktif" onclick="kategoriFiltrele('Tümü', this)">Tümü</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Dürümler', this)">Dürümler</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Ana Yemekler', this)">Ana Yemekler</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('İçecekler', this)">İçecekler</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Tatlılar', this)">Tatlılar</div>
+                <div class="kat-chip" onclick="kategoriFiltrele('Yan Ürünler', this)">Yan Ürünler</div>
+            </div>
+        </div>
+
         <h3 class="section-title">İşletme Menüsü</h3>
         <div class="menu-grid" id="isletmeUrunleri">
             <div style="font-size: 11px; color: #64748b;">Menü yükleniyor...</div>
@@ -119,14 +135,13 @@
     </div>
 
     <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
-        <div class="bilgi" id="altBarBilgiAlan">
+        <div class="bilgi">
             <span style="font-size: 10px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
             <div><span id="sepetUrunSayisi">0</span> Ürün • <span id="sepetToplamFiyat">0</span> ₺</div>
         </div>
-        <button type="button" id="altBarButon" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
+        <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
-    <!-- MODALLAR -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -262,17 +277,16 @@
         let aktifSecilenUrun = null;
         let aktifSiparisKey = null;
         let indirimTutari = 0;
+        let aktifSecilenKategori = 'Tümü';
         let puanlar = { Lezzet: 5, Paket: 5, Kurye: 5 };
 
-        // Sayfa tam yüklenince kurye animasyonunu kaldır
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loader = document.getElementById('kuryeYukleniyor');
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
-            }, 600);
+            }, 500);
         });
 
-        // GLOBAL (HER SAYFADA ÇALIŞAN) TESLİM EDİLDİ DİNLEYİCİSİ
         const aktifTelGlobal = localStorage.getItem('aktifMusteriTel');
         if(aktifTelGlobal) {
             db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
@@ -296,33 +310,18 @@
                     document.getElementById('restAdi').innerText = r.ad;
                     document.getElementById('restKategoriTel').innerText = (r.kategori || 'Lezzet') + ' | Tel: ' + r.telefon;
                     if(r.gorsel) document.getElementById('restLogo').src = r.gorsel;
+
+                    // MARKET VE TATLI KATEGORİSİ HARİÇ DİĞERLERİNE YATAY KATEGORİ BARINI AÇ
+                    const katLower = (r.kategori || '').toLowerCase();
+                    if(!katLower.includes('market') && !katLower.includes('tatlı') && !katLower.includes('pastane')) {
+                        document.getElementById('isletmeKategoriBarContainer').style.display = 'block';
+                    }
                 }
             });
 
             db.ref('restaurant_products/' + isletmeId).once('value').then(snapshot => {
-                const container = document.getElementById('isletmeUrunleri');
-                container.innerHTML = '';
                 tumUrunlerVeri = snapshot.val() || {};
-                if(Object.keys(tumUrunlerVeri).length === 0) { container.innerHTML = '<div style="font-size:11px; color:#64748b;">Ürün yok.</div>'; return; }
-                
-                let html = '';
-                Object.keys(tumUrunlerVeri).forEach(k => {
-                    const u = tumUrunlerVeri[k];
-                    html += `
-                        <div class="menu-item-card" onclick="urunSecenekModalAc('${k}')">
-                            <div class="menu-item-left">
-                                <img src="${u.gorsel}" alt="${u.ad}">
-                                <div class="menu-info">
-                                    <h4>${u.ad}</h4>
-                                    <p>${u.aciklama || ''}</p>
-                                    <span>${u.fiyat} ₺</span>
-                                </div>
-                            </div>
-                            <button type="button" class="sec-ekle-btn">Seç & Ekle</button>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
+                urunleriEkranaBas(aktifSecilenKategori);
             });
 
             db.ref('restaurant_reviews/' + isletmeId).on('value', snapshot => {
@@ -359,13 +358,59 @@
             });
         }
 
-        // Aktif sipariş takip barı entegrasyonu
+        // KATEGORİ FİLTRELEME FONKSİYONU
+        function kategoriFiltrele(kategoriAdi, element) {
+             aktifSecilenKategori = kategoriAdi;
+             document.querySelectorAll('.kat-chip').forEach(el => el.classList.remove('aktif'));
+             element.classList.add('aktif');
+             urunleriEkranaBas(kategoriAdi);
+        }
+
+        function urunleriEkranaBas(kategori) {
+            const container = document.getElementById('isletmeUrunleri');
+            container.innerHTML = '';
+            if(Object.keys(tumUrunlerVeri).length === 0) { 
+                container.innerHTML = '<div style="font-size:11px; color:#64748b;">Ürün bulunmuyor.</div>'; 
+                return; 
+            }
+            
+            let html = '';
+            let sayac = 0;
+            Object.keys(tumUrunlerVeri).forEach(k => {
+                const u = tumUrunlerVeri[k];
+                // Eğer filtre 'Tümü' ise veya ürünün kategorisi seçilen kategoriye uyuyorsa (veya ürün açıklamasında/adında geçiyorsa) göster
+                const urunKat = u.kategori || 'Genel';
+                if(kategori === 'Tümü' || urunKat.toLowerCase() === kategori.toLowerCase() || (u.ad && u.ad.toLowerCase().includes(kategori.toLowerCase()))) {
+                    sayac++;
+                    html += `
+                        <div class="menu-item-card" onclick="urunSecenekModalAc('${k}')">
+                            <div class="menu-item-left">
+                                <img src="${u.gorsel}" alt="${u.ad}">
+                                <div class="menu-info">
+                                    <h4>${u.ad}</h4>
+                                    <p>${u.aciklama || ''}</p>
+                                    <span>${u.fiyat} ₺</span>
+                                </div>
+                            </div>
+                            <button type="button" class="sec-ekle-btn">Seç & Ekle</button>
+                        </div>
+                    `;
+                }
+            });
+
+            if(sayac === 0) {
+                container.innerHTML = `<div style="font-size:11px; color:#64748b; padding:10px;">Bu kategoride henüz ürün bulunmuyor.</div>`;
+            } else {
+                container.innerHTML = html;
+            }
+        }
+
         if(aktifTelGlobal && isletmeId) {
             db.ref('customer_orders').orderByChild('musteriTel').equalTo(aktifTelGlobal).on('value', snapshot => {
                 const data = snapshot.val();
                 const altBar = document.getElementById('sabitAltBar');
-                const bilgiAlan = document.getElementById('altBarBilgiAlan');
-                const butonAlan = document.getElementById('altBarButon');
+                const bilgiAlan = altBar.querySelector('.bilgi');
+                const butonAlan = altBar.querySelector('button');
 
                 if(data) {
                     let aktifSiparis = null;
@@ -598,7 +643,6 @@
                 alert("Siparişiniz başarıyla alındı!");
                 sepet = [];
                 indirimTutari = 0;
-                // SEPETİ OTOMATİK KAPAT VE TAKİP EKRANINA GEÇ
                 document.getElementById('checkoutModal').style.display = 'none';
                 sepetiGuncelleBar();
             });

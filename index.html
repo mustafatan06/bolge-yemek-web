@@ -26,7 +26,6 @@
         .logo { font-size: 18px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* NEON YANIP SÖNEN ANİMASYONLU AÇIK YEŞİL BUTON */
         .neon-yesil-btn {
             font-size: 10px;
             font-weight: 800;
@@ -78,23 +77,25 @@
         .search-box i { color: #f97316; font-size: 13px; margin-right: 8px; }
         .search-box input { border: none; outline: none; width: 100%; font-size: 11px; color: #0f172a; background: transparent; }
 
+        /* KAYDIRILABİLİR RESİMLİ KATEGORİ BARİ (AÇIK İŞLETMELERİN HEMEN ÜSTÜNDE) */
         .kategori-bar { 
             display: flex; 
-            gap: 8px; 
+            gap: 10px; 
             overflow-x: auto; 
-            padding-bottom: 6px; 
+            padding-bottom: 8px; 
             margin-bottom: 18px; 
             scrollbar-width: none; 
             -webkit-overflow-scrolling: touch; 
             width: 100%; 
         }
         .kategori-bar::-webkit-scrollbar { display: none; }
+        
         .kat-chip { 
             background: #ffffff; 
             border: 1px solid #e2e8f0; 
-            padding: 7px 14px; 
-            border-radius: 20px; 
-            font-size: 11px; 
+            padding: 8px 12px; 
+            border-radius: 14px; 
+            font-size: 10px; 
             font-weight: 700; 
             color: #475569; 
             white-space: nowrap; 
@@ -102,6 +103,18 @@
             transition: 0.2s; 
             box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
             flex-shrink: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        .kat-chip img {
+            width: 44px;
+            height: 44px;
+            object-fit: cover;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
         }
         .kat-chip.aktif { 
             background: #f97316; 
@@ -109,20 +122,24 @@
             border-color: #f97316; 
             box-shadow: 0 4px 12px rgba(249,115,22,0.3); 
         }
+        .kat-chip.aktif img {
+            border-color: #fff;
+        }
 
         .section-title { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-left: 4px solid #f97316; padding-left: 8px; }
 
-        .isletme-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+        .isletme-grid { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; }
         @media(min-width: 600px) { .isletme-grid { grid-template-columns: repeat(2, 1fr); } }
 
-        .isletme-kart { background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: 0.2s; }
-        .isletme-kart:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .isletme-img-wrap { width: 100%; height: 110px; background: #f1f5f9; position: relative; overflow: hidden; }
+        /* AŞAĞI DOĞRU DAHA GENİŞ VE FERAH İŞLETME KARTI */
+        .isletme-kart { background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.04); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: 0.2s; }
+        .isletme-kart:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,0.08); }
+        .isletme-img-wrap { width: 100%; height: 135px; background: #f1f5f9; position: relative; overflow: hidden; }
         .isletme-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .isletme-detay { padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; }
-        .isletme-detay h4 { font-size: 13px; font-weight: 900; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .isletme-detay p { font-size: 10px; color: #64748b; font-weight: 600; }
-        .isletme-alt { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 10px; font-weight: 700; color: #f59e0b; border-top: 1px solid #f1f5f9; padding-top: 6px; }
+        .isletme-detay { padding: 14px 16px; display: flex; flex-direction: column; gap: 5px; }
+        .isletme-detay h4 { font-size: 14px; font-weight: 900; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .isletme-detay p { font-size: 11px; color: #64748b; font-weight: 600; }
+        .isletme-alt { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 11px; font-weight: 700; color: #f59e0b; border-top: 1px solid #f1f5f9; padding-top: 8px; }
 
         .footer { text-align: center; margin-top: 30px; padding: 15px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
@@ -141,7 +158,6 @@
 
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <!-- NEON ANİMASYONLU AÇIK YEŞİL İŞLETME GİRİŞİ / BAYİ OL BUTONU -->
         <a href="satici-giris.html" class="neon-yesil-btn"><i class="fa-solid fa-store"></i> İşletme Girişi</a>
     </header>
 
@@ -155,15 +171,32 @@
             </div>
         </div>
 
+        <h3 class="section-title">Açık İşletmeler</h3>
+
+        <!-- KAYDIRILABİLİR RESİMLİ KATEGORİ BARİ (AÇIK İŞLETMELER BAŞLIĞININ HEMEN ALTINDA) -->
         <div class="kategori-bar">
-            <div class="kat-chip aktif" onclick="kategoriSec('Tümü', this)">Tümü</div>
-            <div class="kat-chip" onclick="kategoriSec('Dürüm & Kebap', this)">Dürüm & Kebap</div>
-            <div class="kat-chip" onclick="kategoriSec('Fast Food', this)">Fast Food</div>
-            <div class="kat-chip" onclick="kategoriSec('Ev Yemekleri', this)">Ev Yemekleri</div>
-            <div class="kat-chip" onclick="kategoriSec('Tatlı & Pastane', this)">Tatlı & Pastane</div>
+            <div class="kat-chip aktif" onclick="kategoriSec('Tümü', this)">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=100&auto=format&fit=crop&q=80" alt="Tümü">
+                Tümü
+            </div>
+            <div class="kat-chip" onclick="kategoriSec('Dürüm & Kebap', this)">
+                <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?w=100&auto=format&fit=crop&q=80" alt="Dürüm">
+                Dürüm & Kebap
+            </div>
+            <div class="kat-chip" onclick="kategoriSec('Fast Food', this)">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&auto=format&fit=crop&q=80" alt="Fast Food">
+                Fast Food
+            </div>
+            <div class="kat-chip" onclick="kategoriSec('Ev Yemekleri', this)">
+                <img src="https://images.unsplash.com/photo-1545218599-c09e3e3b392d?w=100&auto=format&fit=crop&q=80" alt="Ev Yemekleri">
+                Ev Yemekleri
+            </div>
+            <div class="kat-chip" onclick="kategoriSec('Tatlı & Pastane', this)">
+                <img src="https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=100&auto=format&fit=crop&q=80" alt="Tatlı">
+                Tatlı & Pastane
+            </div>
         </div>
 
-        <h3 class="section-title">Açık İşletmeler</h3>
         <div class="isletme-grid" id="isletmelerListesi">
             <div style="font-size: 11px; color: #64748b;">İşletmeler yükleniyor...</div>
         </div>
@@ -190,6 +223,7 @@
         const db = firebase.database();
 
         let tumIsletmeler = {};
+        let isletmeYorumlariVeri = {};
         let secilenKategori = 'Tümü';
 
         window.addEventListener('load', () => {
@@ -198,9 +232,13 @@
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
             }, 400);
 
-            db.ref('active_restaurants').on('value', snapshot => {
-                tumIsletmeler = snapshot.val() || {};
-                isletmeleriEkranaBas(tumIsletmeler, secilenKategori);
+            // Gerçek yorumları ve işletmeleri aynı anda çekip entegre ediyoruz
+            db.ref('restaurant_reviews').on('value', reviewSnap => {
+                isletmeYorumlariVeri = reviewSnap.val() || {};
+                db.ref('active_restaurants').on('value', snapshot => {
+                    tumIsletmeler = snapshot.val() || {};
+                    isletmeleriEkranaBas(tumIsletmeler, secilenKategori);
+                });
             });
         });
 
@@ -223,6 +261,20 @@
             Object.keys(data).forEach(key => {
                 const r = data[key];
                 const rKat = r.kategori || 'Dürüm & Kebap';
+                
+                // Gerçek yorumlardan bu işletmenin puanını hesapla
+                let puanYazi = '<i class="fa-solid fa-star"></i> Yeni İşletme';
+                const revs = isletmeYorumlariVeri[key];
+                if(revs) {
+                    let toplam = 0, adet = 0;
+                    Object.keys(revs).forEach(rk => {
+                        toplam += parseFloat(revs[rk].genelPuan || 5);
+                        adet++;
+                    });
+                    const ort = (toplam / adet).toFixed(1);
+                    puanYazi = `<i class="fa-solid fa-star"></i> ${ort} (${adet} Yorum)`;
+                }
+
                 if(kategori === 'Tümü' || rKat.toLowerCase().includes(kategori.toLowerCase().split(' ')[0])) {
                     html += `
                         <a href="isletme.html?id=${key}" class="isletme-kart">
@@ -233,7 +285,7 @@
                                 <h4>${r.ad}</h4>
                                 <p>${r.kategori || 'Lezzet Noktası'} • Min: ${r.minSepet || 0} ₺</p>
                                 <div class="isletme-alt">
-                                    <span><i class="fa-solid fa-star"></i> 4.9 (50+ Yorum)</span>
+                                    <span>${puanYazi}</span>
                                     <span style="color:#10b981; font-weight:800;">Açık</span>
                                 </div>
                             </div>

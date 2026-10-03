@@ -60,12 +60,12 @@
         </div>
 
         <div class="card">
-            <h3>İşletme Bilgileri & Logo Güncelle (Maks. 150 KB)</h3>
+            <h3>İşletme Bilgileri & Logo Güncelle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>İşletme Adı</label><input type="text" id="dukkanAdi"></div>
                 <div class="form-group"><label>Telefon</label><input type="text" id="dukkanTel"></div>
                 <div class="form-group"><label>Yeni Şifre</label><input type="password" id="dukkanSifre" placeholder="Boş bırakırsanız değişmez"></div>
-                <div class="form-group"><label>Logo Seç (Maks 150 KB)</label><input type="file" id="dukkanLogo" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
+                <div class="form-group"><label>Logo Seç (Maks 250 KB)</label><input type="file" id="dukkanLogo" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
@@ -96,7 +96,7 @@
 
         <!-- YENİ ÜRÜN EKLEME -->
         <div class="card">
-            <h3>Yeni Ürün Ekle (Maks. 150 KB)</h3>
+            <h3>Yeni Ürün Ekle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Ürün Adı *</label><input type="text" id="urunAdi" placeholder="Örn: Et Dürüm"></div>
                 <div class="form-group"><label>Fiyat (TL) *</label><input type="number" id="urunFiyat" placeholder="150"></div>
@@ -111,7 +111,7 @@
                     </select>
                 </div>
                 <div class="form-group" style="grid-column: span 2;"><label>Açıklama *</label><textarea id="urunAciklama" rows="2" placeholder="Malzemeler..."></textarea></div>
-                <div class="form-group" style="grid-column: span 2;"><label>Görsel * (Maks 150 KB)</label><input type="file" id="urunDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
+                <div class="form-group" style="grid-column: span 2;"><label>Görsel * (Maks 250 KB)</label><input type="file" id="urunDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
             <button type="button" class="btn-primary" onclick="urunEkle()">Onaya Gönder</button>
         </div>
@@ -194,11 +194,12 @@
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
 
+        // MAKSIMUM 250 KB DOSYA BOYUTU KONTROLÜ
         function dosyaBoyutuKontrol(input) {
             if (input.files && input.files[0]) {
                 const dosyaBoyutuKB = input.files[0].size / 1024;
-                if (dosyaBoyutuKB > 150) {
-                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Lütfen maksimum 150 KB boyutunda bir görsel seçin!");
+                if (dosyaBoyutuKB > 250) {
+                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Lütfen maksimum 250 KB boyutunda bir görsel seçin!");
                     input.value = "";
                 }
             }
@@ -212,8 +213,8 @@
                 img.src = event.target.result;
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 100;
-                    const MAX_HEIGHT = 100;
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
                     let width = img.width;
                     let height = img.height;
 
@@ -228,7 +229,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.40);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.60);
                     callback(compressedDataUrl);
                 }
             }

@@ -22,6 +22,7 @@
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
 
         .btn-primary { background: #f97316; color: white; border: none; padding: 9px 15px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; }
+        .btn-duzenle-action { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; margin-right: 4px; }
         .btn-onay { background: #10b981; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; margin-right: 4px; }
         .btn-red { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; font-weight: 700; font-size: 10px; cursor: pointer; }
 
@@ -47,12 +48,12 @@
 
         <!-- YENİ KATEGORİ EKLEME KARTI -->
         <div class="card">
-            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Yemek Kategorisi Ekle (Maks. 150 KB)</h3>
+            <h3><i class="fa-solid fa-plus-circle" style="color:#f97316;"></i> Yeni Yemek Kategorisi Ekle (Maks. 250 KB)</h3>
             <div class="form-grid">
                 <div class="form-group"><label>Kategori Adı *</label><input type="text" id="yeniKatAdi" placeholder="Örn: Kebaplar"></div>
                 <div class="form-group"><label>URL / Slug *</label><input type="text" id="yeniKatSlug" placeholder="orn: kebaplar"></div>
                 <div class="form-group"><label>Sıralama</label><input type="number" id="yeniKatSira" placeholder="1"></div>
-                <div class="form-group"><label>Kategori Görseli * (Maks 150 KB)</label><input type="file" id="yeniKatDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
+                <div class="form-group"><label>Kategori Görseli * (Maks 250 KB)</label><input type="file" id="yeniKatDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
             </div>
             <button type="button" class="btn-primary" onclick="kategoriEkle()">Kategoriyi Ekle</button>
         </div>
@@ -66,11 +67,12 @@
                         <th>Görsel</th>
                         <th>Kategori Adı</th>
                         <th>Slug</th>
+                        <th>Sıra</th>
                         <th>İşlem</th>
                     </tr>
                 </thead>
                 <tbody id="adminKategorilerListesi">
-                    <tr><td colspan="4" style="color:#64748b;">Kategoriler yükleniyor...</td></tr>
+                    <tr><td colspan="5" style="color:#64748b;">Kategoriler yükleniyor...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -140,14 +142,17 @@
         </div>
     </div>
 
-    <!-- ADMIN İPTAL SEBEBİ MODALI -->
-    <div id="adminIptalModal" class="modal">
+    <!-- KATEGORİ DÜZENLEME MODALI -->
+    <div id="kategoriDuzenleModal" class="modal">
         <div class="modal-content">
-            <h3 style="margin-bottom:10px; color:#ef4444;">Sipariş / Ürün İptal Nedeni</h3>
-            <p style="font-size:11px; color:#64748b; margin-bottom:8px;">Lütfen iptal sebebini yazın:</p>
-            <div class="form-group"><textarea id="adminIptalNedeniInput" rows="3" placeholder="Örn: Uygunsuz içerik / Kurallara aykırı..."></textarea></div>
-            <button type="button" class="btn-primary" style="width:100%; background:#ef4444;" onclick="adminIptalNedeniniOnayla()">İptal Et ve Nedeni Kaydet</button>
-            <button type="button" onclick="document.getElementById('adminIptalModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:5px; cursor:pointer;">Vazgeç</button>
+            <h3 style="margin-bottom:10px;"><i class="fa-solid fa-pen-to-square" style="color:#3b82f6;"></i> Kategoriyi Düzenle</h3>
+            <input type="hidden" id="duzenleKatKey">
+            <div class="form-group" style="margin-bottom:8px;"><label>Kategori Adı</label><input type="text" id="duzenleKatAdi"></div>
+            <div class="form-group" style="margin-bottom:8px;"><label>URL / Slug</label><input type="text" id="duzenleKatSlug"></div>
+            <div class="form-group" style="margin-bottom:8px;"><label>Sıralama</label><input type="number" id="duzenleKatSira"></div>
+            <div class="form-group" style="margin-bottom:12px;"><label>Yeni Görsel (İsteğe bağlı - Maks 250 KB)</label><input type="file" id="duzenleKatDosya" accept="image/*" onchange="dosyaBoyutuKontrol(this)"></div>
+            <button type="button" class="btn-primary" style="width:100%; background:#3b82f6;" onclick="kategoriGuncelleKaydet()">Değişiklikleri Kaydet</button>
+            <button type="button" onclick="document.getElementById('kategoriDuzenleModal').style.display='none'" style="width:100%; background:transparent; border:none; color:#64748b; margin-top:8px; cursor:pointer;">İptal</button>
         </div>
     </div>
 
@@ -169,8 +174,8 @@
         function dosyaBoyutuKontrol(input) {
             if (input.files && input.files[0]) {
                 const dosyaBoyutuKB = input.files[0].size / 1024;
-                if (dosyaBoyutuKB > 150) {
-                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Lütfen maksimum 150 KB boyutunda bir görsel seçin!");
+                if (dosyaBoyutuKB > 250) {
+                    alert("Seçtiğiniz görsel çok büyük (" + Math.round(dosyaBoyutuKB) + " KB). Lütfen maksimum 250 KB boyutunda bir görsel seçin!");
                     input.value = "";
                 }
             }
@@ -184,8 +189,8 @@
                 img.src = event.target.result;
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 100;
-                    const MAX_HEIGHT = 100;
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
                     let width = img.width;
                     let height = img.height;
 
@@ -200,13 +205,12 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.40);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.60);
                     callback(compressedDataUrl);
                 }
             }
         }
 
-        // KATEGORİ EKLEME
         function kategoriEkle() {
             const ad = document.getElementById('yeniKatAdi').value.trim();
             const slug = document.getElementById('yeniKatSlug').value.trim();
@@ -236,13 +240,13 @@
             });
         }
 
-        // KATEGORİLERİ LİSTELEME
+        // KATEGORİLERİ LİSTELEME VE DÜZENLEME BUTONLARI
         db.ref('categories').on('value', snapshot => {
             const tbody = document.getElementById('adminKategorilerListesi');
             tbody.innerHTML = '';
             const data = snapshot.val();
             if(!data) {
-                tbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Kategori bulunmuyor.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Kategori bulunmuyor.</td></tr>';
                 return;
             }
 
@@ -253,13 +257,54 @@
                         <td><img src="${kat.gorsel || ''}"></td>
                         <td><strong>${kat.ad}</strong></td>
                         <td><small style="color:#64748b;">${kat.slug || '-'}</small></td>
+                        <td>${kat.sira || 99}</td>
                         <td>
+                            <button class="btn-duzenle-action" onclick="kategoriDuzenleAc('${kKey}', '${kat.ad}', '${kat.slug}', '${kat.sira || 99}')">Düzenle</button>
                             <button class="btn-red" onclick="adminKategoriSil('${kKey}')">Sil</button>
                         </td>
                     </tr>
                 `;
             });
         });
+
+        function kategoriDuzenleAc(key, ad, slug, sira) {
+            document.getElementById('duzenleKatKey').value = key;
+            document.getElementById('duzenleKatAdi').value = ad;
+            document.getElementById('duzenleKatSlug').value = slug;
+            document.getElementById('duzenleKatSira').value = sira;
+            document.getElementById('duzenleKatDosya').value = '';
+            document.getElementById('kategoriDuzenleModal').style.display = 'flex';
+        }
+
+        function kategoriGuncelleKaydet() {
+            const key = document.getElementById('duzenleKatKey').value;
+            const ad = document.getElementById('duzenleKatAdi').value.trim();
+            const slug = document.getElementById('duzenleKatSlug').value.trim();
+            const sira = parseInt(document.getElementById('duzenleKatSira').value.trim()) || 99;
+            const fileInput = document.getElementById('duzenleKatDosya');
+
+            if(!ad || !slug) {
+                alert("Kategori adı ve URL boş bırakılamaz.");
+                return;
+            }
+
+            const updateData = { ad: ad, slug: slug, sira: sira };
+
+            if(fileInput.files.length > 0) {
+                gorseliSikistir(fileInput.files[0], function(compressedImage) {
+                    updateData.gorsel = compressedImage;
+                    db.ref('categories/' + key).update(updateData).then(() => {
+                        alert("Kategori güncellendi!");
+                        document.getElementById('kategoriDuzenleModal').style.display = 'none';
+                    });
+                });
+            } else {
+                db.ref('categories/' + key).update(updateData).then(() => {
+                    alert("Kategori güncellendi!");
+                    document.getElementById('kategoriDuzenleModal').style.display = 'none';
+                });
+            }
+        }
 
         function adminKategoriSil(kKey) {
             if(confirm("Bu kategoriyi silmek istediğinize emin misiniz?")) {
@@ -269,7 +314,6 @@
             }
         }
 
-        // ONAY BEKLEYEN ÜRÜNLERİ LİSTELEME
         db.ref('pending_products').on('value', snapshot => {
             const tbody = document.getElementById('onayBekleyenUrunlerListesi');
             tbody.innerHTML = '';
@@ -324,7 +368,6 @@
             }
         }
 
-        // AKTİF İŞLETMELER
         db.ref('active_restaurants').on('value', snapshot => {
             const tbody = document.getElementById('aktifIsletmelerListesi');
             tbody.innerHTML = '';
@@ -350,7 +393,6 @@
             }
         }
 
-        // SATICI BAŞVURULARI
         db.ref('seller_applications').on('value', snapshot => {
             const tbody = document.getElementById('saticiBasvurulariListesi');
             tbody.innerHTML = '';

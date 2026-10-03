@@ -13,7 +13,7 @@
             background: #f8fafc; 
             color: #1e293b; 
             padding-top: env(safe-area-inset-top);
-            padding-bottom: calc(110px + env(safe-area-inset-top)); 
+            padding-bottom: calc(140px + env(safe-area-inset-top)); 
             overflow-x: hidden; 
             width: 100%; 
         }
@@ -35,7 +35,7 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ */
+        /* GLOBAL ÜST CANLI TAKİP ŞERİDİ */
         .global-ust-serit {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
@@ -88,6 +88,27 @@
         .indirimli-fiyat { font-size: 11px; font-weight: 900; color: #f97316; }
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+
+        /* AŞAĞIDA SABİT BÜYÜK SEPETİ ONAYLA ÇUBUĞU (MOBİL APK UYUMLU) */
+        #altSepetSabitBar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 2px solid #f97316;
+            padding: 12px 16px;
+            box-shadow: 0 -6px 25px rgba(0,0,0,0.12);
+            z-index: 998;
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+        .alt-sepet-sol { display: flex; flex-direction: column; gap: 2px; }
+        .alt-sepet-sol .baslik { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .alt-sepet-sol .detay { font-size: 13px; color: #0f172a; font-weight: 900; }
+        .alt-sepet-onayla-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 22px; border-radius: 12px; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(16,185,129,0.35); }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 12px; }
         .modal-content { background: #ffffff; padding: 18px; border-radius: 16px; width: 100%; max-width: 420px; border: 1px solid #e2e8f0; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; text-align: center; }
@@ -197,15 +218,13 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
-    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ -->
+    <!-- GLOBAL ÜST CANLI TAKİP ŞERİDİ (EN YUKARIDA SABİT) -->
     <div id="globalUstSerit" class="global-ust-serit">
         <div class="bilgi">
-            <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Sepet Özeti</span>
-            <div><span id="ustSeritUrunSayisi">0</span> Ürün • <span id="ustSeritToplamFiyat">0</span> ₺</div>
+            <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Sipariş Durumu</span>
+            <div><span id="ustSeritUrunSayisi">Bekleniyor...</span></div>
         </div>
-        <div class="serit-butonlar" id="seritButonlarKapsayici">
-            <button type="button" id="ustSeritBtn" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
-        </div>
+        <div class="serit-butonlar" id="seritButonlarKapsayici"></div>
     </div>
 
     <div class="container">
@@ -244,7 +263,18 @@
         </div>
     </div>
 
-    <!-- ÜRÜN SEÇENEK VE MALZEME MODALI (SADECE DÜRÜM İÇİN) -->
+    <!-- ALT KISIMDA SABİT BÜYÜK SEPETİ ONAYLA ÇUBUĞU -->
+    <div id="altSepetSabitBar">
+        <div class="alt-sepet-sol">
+            <span class="baslik" id="altSepetOzetYazi">0 Ürün Sepette</span>
+            <span class="detay" id="altSepetToplamFiyat">0 ₺</span>
+        </div>
+        <button type="button" class="alt-sepet-onayla-btn" onclick="sepetiOnaylaTikla()">
+            <i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla
+        </button>
+    </div>
+
+    <!-- ÜRÜN SEÇENEK VE MALZEME MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -610,18 +640,20 @@
         }
 
         function sepetiGuncelleBar() {
-            if(aktifSiparisId) return;
+            if(aktifSiparisId) {
+                document.getElementById('altSepetSabitBar').style.display = 'none';
+                return;
+            }
 
             let toplamAdet = 0, genelToplam = 0;
             sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
-            document.getElementById('ustSeritUrunSayisi').innerText = toplamAdet;
-            document.getElementById('ustSeritToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
-            document.getElementById('ustSeritBaslik').innerText = "Sepet Özeti";
-            document.getElementById('seritButonlarKapsayici').innerHTML = '<button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>';
             
-            const ustSerit = document.getElementById('globalUstSerit');
-            if(toplamAdet > 0) ustSerit.style.display = 'flex';
-            else ustSerit.style.display = 'none';
+            document.getElementById('altSepetOzetYazi').innerText = `${toplamAdet} Ürün Sepette`;
+            document.getElementById('altSepetToplamFiyat').innerText = `${Math.max(0, genelToplam - indirimTutari)} ₺`;
+            
+            const altBar = document.getElementById('altSepetSabitBar');
+            if(toplamAdet > 0) altBar.style.display = 'flex';
+            else altBar.style.display = 'none';
         }
 
         function sepetiOnaylaTikla() {
@@ -708,7 +740,7 @@
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
             db.ref('active_restaurants/' + isletmeId + '/minSepet').once('value').then(snapshot => {
                 const guncelMin = parseFloat(snapshot.val() || 0);
-                if(guncelMin > 0 && finalTutar < guncelMin) {
+                if(guncelMin > 0 && finalFiyat < guncelMin) {
                     finalFiyat += 100;
                 }
 
@@ -725,7 +757,9 @@
                     localStorage.setItem('aktifSiparisId_' + isletmeId, siparisId);
                     aktifSiparisId = siparisId;
 
+                    // Sipariş verilince alt sepet barını gizle ve sepeti sıfırla
                     document.getElementById('checkoutModal').style.display = 'none';
+                    document.getElementById('altSepetSabitBar').style.display = 'none';
                     document.getElementById('basariEkranModal').style.display = 'flex';
                     sepet = [];
                     indirimTutari = 0;
@@ -738,6 +772,7 @@
                 const s = snapshot.val();
                 const ustSerit = document.getElementById('globalUstSerit');
                 const btnKapsayici = document.getElementById('seritButonlarKapsayici');
+                document.getElementById('altSepetSabitBar').style.display = 'none';
                 
                 if (s && s.durum && s.durum.toLowerCase().includes('iptal')) {
                     localStorage.removeItem('aktifSiparisId_' + isletmeId);
@@ -761,12 +796,10 @@
                         ikonHtml = '<i class="fa-solid fa-check fa-bounce" style="color: #34d399;"></i>';
                         
                         document.getElementById('ustSeritBaslik').innerHTML = `${ikonHtml} Siparişiniz Teslim Edildi`;
-                        document.getElementById('ustSeritUrunSayisi').innerText = `${s.urunAdi}`;
-                        document.getElementById('ustSeritToplamFiyat').innerText = `${s.toplamFiyat} ₺ • Teslim Edildi`;
+                        document.getElementById('ustSeritUrunSayisi').innerText = `${s.urunAdi} • Teslim Edildi`;
                         btnKapsayici.innerHTML = '';
                         ustSerit.style.display = 'flex';
 
-                        // 2 Saniye Sonra Üst Barı Kapat ve Puanlama Ekranını Aç
                         if(!localStorage.getItem('puanVerildi_' + sipId)) {
                             localStorage.setItem('puanVerildi_' + sipId, 'true');
                             setTimeout(() => {
@@ -778,8 +811,7 @@
                     }
 
                     document.getElementById('ustSeritBaslik').innerHTML = `${ikonHtml} ${s.urunAdi} | Tel: ${s.musteriTel}`;
-                    document.getElementById('ustSeritUrunSayisi').innerText = `Adres: ${s.musteriAdres}`;
-                    document.getElementById('ustSeritToplamFiyat').innerText = `${s.toplamFiyat} ₺ • ${s.durum}`;
+                    document.getElementById('ustSeritUrunSayisi').innerText = `${s.toplamFiyat} ₺ • ${s.durum}`;
 
                     const gecenSureDakika = (Date.now() - (s.olusturmaZamani || Date.now())) / 60000;
                     let iptalBtnHtml = '';

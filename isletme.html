@@ -9,7 +9,6 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        /* ANA SAYFA İLE BİREBİR UYUMLU EKRAN TAŞMA ENGELLEYİCİ GÜVENLİ ALANLAR */
         body { 
             background: #f8fafc; 
             color: #1e293b; 
@@ -30,7 +29,6 @@
             top: 0; 
             z-index: 1000; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-            /* Bildirim çubuğunun altında kalmasını sağlayan akıllı boşluk */
             padding-top: max(12px, env(safe-area-inset-top)); 
         }
 
@@ -67,7 +65,6 @@
 
         .sec-ekle-btn { background: rgba(249,115,22,0.1); color: #f97316; border: 1px solid #f97316; padding: 5px 8px; border-radius: 6px; font-weight: 700; font-size: 9px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-        /* SEPET ONAYLA BARI - EKRANDA ASLA AŞAĞIDA КАLMAZ, İDEAL KONUMDA */
         .sabit-alt-bar { 
             position: fixed; 
             bottom: 0; 
@@ -162,6 +159,7 @@
         </div>
     </div>
 
+    <!-- SEPETİ ONAYLA BUTONU -->
     <div id="sabitAltBar" class="sabit-alt-bar" style="display:none;">
         <div class="bilgi">
             <span style="font-size: 9px; color: #94a3b8; font-weight: 500;">Sepet Toplamı</span>
@@ -451,6 +449,7 @@
             localStorage.setItem('aktifMusteriMail', mail);
             localStorage.setItem('aktifMusteriAdres', adres);
             document.getElementById('musteriKayitModal').style.display = 'none';
+            sepetiOnaylaTikla();
         }
 
         function sepetiGuncelleBar() {
@@ -461,6 +460,7 @@
             
             const altBar = document.getElementById('sabitAltBar');
             if(toplamAdet > 0) altBar.style.display = 'flex';
+            else altBar.style.display = 'none';
         }
 
         function sepetiOnaylaTikla() {
@@ -493,8 +493,11 @@
         function sepettenCikar(index) {
             sepet.splice(index, 1);
             sepetiGuncelleBar();
-            if(sepet.length === 0) document.getElementById('checkoutModal').style.display = 'none';
-            else sepetiOnaylaTikla();
+            if(sepet.length === 0) {
+                document.getElementById('checkoutModal').style.display = 'none';
+            } else {
+                sepetiOnaylaTikla();
+            }
         }
 
         function kuponUygula() {
@@ -537,7 +540,7 @@
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                alert("Siparişiniz alındı!");
+                alert("Siparişiniz başarıyla alındı!");
                 sepet = [];
                 indirimTutari = 0;
                 document.getElementById('checkoutModal').style.display = 'none';

@@ -168,6 +168,7 @@
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
 
+        // Tarayıcı ses kilidini aşmak için ilk tıklamada audio nesnesini hazırlıyoruz
         document.addEventListener('click', function() {
             const ses = document.getElementById('bildirimSesi');
             ses.play().then(() => { ses.pause(); ses.currentTime = 0; }).catch(e => {});
@@ -226,7 +227,6 @@
             }
         }
 
-        let ilkYukleme = true;
         db.ref('orders/' + saticiKey).on('value', snapshot => {
             const aktifTbody = document.getElementById('aktifSiparislerListesi');
             const gecmisTbody = document.getElementById('gecmisSiparislerListesi');
@@ -238,7 +238,6 @@
                 aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; 
                 gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
                 document.getElementById('bildirimSesi').pause();
-                ilkYukleme = false;
                 return; 
             }
 
@@ -257,7 +256,6 @@
                 if(durum !== 'Teslim Edildi' && durum !== 'İptal Edildi' && durum !== 'İptal Onaylandı') {
                     aktifSayac++;
                     
-                    // Butonların durumuna göre aktif/pasif (gri) sınıfları belirlenir
                     let hazirClass = durum === 'Hazırlanıyor' || durum === 'Yola Çıktı' || durum === 'Teslim Edildi' ? 'btn-pasif' : 'btn-hazirlaniyor';
                     let yoldaClass = durum === 'Yola Çıktı' || durum === 'Teslim Edildi' ? 'btn-pasif' : 'btn-yolactikti';
                     let teslimClass = durum === 'Teslim Edildi' ? 'btn-pasif' : 'btn-teslim';
@@ -292,7 +290,6 @@
             if(aktifSayac === 0) aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>';
             if(gecmisSayac === 0) gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
 
-            // Sadece "Siparişiniz Alındı" durumundaki yeni siparişler için ses çalmaya devam eder (Hazırlanıyora basılana kadar)
             const ses = document.getElementById('bildirimSesi');
             if(bekleyenYeniSiparisVar) {
                 ses.play().catch(e => console.log("Ses çalma hatası:", e));
@@ -300,7 +297,6 @@
                 ses.pause();
                 ses.currentTime = 0;
             }
-            ilkYukleme = false;
         });
 
         function siparisDurumGuncelle(siparisId, yeniDurum) {

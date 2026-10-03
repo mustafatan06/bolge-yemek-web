@@ -182,7 +182,7 @@
         </div>
     </div>
 
-    <!-- ANLIK CANLI SİPARİŞ TAKİP MODALI (2 DAKİKA GERİ SAYIMLI İPTAL BUTONLU) -->
+    <!-- ANLIK CANLI SİPARİŞ TAKİP MODALI (SATICI HAZIRLANIYORA BASANA KADAR AKTİF İPTAL BUTONLU) -->
     <div id="canliTakipModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -278,7 +278,6 @@
                 if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
             }, 400);
 
-            // ANLIK CANLI TAKİP DİNLEYİCİSİ (SAYFA YENİLEMEDEN OTOMATİK AKIŞ)
             const musteriTel = localStorage.getItem('aktifMusteriTel');
             if(musteriTel) {
                 db.ref('customer_orders').orderByChild('musteriTel').equalTo(musteriTel).on('value', snap => {
@@ -528,7 +527,7 @@
             });
         }
 
-        // ANLIK CANLI TAKİP EKRANI VE 2 DAKİKA GERİ SAYIMLI İPTAL BUTONU MANTIĞI
+        // SATICI "HAZIRLANIYOR" DIYENE KADAR AKTİF KALAN İPTAL BUTONU MANTIĞI
         function canliTakipEkraniniGuncelle(data) {
             const icerikDiv = document.getElementById('canliTakipIcerik');
             if(!data) {
@@ -537,22 +536,15 @@
             }
 
             let html = '';
-            const simdi = Date.now();
-
             Object.keys(data).forEach(k => {
                 const s = data[k];
                 if(s.durum !== 'Teslim Edildi' && s.durum !== 'İptal Edildi') {
-                    // 2 dakika (120,000 milisaniye) kontrolü
-                    const siparisZamani = s.zamanDamgasi || simdi;
-                    const gecenSure = simdi - siparisZamani;
-                    const kalanSureMs = 120000 - gecenSure;
-                    const kalanSaniye = Math.floor(kalanSureMs / 1000);
-
                     let iptalButonHtml = '';
-                    if(kalanSaniye > 0) {
-                        iptalButonHtml = `<button id="iptalBtn_${s.siparisId}" onclick="siparişiIptalEt('${s.siparisId}', '${s.isletmeId}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:pointer; margin-top:6px;"><i class="fa-solid fa-ban"></i> Siparişi İptal Et (${kalanSaniye}s)</button>`;
+                    // Sadece durum "Siparişiniz Alındı" ise iptal edilebilir. Satıcı Hazırlanıyor'a basınca buton grileşir.
+                    if(s.durum === 'Siparişiniz Alındı') {
+                        iptalButonHtml = `<button onclick="siparişiIptalEt('${s.siparisId}', '${s.isletmeId}')" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:pointer; margin-top:6px;"><i class="fa-solid fa-ban"></i> Siparişi İptal Et</button>`;
                     } else {
-                        iptalButonHtml = `<button disabled style="background:#e2e8f0; color:#94a3b8; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:not-allowed; margin-top:6px;">İptal Süresi Doldu</button>`;
+                        iptalButonHtml = `<button disabled style="background:#e2e8f0; color:#94a3b8; border:none; padding:5px 10px; border-radius:6px; font-weight:800; font-size:10px; cursor:not-allowed; margin-top:6px;">İptal Edilemez (Hazırlanıyor)</button>`;
                     }
 
                     html += `
@@ -688,7 +680,7 @@
             const siparisVerisi = {
                 siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
                 urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', zamanDamgasi: Date.now(), tarih: new Date().toLocaleTimeString('tr-TR')
+                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR')
             };
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);

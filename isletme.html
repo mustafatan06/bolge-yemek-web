@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>İşletme Menüsü | Bölge Yemek</title>
+    <title>Bölge Yemek | İşletme Menüsü</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -35,7 +35,7 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ */
+        /* ÜST CANLI TAKİP / SEPET ŞERİDİ */
         .global-ust-serit {
             background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #ffffff;
@@ -118,18 +118,15 @@
         .kupon-input-group button { background: #f97316; color: white; border: none; padding: 7px 12px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 9px; border-radius: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
 
-        /* YILDIZ DEĞERLENDİRME STİLLERİ */
         .yildiz-satir { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: #334155; }
         .yildizlar { display: flex; gap: 4px; color: #cbd5e1; font-size: 16px; cursor: pointer; }
         .yildizlar .fa-star.aktif { color: #f59e0b; }
 
-        /* ANİMASYONLU YEŞİL BAŞARI EKRANI */
         #basariEkranModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 999999; flex-direction: column; text-align: center; color: white; padding: 20px; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .basari-ikon-kutu { width: 80px; height: 80px; background: white; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: bounceIcon 0.8s infinite alternate; }
         @keyframes bounceIcon { from { transform: translateY(0); } to { transform: translateY(-8px); } }
 
-        /* HIZLI MOTOR KURYE ANİMASYONU */
         @keyframes hizliSurus { 0% { transform: translateX(-12px); } 50% { transform: translateX(12px) scale(1.05); } 100% { transform: translateX(-12px); } }
         .motor-animasyon { animation: hizliSurus 0.4s infinite ease-in-out; display: inline-block; }
 
@@ -145,7 +142,7 @@
         <div style="font-size: 12px; font-weight: 800; color: #0f172a;">Menü Hazırlanıyor...</div>
     </div>
 
-    <!-- ANİMASYONLU YEŞİL BAŞARI EKRANI -->
+    <!-- BAŞARI EKRANI -->
     <div id="basariEkranModal">
         <div class="basari-ikon-kutu"><i class="fa-solid fa-check"></i></div>
         <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 6px;">Siparişiniz Onaylandı!</h2>
@@ -153,7 +150,7 @@
         <button type="button" onclick="window.location.reload()" style="background: #ffffff; color: #10b981; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 900; font-size: 13px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.2);">Ana Sayfaya Dön</button>
     </div>
 
-    <!-- DEĞERLENDİRME (PUANLAMA) MODALI -->
+    <!-- DEĞERLENDİRME MODALI -->
     <div id="degerlendirmeModal" class="modal">
         <div class="modal-content" style="text-align: left;">
             <div class="modal-header">
@@ -197,7 +194,7 @@
         <a href="index.html" style="font-size:10px; font-weight:700; color:#f97316; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfa</a>
     </header>
 
-    <!-- GLOBAL ÜST CANLI TAKİP / SEPET ŞERİDİ -->
+    <!-- ÜST CANLI TAKİP / SEPET ŞERİDİ -->
     <div id="globalUstSerit" class="global-ust-serit">
         <div class="bilgi">
             <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Sepet Özeti</span>
@@ -244,7 +241,7 @@
         </div>
     </div>
 
-    <!-- ÜRÜN SEÇENEK VE MALZEME MODALI (SADECE DÜRÜM İÇİN) -->
+    <!-- ÜRÜN SEÇENEK MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -629,40 +626,34 @@
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
 
-            db.ref('active_restaurants/' + isletmeId + '/minSepet').once('value').then(snapshot => {
-                const guncelMin = parseFloat(snapshot.val() || 0);
-                
-                if(guncelMin > 0 && finalTutar < guncelMin) {
-                    const ekUcret = 100;
-                    finalTutar += ekUcret;
-                    alert(`ℹ️ Minimum Sepet Bilgilendirmesi:\n\nSepet tutarınız (${finalTutar - ekUcret} ₺) işletmenin belirlediği minimum ${guncelMin} ₺ tutarının altında olduğu için sepete +${ekUcret} TL Getirme Ücreti eklenmiştir.\n\nYeni Toplam: ${finalTutar} ₺`);
-                }
+            if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
+                finalTutar += 100;
+            }
 
-                document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
-                const listeDiv = document.getElementById('modalSepetListesi');
-                listeDiv.innerHTML = '';
-                
-                sepet.forEach((item, index) => {
-                    listeDiv.innerHTML += `
-                        <div class="sepet-urun-satir">
-                            <span><strong>${item.adet}x</strong> ${item.urunAdi}</span>
-                            <span>${item.toplamFiyat} ₺ <button type="button" onclick="sepettenCikar(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></span>
-                        </div>
-                    `;
-                });
-
-                if(guncelMin > 0 && (finalTutar - 100) < guncelMin) {
-                    listeDiv.innerHTML += `
-                        <div class="sepet-urun-satir" style="color:#f97316; font-weight:800;">
-                            <span>Getirme Ücreti (Min. Tutar Altı)</span>
-                            <span>+100 ₺</span>
-                        </div>
-                    `;
-                }
-
-                document.getElementById('modalToplamTutar').innerText = finalTutar + ' ₺';
-                document.getElementById('checkoutModal').style.display = 'flex';
+            document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
+            const listeDiv = document.getElementById('modalSepetListesi');
+            listeDiv.innerHTML = '';
+            
+            sepet.forEach((item, index) => {
+                listeDiv.innerHTML += `
+                    <div class="sepet-urun-satir">
+                        <span><strong>${item.adet}x</strong> ${item.urunAdi}</span>
+                        <span>${item.toplamFiyat} ₺ <button type="button" onclick="sepettenCikar(${index})" style="background:none; border:none; color:#ef4444; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></span>
+                    </div>
+                `;
             });
+
+            if(isletmeMinSepet > 0 && (finalTutar - 100) < isletmeMinSepet) {
+                listeDiv.innerHTML += `
+                    <div class="sepet-urun-satir" style="color:#f97316; font-weight:800;">
+                        <span>Getirme Ücreti (Min. Tutar Altı)</span>
+                        <span>+100 ₺</span>
+                    </div>
+                `;
+            }
+
+            document.getElementById('modalToplamTutar').innerText = finalTutar + ' ₺';
+            document.getElementById('checkoutModal').style.display = 'flex';
         }
 
         function sepettenCikar(index) {
@@ -706,30 +697,27 @@
             });
 
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
-            db.ref('active_restaurants/' + isletmeId + '/minSepet').once('value').then(snapshot => {
-                const guncelMin = parseFloat(snapshot.val() || 0);
-                if(guncelMin > 0 && finalTutar < guncelMin) {
-                    finalFiyat += 100;
-                }
+            if(isletmeMinSepet > 0 && finalFiyat < isletmeMinSepet) {
+                finalFiyat += 100;
+            }
 
-                const siparisId = 'siparis_' + Date.now();
-                const siparisVerisi = {
-                    siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
-                    urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
-                    toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR'),
-                    olusturmaZamani: Date.now()
-                };
+            const siparisId = 'siparis_' + Date.now();
+            const siparisVerisi = {
+                siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,
+                urunAdi: urunlerOzet.join(', '), adet: sepet.reduce((a, b) => a + b.adet, 0), 
+                toplamFiyat: finalFiyat, durum: 'Siparişiniz Alındı', tarih: new Date().toLocaleTimeString('tr-TR'),
+                olusturmaZamani: Date.now()
+            };
 
-                db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
-                db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                    localStorage.setItem('aktifSiparisId_' + isletmeId, siparisId);
-                    aktifSiparisId = siparisId;
+            db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
+            db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
+                localStorage.setItem('aktifSiparisId_' + isletmeId, siparisId);
+                aktifSiparisId = siparisId;
 
-                    document.getElementById('checkoutModal').style.display = 'none';
-                    document.getElementById('basariEkranModal').style.display = 'flex';
-                    sepet = [];
-                    indirimTutari = 0;
-                });
+                document.getElementById('checkoutModal').style.display = 'none';
+                document.getElementById('basariEkranModal').style.display = 'flex';
+                sepet = [];
+                indirimTutari = 0;
             });
         }
 
@@ -739,7 +727,6 @@
                 const ustSerit = document.getElementById('globalUstSerit');
                 const btnKapsayici = document.getElementById('seritButonlarKapsayici');
                 
-                // TESLİM EDİLDİ VEYA İPTAL OLDUYSA CANLI TAKİP BARINI ANINDA KAPAT VE HAFIZAYI TEMİZLE
                 if (s && s.durum && (s.durum.toLowerCase().includes('teslim edildi') || s.durum.toLowerCase().includes('iptal'))) {
                     localStorage.removeItem('aktifSiparisId_' + isletmeId);
                     aktifSiparisId = null;

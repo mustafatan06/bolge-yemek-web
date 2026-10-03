@@ -2,27 +2,18 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Bölge Yemek | Online Yemek Pazar Yeri</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bölge Yemek | Ankara'nın En Hızlı Yemek Sipariş Platformu</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        /* MOBİL VE APK UYUMLU EKRAN TAŞMA ENGELLEYİCİ GÜVENLİ ALANLAR */
-        body { 
-            background: #f8fafc; 
-            color: #1e293b; 
-            padding-top: env(safe-area-inset-top);
-            padding-bottom: calc(90px + env(safe-area-inset-top)); 
-            overflow-x: hidden; 
-            width: 100%;
-        }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; overflow-x: hidden; width: 100%; }
 
         header { 
             background: #ffffff; 
             border-bottom: 2px solid #f97316; 
-            padding: 12px 4%; 
+            padding: 15px 4% 10px 4%; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
@@ -30,176 +21,156 @@
             top: 0; 
             z-index: 1000; 
             box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
-            /* Bildirim çubuğunun altında kalmasını sağlayan akıllı boşluk */
-            padding-top: max(12px, env(safe-area-inset-top)); 
+            padding-top: 40px; 
         }
-        .logo { font-size: 17px; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+        .logo { font-size: 18px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
-        
-        .header-right { display: flex; gap: 5px; align-items: center; }
-        .btn-small { padding: 6px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; text-decoration: none; border: none; white-space: nowrap; }
-        .satici-menu-btn { background: rgba(249,115,22,0.1); border: 1px solid #f97316; color: #f97316; }
-        .profil-btn { background: #10b981; color: #fff; }
 
-        .dropdown { position: relative; display: inline-block; }
-        .dropdown-content { display: none; position: absolute; right: 0; background-color: #ffffff; min-width: 140px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1001; margin-top: 5px; }
-        .dropdown-content a, .dropdown-content button { color: #1e293b; padding: 8px 10px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; width: 100%; background: none; border: none; text-align: left; cursor: pointer; }
-        .dropdown-content a:hover, .dropdown-content button:hover { background-color: #f1f5f9; color: #f97316; }
-        .dropdown.active .dropdown-content { display: block; }
-
-        /* DİĞER SAYFALARLA BİREBİR AYNI ŞIK ANİMASYONLU GLOBAL ÜST ŞERİT */
-        .global-ust-serit {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+        /* NEON YANIP SÖNEN ANİMASYONLU AÇIK YEŞİL BUTON */
+        .neon-yesil-btn {
+            font-size: 10px;
+            font-weight: 800;
             color: #ffffff;
-            padding: 10px 16px;
-            display: none;
-            justify-content: space-between;
+            text-decoration: none;
+            background: #22c55e;
+            padding: 7px 12px;
+            border-radius: 8px;
+            border: 1px solid #4ade80;
+            display: flex;
             align-items: center;
-            position: sticky;
-            top: 57px;
-            z-index: 999;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            border-bottom: 2px solid #f97316;
-            transition: background 0.5s ease;
+            gap: 5px;
+            animation: neonGlow 1.5s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
         }
-        .global-ust-serit.hazirlaniyor { background: linear-gradient(135deg, #c2410c, #ea580c); border-bottom-color: #fb923c; }
-        .global-ust-serit.yolacikti { background: linear-gradient(135deg, #0284c7, #0369a1); border-bottom-color: #38bdf8; }
-        .global-ust-serit.teslim { background: linear-gradient(135deg, #10b981, #059669); border-bottom-color: #34d399; }
 
-        .global-ust-serit .bilgi { font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
-        .global-ust-serit .bilgi span { color: #fff; font-size: 12px; font-weight: 900; }
-        .serit-butonlar { display: flex; gap: 6px; align-items: center; }
-        .global-ust-serit button, .global-ust-serit a { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: none; }
+        @keyframes neonGlow {
+            0% { transform: scale(1); box-shadow: 0 0 5px rgba(34, 197, 94, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 0 16px rgba(74, 222, 128, 0.9); background: #16a34a; }
+            100% { transform: scale(1); box-shadow: 0 0 5px rgba(34, 197, 94, 0.4); }
+        }
 
-        /* HIZLI MOTOR KURYE ANİMASYONU */
-        @keyframes hizliSurus { 0% { transform: translateX(-12px); } 50% { transform: translateX(12px) scale(1.05); } 100% { transform: translateX(-12px); } }
-        .motor-animasyon { animation: hizliSurus 0.4s infinite ease-in-out; display: inline-block; }
+        .container { max-width: 900px; margin: 0 auto; padding: 12px; width: 100%; overflow: hidden; }
 
-        .hero-section { background: linear-gradient(135deg, #ffffff, #f1f5f9); border-bottom: 1px solid #e2e8f0; padding: 20px 15px; text-align: center; }
-        .hero-section h1 { font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 4px; }
-        .hero-section p { font-size: 11px; color: #64748b; }
+        .banner { 
+            background: linear-gradient(135deg, #0f172a, #1e293b); 
+            color: white; 
+            padding: 20px 16px; 
+            border-radius: 16px; 
+            margin-bottom: 18px; 
+            box-shadow: 0 10px 25px rgba(15,23,42,0.15); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .banner h2 { font-size: 16px; font-weight: 900; margin-bottom: 4px; color: #fff; }
+        .banner p { font-size: 11px; color: #94a3b8; font-weight: 500; }
 
-        .bayilik-banner { background: linear-gradient(135deg, #065f46, #047857); border: 2px solid #059669; border-radius: 12px; padding: 14px 18px; margin: 12px 0; color: #000; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; text-decoration: none; box-shadow: 0 4px 15px rgba(4, 120, 87, 0.2); }
-        .bayilik-sol { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .bayilik-ikon { width: 40px; height: 40px; background: rgba(0,0,0,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #000; flex-shrink: 0; }
-        .bayilik-metin h3 { font-size: 12px; font-weight: 900; color: #000; margin-bottom: 2px; }
-        .bayilik-metin p { font-size: 10px; font-weight: 700; color: #111; }
-        .bayilik-buton { background: #000; color: #34d399; padding: 7px 12px; border-radius: 6px; font-size: 10px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+        .search-box { 
+            display: flex; 
+            background: #ffffff; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+            padding: 6px 10px; 
+            margin-top: 12px; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+        }
+        .search-box i { color: #f97316; font-size: 13px; margin-right: 8px; }
+        .search-box input { border: none; outline: none; width: 100%; font-size: 11px; color: #0f172a; background: transparent; }
 
-        .container { max-width: 1100px; margin: 0 auto; padding: 10px; width: 100%; overflow: hidden; }
-        .section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin: 15px 0 8px 0; border-left: 4px solid #f97316; padding-left: 8px; display: flex; align-items: center; gap: 6px; }
-        
-        .categories-slider { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; width: 100%; }
-        .categories-slider::-webkit-scrollbar { display: none; }
+        .kategori-bar { 
+            display: flex; 
+            gap: 8px; 
+            overflow-x: auto; 
+            padding-bottom: 6px; 
+            margin-bottom: 18px; 
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch; 
+            width: 100%; 
+        }
+        .kategori-bar::-webkit-scrollbar { display: none; }
+        .kat-chip { 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            padding: 7px 14px; 
+            border-radius: 20px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            color: #475569; 
+            white-space: nowrap; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02); 
+            flex-shrink: 0; 
+        }
+        .kat-chip.aktif { 
+            background: #f97316; 
+            color: #ffffff; 
+            border-color: #f97316; 
+            box-shadow: 0 4px 12px rgba(249,115,22,0.3); 
+        }
 
-        .category-card { min-width: 90px; width: 90px; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; text-decoration: none; display: flex; flex-direction: column; flex-shrink: 0; }
-        .cat-img { width: 100%; height: 60px; object-fit: cover; border-bottom: 2px solid #f97316; background: #f1f5f9; }
-        .cat-body { padding: 5px; text-align: center; }
-        .cat-body h3 { font-size: 10px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .section-title { font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 12px; border-left: 4px solid #f97316; padding-left: 8px; }
 
-        .restaurants-grid { display: grid; grid-template-columns: 1fr; gap: 8px; width: 100%; }
-        @media(min-width: 768px) { .restaurants-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-        .restaurant-card { background: #ffffff; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; overflow: hidden; text-decoration: none; width: 100%; min-width: 0; }
-        .rest-logo { width: 75px; height: 75px; object-fit: cover; background: #f1f5f9; flex-shrink: 0; }
-        .rest-info { padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; min-width: 0; flex: 1; }
-        .rest-info h4 { font-size: 11px; color: #0f172a; font-weight: 800; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rest-info p { font-size: 10px; color: #64748b; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rest-puanlar span { color: #f59e0b; font-weight: 800; font-size: 10px; }
+        .isletme-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+        @media(min-width: 600px) { .isletme-grid { grid-template-columns: repeat(2, 1fr); } }
 
-        #kuryeYukleniyor { display: none !important; }
-        .sabit-takip-bar { display: none !important; }
+        .isletme-kart { background: #fff; border-radius: 14px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: 0.2s; }
+        .isletme-kart:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .isletme-img-wrap { width: 100%; height: 110px; background: #f1f5f9; position: relative; overflow: hidden; }
+        .isletme-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .isletme-detay { padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; }
+        .isletme-detay h4 { font-size: 13px; font-weight: 900; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .isletme-detay p { font-size: 10px; color: #64748b; font-weight: 600; }
+        .isletme-alt { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 10px; font-weight: 700; color: #f59e0b; border-top: 1px solid #f1f5f9; padding-top: 6px; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
-        .modal-content { background: #ffffff; padding: 18px; border-radius: 12px; width: 100%; max-width: 350px; border: 1px solid #e2e8f0; max-height: 90vh; overflow-y: auto; }
-        .form-group { margin-bottom: 8px; text-align: left; }
-        .form-group label { display: block; font-size: 10px; color: #475569; margin-bottom: 2px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 7px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; }
-
-        .footer { text-align: center; margin-top: 20px; padding: 12px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
+        .footer { text-align: center; margin-top: 30px; padding: 15px 0; border-top: 1px solid #e2e8f0; font-size: 10px; color: #64748b; }
         .footer span { color: #f97316; font-weight: 700; display: block; margin-top: 2px; }
+
+        #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
+        .kurye-ikon { font-size: 50px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
+        @keyframes kuryeSurus { 0%, 100% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
     </style>
 </head>
 <body>
 
+    <div id="kuryeYukleniyor">
+        <div class="kurye-ikon"><i class="fa-solid fa-motorcycle fa-bounce"></i></div>
+        <div style="font-size: 12px; font-weight: 800; color: #0f172a;">Bölge Yemek Yükleniyor...</div>
+    </div>
+
     <header>
         <a href="index.html" class="logo"><span class="bolge">Bölge</span> <span class="yemek">Yemek</span></a>
-        <div class="header-right">
-            <div id="musteriProfilAlani">
-                <button class="btn-small profil-btn" onclick="openMusteriModal()"><i class="fa-solid fa-user"></i> Giriş / Kayıt</button>
-            </div>
-            <div class="dropdown" id="saticiDropdown">
-                <button class="btn-small satici-menu-btn" onclick="toggleDropdown(event)"><i class="fa-solid fa-store"></i> Satıcı <i class="fa-solid fa-chevron-down" style="font-size:7px;"></i></button>
-                <div class="dropdown-content">
-                    <a href="satici-giris.html"><i class="fa-solid fa-right-to-bracket" style="color:#f97316;"></i> Satıcı Girişi</a>
-                    <button type="button" onclick="openSaticiModal()"><i class="fa-solid fa-user-plus" style="color:#10b981;"></i> Satıcı Ol</button>
-                </div>
-            </div>
-        </div>
+        <!-- NEON ANİMASYONLU AÇIK YEŞİL İŞLETME GİRİŞİ / BAYİ OL BUTONU -->
+        <a href="satici-giris.html" class="neon-yesil-btn"><i class="fa-solid fa-store"></i> İşletme Girişi</a>
     </header>
 
-    <!-- ÜST KISIMDAKİ ŞIK ANİMASYONLU CANLI TAKİP / SEPET ŞERİDİ -->
-    <div id="globalUstSerit" class="global-ust-serit">
-        <div class="bilgi">
-            <span id="ustSeritBaslik" style="font-size: 9px; color: #cbd5e1; font-weight: 500;">Aktif Sipariş Takibi</span>
-            <div><span id="ustSeritUrunSayisi">Yükleniyor...</span> • <span id="ustSeritToplamFiyat">0 ₺</span></div>
-        </div>
-        <div class="serit-butonlar" id="seritButonlarKapsayici"></div>
-    </div>
-
-    <div class="hero-section">
-        <h1 id="heroBaslikYuklenen">Altındağ'ın En Lezzetli Pazar Yeri</h1>
-        <p id="heroSloganYuklenen">Yüzlerce lezzet, binlerce restoran kapında!</p>
-    </div>
-
     <div class="container">
-        <div class="bayilik-banner" onclick="openSaticiModal()">
-            <div class="bayilik-sol">
-                <div class="bayilik-ikon"><i class="fa-solid fa-store"></i></div>
-                <div class="bayilik-metin">
-                    <h3>Yüksek Komisyonlara Son!</h3>
-                    <p>Kendi bölgenin lideri ol, hemen bayimiz ol.</p>
-                </div>
+        <div class="banner">
+            <h2>Ankara'nın En Lezzetli Adresi</h2>
+            <p>Favori işletmelerini keşfet, hızlıca sipariş ver!</p>
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="aramaInput" placeholder="İşletme veya yemek adı arayın..." onkeyup="isletmeAra()">
             </div>
-            <div class="bayilik-buton">Hemen Başvur</div>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-utensils"></i> Yemek Kategorileri</h3>
-        <div class="categories-slider" id="dynamicCategories">
-            <div style="font-size: 11px; color: #64748b; padding: 5px;">Yükleniyor...</div>
+        <div class="kategori-bar">
+            <div class="kat-chip aktif" onclick="kategoriSec('Tümü', this)">Tümü</div>
+            <div class="kat-chip" onclick="kategoriSec('Dürüm & Kebap', this)">Dürüm & Kebap</div>
+            <div class="kat-chip" onclick="kategoriSec('Fast Food', this)">Fast Food</div>
+            <div class="kat-chip" onclick="kategoriSec('Ev Yemekleri', this)">Ev Yemekleri</div>
+            <div class="kat-chip" onclick="kategoriSec('Tatlı & Pastane', this)">Tatlı & Pastane</div>
         </div>
 
-        <h3 class="section-title"><i class="fa-solid fa-store"></i> Bölgedeki Aktif İşletmeler</h3>
-        <div class="restaurants-grid" id="dynamicRestaurants">
-            <div style="font-size: 11px; color: #64748b; padding: 5px;">Yükleniyor...</div>
+        <h3 class="section-title">Açık İşletmeler</h3>
+        <div class="isletme-grid" id="isletmelerListesi">
+            <div style="font-size: 11px; color: #64748b;">İşletmeler yükleniyor...</div>
         </div>
 
         <div class="footer">
             <p>&copy; 2026 Bölge Yemek. Tüm hakları saklıdır.</p>
             <span>TAN MEDYA TASARIM Tarafından Kurulmuştur.</span>
-        </div>
-    </div>
-
-    <div id="musteriModal" class="modal">
-        <div class="modal-content">
-            <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Müşteri Giriş / Kayıt Ol</h3>
-            <div class="form-group"><label>Ad Soyad *</label><input type="text" id="musteriAd" placeholder="Ad Soyad"></div>
-            <div class="form-group"><label>Telefon *</label><input type="tel" id="musteriTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>E-posta *</label><input type="email" id="musteriMail" placeholder="mail@ornek.com"></div>
-            <div class="form-group"><label>Adres *</label><textarea id="musteriAdres" rows="2" placeholder="Teslimat adresi..."></textarea></div>
-            <button type="button" onclick="musteriKaydet()" style="width:100%; background:#f97316; color:white; border:none; padding:8px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer; margin-top:4px;">Kaydet</button>
-            <button type="button" onclick="document.getElementById('musteriModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:4px; cursor:pointer; margin-top:2px; font-size:10px;">İptal</button>
-        </div>
-    </div>
-
-    <div id="saticiModal" class="modal">
-        <div class="modal-content">
-            <h3 style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Satıcı Başvurusu</h3>
-            <div class="form-group"><label>İşletme Adı *</label><input type="text" id="basvuruIsletme" placeholder="İşletme adı"></div>
-            <div class="form-group"><label>Yetkili *</label><input type="text" id="basvuruYetkili" placeholder="Ad Soyad"></div>
-            <div class="form-group"><label>Telefon *</label><input type="tel" id="basvuruTel" placeholder="05XXXXXXXXX"></div>
-            <div class="form-group"><label>Kategori *</label><input type="text" id="basvuruKategori" placeholder="Örn: Dürüm"></div>
-            <button type="button" onclick="saticiBasvuruGonder()" style="width:100%; background:#f97316; color:white; border:none; padding:8px; border-radius:6px; font-weight:800; font-size:11px; cursor:pointer; margin-top:4px;">Başvur</button>
-            <button type="button" onclick="document.getElementById('saticiModal').style.display='none'" style="width:100%; background:transparent; color:#64748b; border:none; padding:4px; cursor:pointer; margin-top:2px; font-size:10px;">Vazgeç</button>
         </div>
     </div>
 
@@ -218,126 +189,71 @@
         if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
         const db = firebase.database();
 
-        const aktifMusteri = localStorage.getItem('aktifMusteriAdi');
-        const aktifTel = localStorage.getItem('aktifMusteriTel');
-
-        if(aktifMusteri) {
-            document.getElementById('musteriProfilAlani').innerHTML = `<span style="font-size:10px; font-weight:700; color:#0f172a; background:#f1f5f9; padding:4px 7px; border-radius:6px; display:inline-block;"><i class="fa-solid fa-user-check" style="color:#10b981;"></i> ${aktifMusteri}</span>`;
-        }
+        let tumIsletmeler = {};
+        let secilenKategori = 'Tümü';
 
         window.addEventListener('load', () => {
-            aktifSiparisKontrolIndex();
-        });
+            setTimeout(() => {
+                const loader = document.getElementById('kuryeYukleniyor');
+                if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 300); }
+            }, 400);
 
-        function aktifSiparisKontrolIndex() {
-            let bulunanSiparisId = null;
-            let bulunanIsletmeId = null;
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('aktifSiparisId_')) {
-                    bulunanIsletmeId = key.replace('aktifSiparisId_', '');
-                    bulunanSiparisId = localStorage.getItem(key);
-                    break;
-                }
-            }
-
-            if (bulunanSiparisId && bulunanIsletmeId) {
-                db.ref('customer_orders/' + bulunanSiparisId).on('value', snapshot => {
-                    const s = snapshot.val();
-                    const ustSerit = document.getElementById('globalUstSerit');
-                    const btnKapsayici = document.getElementById('seritButonlarKapsayici');
-
-                    if (s && !s.durum.toLowerCase().includes('teslim edildi') && !s.durum.toLowerCase().includes('iptal')) {
-                        ustSerit.className = "global-ust-serit";
-                        let ikonHtml = '<i class="fa-solid fa-fire fa-beat" style="color: #ea580c;"></i>';
-
-                        if (s.durum.toLowerCase().includes('hazırlanıyor') || s.durum.toLowerCase().includes('alındı')) {
-                            ustSerit.classList.add('hazirlaniyor');
-                            ikonHtml = '<i class="fa-solid fa-fire fa-beat" style="color: #fb923c;"></i>';
-                        } else if (s.durum.toLowerCase().includes('yola çıktı')) {
-                            ustSerit.classList.add('yolacikti');
-                            ikonHtml = '<span class="motor-animasyon"><i class="fa-solid fa-motorcycle" style="color: #38bdf8;"></i></span>';
-                        }
-
-                        document.getElementById('ustSeritBaslik').innerHTML = `${ikonHtml} ${s.urunAdi} | Tel: ${s.musteriTel}`;
-                        document.getElementById('ustSeritUrunSayisi').innerText = `Adres: ${s.musteriAdres}`;
-                        document.getElementById('ustSeritToplamFiyat').innerText = `${s.toplamFiyat} ₺ • ${s.durum}`;
-
-                        btnKapsayici.innerHTML = `<a href="isletme.html?id=${bulunanIsletmeId}"><i class="fa-solid fa-motorcycle"></i> Takip Et</a>`;
-                        ustSerit.style.display = 'flex';
-                    } else {
-                        ustSerit.style.display = 'none';
-                    }
-                });
-            }
-        }
-
-        function openMusteriModal() { document.getElementById('musteriModal').style.display = 'flex'; }
-        function musteriKaydet() {
-            const ad = document.getElementById('musteriAd').value.trim();
-            const tel = document.getElementById('musteriTel').value.trim();
-            const mail = document.getElementById('musteriMail').value.trim();
-            const adres = document.getElementById('musteriAdres').value.trim();
-            if(!ad || !tel || !mail || !adres) { alert("Alanları doldurun."); return; }
-            localStorage.setItem('aktifMusteriAdi', ad);
-            localStorage.setItem('aktifMusteriTel', tel);
-            localStorage.setItem('aktifMusteriMail', mail);
-            localStorage.setItem('aktifMusteriAdres', adres);
-            document.getElementById('musteriModal').style.display = 'none';
-            location.reload();
-        }
-
-        function toggleDropdown(event) { event.stopPropagation(); document.getElementById('saticiDropdown').classList.toggle('active'); }
-        window.onclick = function() { document.getElementById('saticiDropdown').classList.remove('active'); }
-        function openSaticiModal() { document.getElementById('saticiDropdown').classList.remove('active'); document.getElementById('saticiModal').style.display='flex'; }
-
-        db.ref('categories').once('value').then((snapshot) => {
-            const slider = document.getElementById('dynamicCategories');
-            const data = snapshot.val();
-            if(!data) { slider.innerHTML = '<div style="font-size:10px; color:#64748b;">Kategori yok.</div>'; return; }
-            
-            let html = '';
-            Object.keys(data).forEach(key => {
-                const kat = data[key];
-                const gorsel = kat.gorsel || 'https://i.imgur.com/7y4aCVb.jpg';
-                html += `<a href="kategori.html?kat=${kat.slug}" class="category-card"><img src="${gorsel}" class="cat-img" loading="lazy"><div class="cat-body"><h3>${kat.ad}</h3></div></a>`;
+            db.ref('active_restaurants').on('value', snapshot => {
+                tumIsletmeler = snapshot.val() || {};
+                isletmeleriEkranaBas(tumIsletmeler, secilenKategori);
             });
-            slider.innerHTML = html;
         });
 
-        db.ref('site_settings').once('value').then((snapshot) => {
-            const s = snapshot.val();
-            if(s) {
-                if(s.heroBaslik) document.getElementById('heroBaslikYuklenen').innerText = s.heroBaslik;
-                if(s.heroSlogan) document.getElementById('heroSloganYuklenen').innerText = s.heroSlogan;
+        function kategoriSec(kategori, element) {
+            secilenKategori = kategori;
+            document.querySelectorAll('.kat-chip').forEach(el => el.classList.remove('aktif'));
+            element.classList.add('aktif');
+            isletmeleriEkranaBas(tumIsletmeler, kategori);
+        }
+
+        function isletmeleriEkranaBas(data, kategori) {
+            const container = document.getElementById('isletmelerListesi');
+            container.innerHTML = '';
+            if(Object.keys(data).length === 0) {
+                container.innerHTML = '<div style="font-size:11px; color:#64748b;">Aktif işletme bulunmuyor.</div>';
+                return;
             }
-        });
 
-        db.ref('active_restaurants').once('value').then((snapshot) => {
-            const container = document.getElementById('dynamicRestaurants');
-            const data = snapshot.val();
-            if(!data) { container.innerHTML = '<div style="font-size:10px; color:#64748b;">Aktif işletme bulunmuyor.</div>'; return; }
-            
             let html = '';
             Object.keys(data).forEach(key => {
                 const r = data[key];
-                const logo = r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg';
-                html += `<a href="isletme.html?id=${key}" class="restaurant-card"><img src="${logo}" class="rest-logo" loading="lazy"><div class="rest-info"><h4>${r.ad}</h4><p>${r.kategori || 'Lezzet'}</p><div class="rest-puanlar"><span><i class="fa-solid fa-star"></i> ${r.puan || 'Yeni'}</span></div></div></a>`;
+                const rKat = r.kategori || 'Dürüm & Kebap';
+                if(kategori === 'Tümü' || rKat.toLowerCase().includes(kategori.toLowerCase().split(' ')[0])) {
+                    html += `
+                        <a href="isletme.html?id=${key}" class="isletme-kart">
+                            <div class="isletme-img-wrap">
+                                <img src="${r.gorsel || 'https://i.imgur.com/7y4aCVb.jpg'}" alt="${r.ad}">
+                            </div>
+                            <div class="isletme-detay">
+                                <h4>${r.ad}</h4>
+                                <p>${r.kategori || 'Lezzet Noktası'} • Min: ${r.minSepet || 0} ₺</p>
+                                <div class="isletme-alt">
+                                    <span><i class="fa-solid fa-star"></i> 4.9 (50+ Yorum)</span>
+                                    <span style="color:#10b981; font-weight:800;">Açık</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                }
             });
-            container.innerHTML = html;
-        });
+            container.innerHTML = html || '<div style="font-size:11px; color:#64748b;">Bu kategoride işletme bulunmuyor.</div>';
+        }
 
-        function saticiBasvuruGonder() {
-            const isletme = document.getElementById('basvuruIsletme').value.trim();
-            const yetkili = document.getElementById('basvuruYetkili').value.trim();
-            const tel = document.getElementById('basvuruTel').value.trim();
-            const kat = document.getElementById('basvuruKategori').value.trim();
-            if(!isletme || !yetkili || !tel) { alert("Alanları doldurun."); return; }
-            const sifre = 'BOLGE-' + Math.floor(1000 + Math.random() * 9000);
-            db.ref('seller_applications/' + ('BASVURU-' + Date.now())).set({
-                isletmeAdi: isletme, yetkiliAdi: yetkili, telefon: tel, kategori: kat, otomatikSifre: sifre, tarih: new Date().toLocaleDateString('tr-TR')
-            }).then(() => { alert("Başvurunuz alındı! Şifreniz: " + sifre); document.getElementById('saticiModal').style.display = 'none'; });
+        function isletmeAra() {
+            const aranan = document.getElementById('aramaInput').value.toLowerCase();
+            const filtrelenmis = {};
+            Object.keys(tumIsletmeler).forEach(key => {
+                const r = tumIsletmeler[key];
+                if(r.ad.toLowerCase().includes(aranan) || (r.kategori && r.kategori.toLowerCase().includes(aranan))) {
+                    filtrelenmis[key] = r;
+                }
+            });
+            isletmeleriEkranaBas(filtrelenmis, secilenKategori);
         }
     </script>
 </body>

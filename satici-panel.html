@@ -34,7 +34,7 @@
         .btn-hazirlaniyor { background: #dc2626; }
         .btn-yolactikti { background: #2563eb; }
         .btn-teslim { background: #16a34a; }
-        .btn-iptal { background: #9ca3af; }
+        .btn-iptal { background: #64748b; }
         .btn-pasif { background: #e2e8f0 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 10000; padding: 15px; }
@@ -64,11 +64,24 @@
             <button type="button" class="btn-primary" onclick="bilgileriGuncelle()">Kaydet</button>
         </div>
 
+        <!-- AKTİF YENİ SİPARİŞLER -->
         <div class="card" id="aktifSiparisKarti" style="border: 2px solid #10b981; background: #f0fdf4;">
-            <h3 style="color: #047857;"><i class="fa-solid fa-bell fa-shake"></i> Aktif Yeni Siparişler</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #f1f5f9; padding-bottom:6px;">
+                <h3 style="color: #047857; margin-bottom:0; border:none; padding:0;"><i class="fa-solid fa-bell fa-shake"></i> Aktif Yeni Siparişler</h3>
+                <button type="button" id="sesiDurdurBtn" onclick="bildirimSesiniDurdur()" style="display:none; background:#ef4444; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-size:9px; font-weight:800; cursor:pointer;"><i class="fa-solid fa-volume-xmark"></i> Sesi Sustur</button>
+            </div>
             <table>
                 <thead><tr><th>Müşteri</th><th>Ürünler / Tutar</th><th>Adres & Tel</th><th>Durum</th><th>İşlemler</th></tr></thead>
                 <tbody id="aktifSiparislerListesi"><tr><td colspan="5" style="color:#64748b;">Yeni sipariş bekleniyor...</td></tr></tbody>
+            </table>
+        </div>
+
+        <!-- GEÇMİŞ / TESLİM EDİLEN SİPARİŞLER -->
+        <div class="card" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+            <h3 style="color: #475569;"><i class="fa-solid fa-box-archive"></i> Geçmiş / Tamamlanan Siparişler</h3>
+            <table>
+                <thead><tr><th>Müşteri</th><th>Ürünler / Tutar</th><th>Adres & Tel</th><th>Son Durum</th></tr></thead>
+                <tbody id="gecmisSiparislerListesi"><tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr></tbody>
             </table>
         </div>
 
@@ -135,7 +148,8 @@
         </div>
     </div>
 
-    <audio id="bildirimSesi" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+    <!-- TEKRARLAYAN BİLDİRİM SESİ -->
+    <audio id="bildirimSesi" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" loop preload="auto"></audio>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -156,7 +170,6 @@
         const saticiAdi = localStorage.getItem('aktifSaticiAdi');
         if(!saticiKey) { window.location.href = 'satici-giris.html'; }
 
-        // Tarayıcı otomatik ses kilidini kaldırmak için ilk tıklama tetikleyicisi
         document.addEventListener('click', function() {
             const ses = document.getElementById('bildirimSesi');
             ses.play().then(() => { ses.pause(); ses.currentTime = 0; }).catch(e => {});
@@ -218,36 +231,48 @@
         let ilkYukleme = true;
         db.ref('orders/' + saticiKey).on('value', snapshot => {
             const aktifTbody = document.getElementById('aktifSiparislerListesi');
+            const gecmisTbody = document.getElementById('gecmisSiparislerListesi');
             aktifTbody.innerHTML = '';
+            gecmisTbody.innerHTML = '';
             const data = snapshot.val();
             
             if(!data) { 
                 aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>'; 
+                gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
                 ilkYukleme = false;
                 return; 
             }
             
-            if(!ilkYukleme) {
-                const ses = document.getElementById('bildirimSesi');
-                ses.play().catch(e => console.log("Ses çalma hatası:", e));
-                
-                // Görsel olarak sipariş kartını sars/titret
-                const kart = document.getElementById('aktifSiparisKarti');
-                if(kart) {
-                    kart.style.transition = "0.2s";
-                    kart.style.transform = "scale(1.01)";
-                    setTimeout(() => kart.style.transform = "scale(1)", 300);
-                }
-            }
-            ilkYukleme = false;
+            let yeniSiparisVar = false;
+            let aktifSayac = 0, gecmisSayac = 0;
 
-            let aktifSayac = 0;
             Object.keys(data).forEach(sKey => {
                 const o = data[sKey];
                 const durum = o.durum || 'Siparişiniz Alındı';
 
-                if(durum !== 'Teslim Edildi' && durum !== 'İptal Edildi' && durum !== 'İptal Onaylandı') {
+                if(durum === 'Teslim Edildi' || durum === 'İptal Edildi' || durum === 'İptal Onaylandı') {
+                    gecmisSayac++;
+                    gecmisTbody.innerHTML += `
+                        <tr style="background:#f1f5f9; color:#475569;">
+                            <td><strong>${o.musteriAdi}</strong></td>
+                            <td>${o.urunAdi}<br><strong>${o.toplamFiyat} ₺</strong></td>
+                            <td>${o.musteriTel}<br><small>${o.musteriAdres || ''}</small></td>
+                            <td><span style="font-weight:800; color:${durum.includes('İptal') ? '#ef4444' : '#16a34a'};">${durum}</span></td>
+                        </tr>
+                    `;
+                } else {
                     aktifSayac++;
+                    if(durum === 'Siparişiniz Alındı') {
+                        yeniSiparisVar = true;
+                    }
+
+                    let hazirlaniyorClass = 'durum-btn btn-hazirlaniyor';
+                    let yolactiktiClass = 'durum-btn btn-yolactikti';
+                    let teslimClass = 'durum-btn btn-teslim';
+
+                    if(durum === 'Hazırlanıyor') hazirlaniyorClass += ' btn-pasif';
+                    if(durum === 'Yola Çıktı') { hazirlaniyorClass += ' btn-pasif'; yolactiktiClass += ' btn-pasif'; }
+
                     aktifTbody.innerHTML += `
                         <tr>
                             <td><strong>${o.musteriAdi}</strong></td>
@@ -255,9 +280,10 @@
                             <td>${o.musteriTel}<br><small style="color:#64748b;">${o.musteriAdres || ''}</small></td>
                             <td><span style="font-weight:800; color:#0f172a;">${durum}</span></td>
                             <td>
-                                <button class="durum-btn btn-hazirlaniyor" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazır</button>
-                                <button class="durum-btn btn-yolactikti" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yolda</button>
-                                <button class="durum-btn btn-teslim" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
+                                <button class="${hazirlaniyorClass}" onclick="siparisDurumGuncelle('${sKey}', 'Hazırlanıyor')">Hazır</button>
+                                <button class="${yolactiktiClass}" onclick="siparisDurumGuncelle('${sKey}', 'Yola Çıktı')">Yolda</button>
+                                <button class="${teslimClass}" onclick="siparisDurumGuncelle('${sKey}', 'Teslim Edildi')">Teslim</button>
+                                <button class="durum-btn btn-iptal" onclick="siparisIptalEt('${sKey}')">İptal</button>
                             </td>
                         </tr>
                     `;
@@ -265,11 +291,38 @@
             });
 
             if(aktifSayac === 0) aktifTbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">Yeni sipariş yok.</td></tr>';
+            if(gecmisSayac === 0) gecmisTbody.innerHTML = '<tr><td colspan="4" style="color:#64748b;">Geçmiş sipariş bulunmuyor.</td></tr>';
+
+            const ses = document.getElementById('bildirimSesi');
+            const sesBtn = document.getElementById('sesiDurdurBtn');
+            if(yeniSiparisVar && !ilkYukleme) {
+                ses.play().catch(e => {});
+                sesBtn.style.display = 'inline-block';
+            } else {
+                ses.pause();
+                ses.currentTime = 0;
+                sesBtn.style.display = 'none';
+            }
+            ilkYukleme = false;
         });
+
+        function bildirimSesiniDurdur() {
+            const ses = document.getElementById('bildirimSesi');
+            ses.pause();
+            ses.currentTime = 0;
+            document.getElementById('sesiDurdurBtn').style.display = 'none';
+        }
 
         function siparisDurumGuncelle(siparisId, yeniDurum) {
             db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: yeniDurum });
             db.ref('customer_orders/' + siparisId).update({ durum: yeniDurum });
+        }
+
+        function siparisIptalEt(siparisId) {
+            if(confirm("Bu siparişi iptal etmek istediğinize emin misiniz?")) {
+                db.ref('orders/' + saticiKey + '/' + siparisId).update({ durum: 'İptal Edildi' });
+                db.ref('customer_orders/' + siparisId).update({ durum: 'İptal Edildi' });
+            }
         }
 
         function urunEkle() {
@@ -346,7 +399,7 @@
             const kurdele = document.getElementById('duzenleKurdele').value.trim();
             const fileInput = document.getElementById('duzenleDosya');
 
-            if(!ad || !fiyat) { alert("Ad ve fiyat boş olamaz."); return; }
+            if(!ad || !fiyat) { alert("Ad dan fiyat boş olamaz."); return; }
 
             const updateData = { ad, fiyat, indirimliFiyat, aciklama, kategori, kurdele };
 
@@ -354,7 +407,7 @@
                 gorseliSikistir(fileInput.files[0], function(compressedImage) {
                     updateData.gorsel = compressedImage;
                     db.ref('restaurant_products/' + saticiKey + '/' + key).update(updateData).then(() => {
-                        alert("Ürün görseliyle birlikte güncellendi!");
+                        alert("Ürün güncellendi!");
                         document.getElementById('urunDuzenleModal').style.display = 'none';
                     });
                 });

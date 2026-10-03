@@ -26,7 +26,6 @@
         .logo { font-size: 17px; font-weight: 800; text-transform: uppercase; text-decoration: none; }
         .logo .bolge { color: #0f172a; } .logo .yemek { color: #f97316; }
 
-        /* ÜSTTE SABİT, TIKLANABİLİR VE GÖRÜNÜR SEPET ONAY BARI */
         .ust-sepet-bar { background: #0f172a; border-bottom: 2px solid #10b981; padding: 10px 4%; display: none; justify-content: space-between; align-items: center; position: sticky; top: 75px; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
         .ust-sepet-bar .bilgi { color: #fff; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; gap: 1px; }
         .ust-sepet-bar .bilgi span { color: #10b981; font-size: 13px; font-weight: 900; }
@@ -155,7 +154,7 @@
         </div>
     </div>
 
-    <!-- ÜRÜN ÖZELLEŞTİRME VE ADET SEÇİM MODALI -->
+    <!-- ÜRÜN ÖZELLEŞTİRME VE ÇOKLU ADET/MALZEME SEÇİM MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -176,19 +175,10 @@
                 <button class="adet-btn" onclick="adetDegistir(1)">+</button>
             </div>
 
-            <!-- SADECE DÜRÜMLERDE AYRI MALZEME İÇERİK EKRANI -->
-            <div id="malzemeBolumu" style="display:none; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 8px;">
-                <p style="font-size: 10px; font-weight: 800; color: #1e293b; margin-bottom: 6px; text-align: left;"><i class="fa-solid fa-utensils"></i> Ürün İçeriği / Malzeme Seçimi:</p>
-                <div class="malzeme-grid">
-                    <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
-                    <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
-                    <label class="malzeme-item"><input type="checkbox" value="TURŞU"> TURŞU</label>
-                    <label class="malzeme-item"><input type="checkbox" value="ACI SOS"> ACI SOS</label>
-                    <label class="malzeme-item"><input type="checkbox" value="BURGER SOS"> BURGER SOS</label>
-                    <label class="malzeme-item"><input type="checkbox" value="LİMON"> LİMON</label>
-                    <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
-                    <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
-                </div>
+            <!-- BİRDEN FAZLA ÜRÜN İÇİN AYRI AYRI İÇERİK / MALZEME SEÇİM ALANI -->
+            <div id="cokluMalzemeBolumu" style="display:none; margin-top: 10px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: left;">
+                <p style="font-size: 10px; font-weight: 800; color: #1e293b; margin-bottom: 6px;"><i class="fa-solid fa-utensils"></i> Her Ürün İçin Ayrı İçerik / Malzeme Seçimi:</p>
+                <div id="urunMalzemeKapsayicilari"></div>
             </div>
         </div>
     </div>
@@ -229,6 +219,8 @@
             <div style="margin-bottom: 8px; text-align: left;">
                 <h4 style="font-size: 10px; font-weight: 800; margin-bottom: 4px; color: #475569;">Sepetinizdekiler</h4>
                 <div id="modalSepetListesi"></div>
+                <!-- MİNİMUM TUTAR VE +100 TL GETİRME ÜCRETİ KIRMIZI UYARI YAZISI -->
+                <div id="minTutarKirmiziUyari" style="font-size: 10px; font-weight: 800; color: #ef4444; margin-top: 6px; display:none;"></div>
             </div>
 
             <div class="kupon-box">
@@ -422,16 +414,7 @@
             const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
             document.getElementById('modalUrunFiyat').innerText = (gecerliFiyat * secilenUrunAdet) + ' ₺';
             
-            // SADECE DÜRÜMLERDE AYRI MALZEME SEÇİMİ GÖSTER
-            const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
-            const malzemeDiv = document.getElementById('malzemeBolumu');
-            if(kategoriStr.includes('dürüm')) {
-                malzemeDiv.style.display = 'block';
-                document.querySelectorAll('.malzeme-item input').forEach(cb => cb.checked = false);
-            } else {
-                malzemeDiv.style.display = 'none';
-            }
-
+            malzemeKapsayicilariniOlustur();
             document.getElementById('urunSecenekModal').style.display = 'flex';
         }
 
@@ -442,6 +425,39 @@
 
             const gecerliFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? aktifSecilenUrun.indirimliFiyat : aktifSecilenUrun.fiyat;
             document.getElementById('modalUrunFiyat').innerText = (gecerliFiyat * secilenUrunAdet) + ' ₺';
+
+            malzemeKapsayicilariniOlustur();
+        }
+
+        function malzemeKapsayicilariniOlustur() {
+            const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
+            const bolum = document.getElementById('cokluMalzemeBolumu');
+            const kapsayici = document.getElementById('urunMalzemeKapsayicilari');
+            kapsayici.innerHTML = '';
+
+            if(!kategoriStr.includes('dürüm')) {
+                bolum.style.display = 'none';
+                return;
+            }
+
+            bolum.style.display = 'block';
+            for(let i = 1; i <= secilenUrunAdet; i++) {
+                kapsayici.innerHTML += `
+                    <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:8px; border-radius:8px; margin-bottom:6px;">
+                        <div style="font-size:10px; font-weight:800; color:#0f172a; margin-bottom:4px;">${i}. Ürün İçin Malzeme Seçimi:</div>
+                        <div class="malzeme-grid" id="urunMalzemeListe_${i}">
+                            <label class="malzeme-item"><input type="checkbox" value="MISIR"> MISIR</label>
+                            <label class="malzeme-item"><input type="checkbox" value="LAHANA"> LAHANA</label>
+                            <label class="malzeme-item"><input type="checkbox" value="TURŞU"> TURŞU</label>
+                            <label class="malzeme-item"><input type="checkbox" value="ACI SOS"> ACI SOS</label>
+                            <label class="malzeme-item"><input type="checkbox" value="BURGER SOS"> BURGER SOS</label>
+                            <label class="malzeme-item"><input type="checkbox" value="LİMON"> LİMON</label>
+                            <label class="malzeme-item"><input type="checkbox" value="NAR EŞKİSİ"> NAR EŞKİSİ</label>
+                            <label class="malzeme-item"><input type="checkbox" value="MAYDONOZ"> MAYDONOZ</label>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         function secilenUrunuSepeteEkle() {
@@ -454,24 +470,37 @@
                 return;
             }
 
-            let secilenMalzemeler = [];
             const kategoriStr = (aktifSecilenUrun.kategori || '').toLowerCase();
-            if(kategoriStr.includes('dürüm')) {
-                document.querySelectorAll('.malzeme-item input:checked').forEach(cb => secilenMalzemeler.push(cb.value));
-            }
-
-            const malzemeMetni = secilenMalzemeler.length > 0 ? ` (${secilenMalzemeler.join(', ')})` : '';
-            const tamUrunAdi = aktifSecilenUrun.ad + malzemeMetni;
-            
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
-            const toplamUrunFiyati = birimFiyat * secilenUrunAdet;
 
-            const mevcut = sepet.find(i => i.urunAdi === tamUrunAdi);
-            if(mevcut) {
-                mevcut.adet += secilenUrunAdet;
-                mevcut.toplamFiyat = mevcut.adet * birimFiyat;
+            if(kategoriStr.includes('dürüm')) {
+                // Her ürün için ayrı ayrı seçilen malzemeleri gruplayıp sepete ekle
+                for(let i = 1; i <= secilenUrunAdet; i++) {
+                    let secilenler = [];
+                    const checkboxlar = document.querySelectorAll(`#urunMalzemeListe_${i} input:checked`);
+                    checkboxlar.forEach(cb => secilenler.push(cb.value));
+                    
+                    const malzemeMetni = secilenler.length > 0 ? ` (${secilenler.join(', ')})` : '';
+                    const tamUrunAdi = aktifSecilenUrun.ad + malzemeMetni;
+
+                    const mevcut = sepet.find(item => item.urunAdi === tamUrunAdi);
+                    if(mevcut) {
+                        mevcut.adet += 1;
+                        mevcut.toplamFiyat = mevcut.adet * birimFiyat;
+                    } else {
+                        sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: 1, toplamFiyat: birimFiyat });
+                    }
+                }
             } else {
-                sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: secilenUrunAdet, toplamFiyat: toplamUrunFiyati });
+                const tamUrunAdi = aktifSecilenUrun.ad;
+                const toplamUrunFiyati = birimFiyat * secilenUrunAdet;
+                const mevcut = sepet.find(item => item.urunAdi === tamUrunAdi);
+                if(mevcut) {
+                    mevcut.adet += secilenUrunAdet;
+                    mevcut.toplamFiyat = mevcut.adet * birimFiyat;
+                } else {
+                    sepet.push({ urunAdi: tamUrunAdi, birimFiyat, adet: secilenUrunAdet, toplamFiyat: toplamUrunFiyati });
+                }
             }
 
             sepetiGuncelleBar();
@@ -532,11 +561,13 @@
             let toplamAdet = 0, genelToplam = 0;
             sepet.forEach(i => { toplamAdet += i.adet; genelToplam += i.toplamFiyat; });
             document.getElementById('sepetUrunSayisi').innerText = toplamAdet;
-            document.getElementById('sepetToplamFiyat').innerText = Math.max(0, genelToplam - indirimTutari);
+            
+            let finalTutar = Math.max(0, genelToplam - indirimTutari);
+            document.getElementById('sepetToplamFiyat').innerText = finalTutar;
             
             const ustBar = document.getElementById('ustSepetBar');
             if(toplamAdet > 0) {
-                ustBar.style.display = 'flex'; // Üst kısımda net görünürlük
+                ustBar.style.display = 'flex';
             } else {
                 ustBar.style.display = 'none';
             }
@@ -546,11 +577,6 @@
             let genelToplam = 0;
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
-
-            if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
-                alert(`Bu işletme için minimum sepet tutarı ${isletmeMinSepet} ₺'dir. Sepetinize ${isletmeMinSepet - finalTutar} ₺ tutarında daha ürün eklemelisiniz.`);
-                return;
-            }
 
             document.getElementById('siparisAdres').value = localStorage.getItem('aktifMusteriAdres') || '';
             const listeDiv = document.getElementById('modalSepetListesi');
@@ -564,6 +590,16 @@
                     </div>
                 `;
             });
+
+            // MİNİMUM TUTAR KONTROLÜ VE KIRMIZI UYARI YAZISI
+            const kirmiziUyariDiv = document.getElementById('minTutarKirmiziUyari');
+            if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
+                kirmiziUyariDiv.style.display = 'block';
+                kirmiziUyariDiv.innerHTML = `⚠️ Sepet tutarınız minimum ${isletmeMinSepet} ₺'nin altında! Siparişiniz onaylandığı takdirde sepete +100 TL getirme ücreti eklenecektir.`;
+                finalTutar += 100; // Getirme ücreti yansıtılır
+            } else {
+                kirmiziUyariDiv.style.display = 'none';
+            }
 
             document.getElementById('modalToplamTutar').innerText = finalTutar + ' ₺';
             document.getElementById('checkoutModal').style.display = 'flex';
@@ -607,6 +643,10 @@
             });
 
             let finalFiyat = Math.max(0, genelToplam - indirimTutari);
+            if(isletmeMinSepet > 0 && finalFiyat < isletmeMinSepet) {
+                finalFiyat += 100; // Getirme ücreti dahil edilir
+            }
+
             const siparisId = 'siparis_' + Date.now();
             const siparisVerisi = {
                 siparisId, isletmeId, musteriAdi, musteriTel, musteriAdres: adres, odemeYontemi: odeme,

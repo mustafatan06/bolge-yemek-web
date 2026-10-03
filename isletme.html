@@ -94,7 +94,6 @@
         .adet-btn { width: 28px; height: 28px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 800; cursor: pointer; color: #0f172a; display: flex; align-items: center; justify-content: center; }
         #modalUrunAdetSayi { font-size: 13px; font-weight: 900; color: #0f172a; min-width: 20px; text-align: center; }
 
-        /* HER BİR ÜRÜN İÇİN DİNAMİK MALZEME KUTULARI */
         #dinamikUrunFormlari { display: flex; flex-direction: column; gap: 10px; margin: 10px 0; text-align: left; }
         .tekil-urun-kutu { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; }
         .tekil-urun-kutu h4 { font-size: 11px; font-weight: 800; color: #f97316; margin-bottom: 6px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 3px; }
@@ -114,6 +113,12 @@
         .kupon-input-group button { background: #f97316; color: white; border: none; padding: 7px 12px; border-radius: 6px; font-weight: 700; font-size: 10px; cursor: pointer; }
         .yorum-karti { background: #f8fafc; border: 1px solid #e2e8f0; padding: 9px; border-radius: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
 
+        /* ANİMASYONLU YEŞİL BAŞARI EKRANI */
+        #basariEkranModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 185, 129, 0.95); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 999999; flex-direction: column; text-align: center; color: white; padding: 20px; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .basari-ikon-kutu { width: 80px; height: 80px; background: white; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); animation: bounceIcon 0.8s infinite alternate; }
+        @keyframes bounceIcon { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+
         #kuryeYukleniyor { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; transition: opacity 0.3s ease; }
         .kurye-ikon { font-size: 50px; color: #f97316; animation: kuryeSurus 1.2s infinite ease-in-out; }
         @keyframes kuryeSurus { 0%, 100% { transform: translateX(-15px); } 50% { transform: translateX(15px); } }
@@ -124,6 +129,14 @@
     <div id="kuryeYukleniyor">
         <div class="kurye-ikon"><i class="fa-solid fa-motorcycle fa-bounce"></i></div>
         <div style="font-size: 12px; font-weight: 800; color: #0f172a;">Menü Hazırlanıyor...</div>
+    </div>
+
+    <!-- ANİMASYONLU YEŞİL BAŞARI EKRANI -->
+    <div id="basariEkranModal">
+        <div class="basari-ikon-kutu"><i class="fa-solid fa-check"></i></div>
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 6px;">Siparişiniz Onaylandı!</h2>
+        <p style="font-size: 13px; font-weight: 600; opacity: 0.9; max-width: 320px; margin-bottom: 20px;">İşletmeye iletildi, kuryemiz yola çıkmak için hazırlanıyor.</p>
+        <button type="button" onclick="window.location.reload()" style="background: #ffffff; color: #10b981; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 900; font-size: 13px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.2);">Ana Sayfaya Dön</button>
     </div>
 
     <header>
@@ -176,7 +189,7 @@
         <button type="button" onclick="sepetiOnaylaTikla()"><i class="fa-solid fa-basket-shopping"></i> Sepeti Onayla</button>
     </div>
 
-    <!-- ÜRÜN SEÇENEK VE ADETE GÖRE DİNAMİK MALZEME MODALI -->
+    <!-- ÜRÜN SEÇENEK VE ADET MODALI -->
     <div id="urunSecenekModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -184,7 +197,6 @@
                 <button class="close-modal" onclick="document.getElementById('urunSecenekModal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- ADET SEÇİMİ -->
             <div style="font-size: 10px; font-weight: 700; color: #475569; margin-bottom: 2px;">Kaç Adet İstiyorsunuz?</div>
             <div class="adet-kapsayici">
                 <button type="button" class="adet-btn" onclick="adetDegistir(-1)">-</button>
@@ -193,8 +205,6 @@
             </div>
 
             <p style="font-size: 10px; color: #64748b; margin: 8px 0 4px 0;">Her ürün için ayrı malzeme tercihlerinizi belirleyin:</p>
-            
-            <!-- DİNAMİK OLARAK HER ÜRÜN İÇİN AYRI AÇILAN MALZEME KUTULARI -->
             <div id="dinamikUrunFormlari"></div>
 
             <div style="margin-top: 12px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0; padding-top:10px;">
@@ -437,7 +447,6 @@
             document.getElementById('modalUrunFiyat').innerText = (birimFiyat * secilenUrunAdet) + ' ₺';
         }
 
-        // HER BİR ÜRÜN İÇİN ADET KADAR AYRI MALZEME SEÇİM KUTUSU OLUŞTUR
         function formAlanlariniOlustur() {
             const container = document.getElementById('dinamikUrunFormlari');
             container.innerHTML = '';
@@ -473,7 +482,6 @@
 
             const birimFiyat = (parseFloat(aktifSecilenUrun.indirimliFiyat) > 0 && parseFloat(aktifSecilenUrun.indirimliFiyat) < parseFloat(aktifSecilenUrun.fiyat)) ? parseFloat(aktifSecilenUrun.indirimliFiyat) : parseFloat(aktifSecilenUrun.fiyat);
 
-            // HER BİR ADEDİ KENDİ SEÇTİĞİ MALZEMELERLE AYRI AYRI SEPETE EKLE
             for(let i = 1; i <= secilenUrunAdet; i++) {
                 let secilenMalzemeler = [];
                 document.querySelectorAll(`.malzeme_cb_${i}:checked`).forEach(cb => secilenMalzemeler.push(cb.value));
@@ -529,9 +537,9 @@
             sepet.forEach(i => genelToplam += i.toplamFiyat);
             let finalTutar = Math.max(0, genelToplam - indirimTutari);
 
-            // MİNİMUM SEPET TUTARI UYARISI - KESİN KONTROL VE NET UYARI
+            // KESİN VE NET MİNİMUM SEPET TUTARI UYARISI
             if(isletmeMinSepet > 0 && finalTutar < isletmeMinSepet) {
-                alert(`⚠️ Minimum Sepet Tutarı Uyarı!\n\nBu işletmeden sipariş verebilmek için sepet toplamınız en az ${isletmeMinSepet} ₺ olmalıdır.\nMevcut Tutar: ${finalTutar} ₺\nEksik Tutar: ${isletmeMinSepet - finalTutar} ₺`);
+                alert(`⚠️️ Minimum Sepet Tutarı Uyarı!\n\nBu işletmeden sipariş verebilmek için sepet toplamınız en az ${isletmeMinSepet} ₺ olmalıdır.\nMevcut Tutar: ${finalTutar} ₺\nEksik Tutar: ${isletmeMinSepet - finalTutar} ₺`);
                 return;
             }
 
@@ -602,10 +610,11 @@
 
             db.ref('orders/' + isletmeId + '/' + siparisId).set(siparisVerisi);
             db.ref('customer_orders/' + siparisId).set(siparisVerisi).then(() => {
-                alert("Siparişiniz başarıyla alındı!");
+                document.getElementById('checkoutModal').style.display = 'none';
+                // ANİMASYONLU YEŞİL BAŞARI EKRANINI GÖSTER
+                document.getElementById('basariEkranModal').style.display = 'flex';
                 sepet = [];
                 indirimTutari = 0;
-                document.getElementById('checkoutModal').style.display = 'none';
                 sepetiGuncelleBar();
             });
         }
